@@ -1,0 +1,18 @@
+Select B.MAHALLE_KODU,B.BINA_NO--,B.ADA||' / '||B.PARSEL ADA_PARSEL
+  From NUM_BAGIMSIZ_BOLUM_W B
+ WHERE B.Kapanis_Tarihi Is Null
+   AND NOT EXISTS (SELECT 1 FROM EML_BEYAN A  
+                    WHERE A.MAHALLE_KODU      = B.MAHALLE_KODU
+                      AND A.CADDE_SOKAK_KODU  = B.CADDE_SOKAK_KODU
+                      AND NVL(A.KAPI_NO,0)    = NVL(B.KAPI_NO,0)
+                      AND NVL(A.DAIRE_NO,0)   = NVL(B.DAIRE_NO,0)
+                      AND NVL(A.BLOK_NO,' ')  = NVL(B.BLOK_NO,' ')
+                      And A.Donem_Kodu        = (SELECT MAX(D.DONEM_KODU) FROM EML_DONEM D)
+                      And A.Beyan_Turu        = 1
+                      And ((B.ALT_DAIRE_NO Is Not Null And A.Alt_Daire_No = B.ALT_DAIRE_NO) OR (B.ALT_DAIRE_NO Is Null))
+                      And A.Satis_Tarihi   Is Null)
+   AND NOT EXISTS (SELECT 1 FROM EML_BEYAN A
+                    WHERE A.BAGIMSIZ_NO = B.BAGIMSIZ_NO
+                      AND A.SATIS_TARIHI IS NULL)
+GROUP BY B.MAHALLE_KODU,B.BINA_NO--,B.ADA||' / '||B.PARSEL
+ORDER BY B.MAHALLE_KODU,B.BINA_NO--,B.ADA||' / '||B.PARSEL;

@@ -1,0 +1,31 @@
+CREATE TABLE NUM_CTV_IRV_IAC_KACAK
+( BINA_NO                      NUMBER(10)       NOT NULL,
+  BAGIMSIZ_NO                  NUMBER(10)       NOT NULL,
+  ADRES_NO                     NUMBER(10),
+  MAHALLE_KODU                 NUMBER(8),
+  CADDE_SOKAK_KODU             NUMBER(8),
+  KAPI_NO                      NUMBER(4),
+  ALT_KAPI_NO                  VARCHAR2(30 BYTE),
+  DAIRE_NO                     NUMBER(4),
+  ALT_DAIRE_NO                 VARCHAR2(10 BYTE),
+  BILGI_ADI_SOYADI             VARCHAR2(100 BYTE),
+  ADISOYADI                    VARCHAR2(200 BYTE),
+  MALIK_TIPI                   NUMBER(8),
+  MALIK_ADI_SOYADI             VARCHAR2(50 BYTE),
+  KULLANIM_SEKLI               NUMBER(2),
+  OGRENCI_ADEDI                NUMBER(10),
+  KOLTUK_ADEDI                 NUMBER(10),
+  PERSONEL_ADEDI               NUMBER(10),
+  CALISAN_KISI_ADEDI           NUMBER(10),
+  YATAK_ADEDI                  NUMBER(10),
+  ODA_ADEDI                    NUMBER(10),
+  YUZOLCUMU                    NUMBER(18,2),
+  KULLANIMA_ACIK_ALAN          NUMBER(18,2),
+  ISIKLI_LEVHA_M2              NUMBER(18,2),
+  ISIKSIZ_LEVHA_M2             NUMBER(18,2),
+  CTV_KACAK_EH                 VARCHAR2(1 BYTE),
+  IRV_KACAK_EH                 VARCHAR2(1 BYTE),
+  IAC_KACAK_EH                 VARCHAR2(1 BYTE));
+
+CREATE UNIQUE INDEX NUM_CTV_IRV_IAC_KACAK_INDEX ON NUM_CTV_IRV_IAC_KACAK (BAGIMSIZ_NO);
+

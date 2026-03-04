@@ -1,0 +1,26 @@
+  SELECT A.MAHALLE_KODU,A.BINA_NO--,A.ADA||' / '||A.PARSEL ADA_PARSEL
+    From NUM_BINA A, NUM_BINA_DETAY B,NUM_BINA_ADRES C
+   Where A.BINA_NO			= B.BINA_NO
+     AND A.BINA_NO			= C.BINA_NO
+     AND B.BINA_NO 			= C.BINA_NO
+     AND B.ADRES_NO		= C.ADRES_NO
+     AND NVL(B.ISYERI_EH,'H') 		= 'E'
+     AND A.KAPANIS_TARIHI IS NULL
+     AND EXISTS (SELECT 1 FROM Num_Bina_Detay_Kullanim D
+			 Where D.Kullanim_Kodu = B.Bina_Kullanim_Turu
+			   And Nvl(D.Ruhsatli_EH,'H') = 'E')
+    AND NOT EXISTS (SELECT 1 FROM CTV_BEYAN D
+		     Where D.Yili = TO_NUMBER(TO_CHAR(SYSDATE,'YYYY'))
+		           And D.Bagimsiz_No = B.Bagimsiz_No
+		           And D.Mukellefiyet_Bitis_Tarihi Is Null)
+    AND NOT EXISTS (SELECT 1 FROM CTV_BEYAN D
+		    Where D.Yili 			= TO_NUMBER(TO_CHAR(SYSDATE,'YYYY'))
+		        AND D.MAHALLE_KODU		  	= C.MAHALLE_KODU
+		        AND D.CADDE_SOKAK_KODU		= C.CADDE_SOKAK_KODU
+		        AND NVL(D.KAPI_NO,0)			= NVL(C.KAPI_NO,0)
+		       AND NVL(D.ALT_KAPI_NO,' ') = NVL(C.ALT_KAPI_NO,' ')
+		       AND NVL(D.DAIRE_NO,0)			= NVL(B.DAIRE_NO,0)
+		       AND NVL(D.ALT_DAIRE_NO,' ') = NVL(B.ALT_DAIRE_NO,' ')
+		       AND D.Mukellefiyet_Bitis_Tarihi Is Null)
+GROUP BY A.MAHALLE_KODU,A.BINA_NO--,A.ADA||' / '||A.PARSEL
+ORDER BY A.MAHALLE_KODU,A.BINA_NO--,A.ADA||' / '||A.PARSEL;

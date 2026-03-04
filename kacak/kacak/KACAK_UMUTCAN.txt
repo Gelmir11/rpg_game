@@ -1,0 +1,94 @@
+
+[?06/?11/?2018 14:43] Umutcan Baskan: 
+SELECT * FROM EML_BEYAN A, NUM_BINA_PARSEL B 
+WHERE 
+A.PARSEL_KODU=B.PARSEL_KODU AND DONEM_KODU=2018 AND BEYAN_TURU IN (2,3) AND SATIS_TARIHI IS NULL AND A.PARSEL_KODU IS NOT NULL
+AND 'X' NOT IN (SELECT 'X' FROM EML_BEYAN C WHERE A.DONEM_KODU=C.DONEM_KODU AND C.BEYAN_TURU=1 AND A.PARSEL_KODU=C.PARSEL_KODU) 
+
+
+Tapu Özet MUSBOLNO dolu olanlarýn Bina Beyannamesi
+Bina olmasý gerekirken arsa olanlar
+
+
+SELECT COUNT(*) FROM TAPU_OZET A, ORT_SICIL B
+WHERE TO_CHAR (A.VATANDASLIK_NO)=B.VATANDASLIK_NO AND A.MUSBOLNO IS NOT NULL
+AND A.VATANDASLIK_NO IS NOT NULL
+UNION ALL
+SELECT COUNT(*) FROM TAPU_OZET A, ORT_SICIL B, NUM_TAPU_HISSE C, NUM_TAPU_SICIL D
+WHERE A.TASNO=C.TAPU_PARSEL_ID
+AND D.ID=C.SICIL_ID
+AND D.VERGINO IS NOT NULL
+AND B.VERGI_NO=D.VERGINO
+AND A.VATANDASLIK_NO IS NULL
+
+
+
+
+
+SELECT A.SICIL_KODU, A.BEYAN_SIRASI FROM EML_BEYAN A
+WHERE A.DONEM_KODU=2018 AND A.BEYAN_TURU=1 AND A.SATIS_TARIHI IS NULL
+AND A.BAGIMSIZ_NO IS NULL AND EXISTS (SELECT B.BAGIMSIZ_NO FROM Num_Bagimsiz_Bolum_W B
+     Where A.Mahalle_Kodu         = B.Mahalle_Kodu          And 
+           A.Cadde_Sokak_Kodu     = B.Cadde_Sokak_Kodu      And 
+           Nvl(A.Kapi_No,0)       = Nvl(B.Kapi_No,0)        And
+           Nvl(A.Alt_Kapi_No,' ') = Nvl(B.Alt_Kapi_No,' ')  And
+           Nvl(A.Daire_No,0)      = Nvl(B.Daire_No,0)       And
+           Nvl(A.Alt_Daire_No,' ')= Nvl(B.Alt_Daire_No,' ') And
+           B.Kapanis_Tarihi Is Null);
+
+CREATE TABLE UMT_KACAK_BINA_LISTE_1
+            (MAHALLE_KODU	 NUMBER(8),
+             CADDE_SOKAK_KODU	 NUMBER(8),
+             KAPI_NO		 NUMBER(4),
+             ALT_KAPI_NO	 VARCHAR2(30),
+             NUM_BAG_SAYISI	 NUMBER(10),
+             EML_BAG_SAYISI	 NUMBER(10),
+	     HAT_BAG_SAYISI      NUMBER(10));	
+
+
+
+
+      BEGIN
+        SELECT COUNT(*) INTO BAGIMSIZSAYISI
+          FROM EML_BEYAN
+         WHERE Donem_Kodu            = 2018
+           And Beyan_Turu            = 1
+           And Mahalle_Kodu          = B.Mahalle_Kodu          And 
+           And Cadde_Sokak_Kodu      = B.Cadde_Sokak_Kodu      And 
+           And Nvl(Kapi_No,0)        = Nvl(B.Kapi_No,0)        And
+           And Nvl(Alt_Kapi_No,' ')  = Nvl(B.Alt_Kapi_No,' ')  And
+           And Nvl(Daire_No,0)       = Nvl(B.Daire_No,0)       And
+           And Nvl(Alt_Daire_No,' ') = Nvl(B.Alt_Daire_No,' ') And
+	   And Satis_Tarihi Is Null	
+      END;      
+
+
+
+
+SELECT A.BINA_NO 
+  FROM Num_Bagimsiz_Bolum_W A
+GROUP BY A.BINA_NO 
+HAVING COUNT(*) = (SELECT COUNT(DISTINCT B.BAGIMSIZ_NO FROM EML_BEYAN B 
+		    WHERE B.DONEM_KODU = 2018
+                      AND A.BINA_NO = B.BINA_NO 
+                      AND B.SATIS_TARIHI IS NULL))
+ORDER BY A.BINA_NO;
+
+
+
+A.Mahalle_Kodu         = B.Mahalle_Kodu          And 
+       A.Cadde_Sokak_Kodu     = B.Cadde_Sokak_Kodu      And 
+       Nvl(A.Kapi_No,0)       = Nvl(B.Kapi_No,0)        And
+       Nvl(A.Alt_Kapi_No,' ') = Nvl(B.Alt_Kapi_No,' ')  And
+       Nvl(A.Daire_No,0)      = Nvl(B.Daire_No,0)       And
+       Nvl(A.Alt_Daire_No,' ')= Nvl(B.Alt_Daire_No,' ') And
+       B.Kapanis_Tarihi Is Null)
+Group By A.
+ 
+
+
+
+
+
+
+
