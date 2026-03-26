@@ -366,7 +366,6 @@ export class UIScene extends Phaser.Scene {
           if (eqItem.maxHp) desc += `\nMax HP: +${eqItem.maxHp}`;
           if (eqItem.maxMana) desc += `\nMax Mana: +${eqItem.maxMana}`;
           if (eqItem.manaCost) desc += `\nMana: ${eqItem.manaCost}/atış`;
-          if (eqItem.weaponType) desc += `\nTip: ${eqItem.weaponType}`;
           if (hasBonus) {
             desc += '\n--- ✦ BONUS ✦ ---';
             if (hasBonus.attack) desc += `\n+${hasBonus.attack} Saldırı`;
@@ -410,12 +409,8 @@ export class UIScene extends Phaser.Scene {
     this._add(this.add.text(charX, barY + 84, `ATK: ${ps.getAttack()}   DEF: ${ps.getDefense()}`, {
       fontSize: '12px', fontFamily: 'Arial, sans-serif', color: '#ccc', fontStyle: 'bold'
     }).setOrigin(0.5).setDepth(402));
-    const wName = ps.equipped.weapon?.name || 'Yumruk';
-    this._add(this.add.text(charX, barY + 102, `Silah: ${wName}`, {
-      fontSize: '11px', fontFamily: 'Arial, sans-serif', color: '#aaa'
-    }).setOrigin(0.5).setDepth(402));
     // Gold prominently displayed
-    this._add(this.add.text(charX, barY + 120, `Altın: ${formatGold(ps.gold)}`, {
+    this._add(this.add.text(charX, barY + 102, `Altın: ${formatGold(ps.gold)}`, {
       fontSize: '14px', fontFamily: 'Arial, sans-serif', color: '#FFD700', fontStyle: 'bold'
     }).setOrigin(0.5).setDepth(402));
 
@@ -652,7 +647,6 @@ export class UIScene extends Phaser.Scene {
         if (item.maxHp) desc += `\nMax HP: +${item.maxHp}`;
         if (item.maxMana) desc += `\nMax Mana: +${item.maxMana}`;
         if (item.manaCost) desc += `\nMana maliyeti: ${item.manaCost}`;
-        if (item.weaponType) desc += `\nTip: ${item.weaponType}`;
         // Enhanced bonus bilgisi
         if (stack.enhanced) {
           const bonuses = ps.getItemBonuses(stack.entry);
