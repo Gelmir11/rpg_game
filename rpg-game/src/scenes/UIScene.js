@@ -348,8 +348,11 @@ export class UIScene extends Phaser.Scene {
         }
         const eqIcon = this._add(this.add.image(es.x, es.y, `icon_${eq.id}`).setDepth(403).setScale(0.55).setInteractive({ useHandCursor: true }));
 
-        // Left click: unequip to inventory
-        eqIcon.on('pointerdown', () => { ps.unequip(es.slot); this.closeInventory(); this.openInventory(); });
+        // Right click: unequip to inventory
+        eqIcon.on('pointerdown', (pointer) => {
+          if (!pointer.rightButtonDown()) return;
+          ps.unequip(es.slot); this.closeInventory(); this.openInventory();
+        });
 
         // Hover: show name + full description in tooltip
         let eqHover = null;
@@ -680,9 +683,9 @@ export class UIScene extends Phaser.Scene {
         tooltipText.setText(''); tooltipText.setColor('#777');
       });
 
-      // Left click: equip or use
+      // Right click: equip or use
       icon.on('pointerdown', (pointer) => {
-        if (pointer.rightButtonDown()) return; // ignore right click here
+        if (!pointer.rightButtonDown()) return;
         if (item.type === 'weapon' || item.type === 'armor' || item.type === 'accessory') {
           ps.equip(item, null, stack.entry);
           this.closeInventory();
@@ -702,11 +705,10 @@ export class UIScene extends Phaser.Scene {
         }
       });
 
-      // Right click: drop item on ground
+      // Middle click: drop item on ground
       icon.on('pointerdown', (pointer) => {
-        if (!pointer.rightButtonDown()) return;
+        if (pointer.button !== 1) return; // middle button = 1
         ps.removeItem(stack.itemId);
-        // Drop in overworld
         const gameScene = this.scene.get('OverworldScene');
         if (gameScene && gameScene.player) {
           const dx = gameScene.player.x + Phaser.Math.Between(-40, 40);
