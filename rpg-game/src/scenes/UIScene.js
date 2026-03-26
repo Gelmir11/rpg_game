@@ -422,12 +422,38 @@ export class UIScene extends Phaser.Scene {
     const rightX = 540; // center of right panel
     this._add(this.add.rectangle(rightX, 310, 400, 480, 0x0a0a1a, 0.5).setDepth(400).setStrokeStyle(1, 0x3a3a5a));
 
-    // Tooltip at top of right panel
-    const tipX = rightX, tipY = 510;
-    const tooltipBg = this._add(this.add.rectangle(tipX, tipY, 380, 80, 0x15153a, 0.9).setDepth(401).setStrokeStyle(1, 0x3a3a5a));
-    const tooltipText = this._add(this.add.text(tipX, tipY, 'Item bilgisi için üzerine gel', {
-      fontSize: '12px', fontFamily: 'Arial, sans-serif', color: '#777',
-      align: 'center', wordWrap: { width: 360 }
+    // Bottom info area split into two panels
+    const tipY = 510;
+    const halfW = 186;
+    const tipLeftX = rightX - halfW / 2 - 2;  // left panel center
+    const tipRightX = rightX + halfW / 2 + 2;  // right panel center
+
+    // Left: Weapon info (always visible)
+    this._add(this.add.rectangle(tipLeftX, tipY, halfW, 80, 0x15153a, 0.9).setDepth(401).setStrokeStyle(1, 0x3a3a5a));
+    const wpn = ps.equipped.weapon;
+    let weaponDesc = 'Silah yok';
+    if (wpn) {
+      const wpnItem = ITEMS[wpn.id] || wpn;
+      const tipLabel = { sword: 'Kılıç', bow: 'Yay', staff: 'Asa' };
+      weaponDesc = `⚔ ${wpnItem.name}`;
+      weaponDesc += `\nTip: ${tipLabel[wpnItem.weaponType] || wpnItem.weaponType}`;
+      weaponDesc += `\nSaldırı: +${wpnItem.attack}`;
+      if (wpnItem.manaCost) weaponDesc += `\nMana: ${wpnItem.manaCost}/atış`;
+      if (wpn._bonuses) {
+        if (wpn._bonuses.attack) weaponDesc += `\n✦ +${wpn._bonuses.attack} Saldırı`;
+        if (wpn._bonuses.maxMana) weaponDesc += `\n✦ +${wpn._bonuses.maxMana} Mana`;
+      }
+    }
+    this._add(this.add.text(tipLeftX, tipY, weaponDesc, {
+      fontSize: '11px', fontFamily: 'Arial, sans-serif', color: '#c0a0e0',
+      align: 'center', wordWrap: { width: halfW - 16 }
+    }).setOrigin(0.5).setDepth(402));
+
+    // Right: Item info (hover tooltip)
+    this._add(this.add.rectangle(tipRightX, tipY, halfW, 80, 0x15153a, 0.9).setDepth(401).setStrokeStyle(1, 0x3a3a5a));
+    const tooltipText = this._add(this.add.text(tipRightX, tipY, 'Item bilgisi için\nüzerine gel', {
+      fontSize: '11px', fontFamily: 'Arial, sans-serif', color: '#777',
+      align: 'center', wordWrap: { width: halfW - 16 }
     }).setOrigin(0.5).setDepth(402));
 
     // Inventory grid - 10x10 = 100 slots, ortalı
