@@ -66,7 +66,7 @@ export class CombatUtils {
       }
 
       // Monster çarpışma
-      const children = monsterGroup.getChildren ? monsterGroup.getChildren() : [];
+      const children = Array.isArray(monsterGroup) ? monsterGroup : (monsterGroup.getChildren ? monsterGroup.getChildren() : []);
       let hit = false;
       for (const monster of children) {
         if (!monster.monsterData || monster.monsterData.isDead) continue;
@@ -148,7 +148,7 @@ export class CombatUtils {
    */
   updateMonsterEffects(monsterGroup) {
     const now = Date.now();
-    const children = monsterGroup.getChildren ? monsterGroup.getChildren() : [];
+    const children = Array.isArray(monsterGroup) ? monsterGroup : (monsterGroup.getChildren ? monsterGroup.getChildren() : []);
 
     children.forEach(monster => {
       if (!monster.monsterData || monster.monsterData.isDead) return;
