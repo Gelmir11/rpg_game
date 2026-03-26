@@ -62,8 +62,8 @@ export const ITEMS = {
   dragon_belt: { id: 'dragon_belt', name: 'Ejder Kemeri', desc: 'Ejder pullu kemer. Max HP +35.', type: 'accessory', maxHp: 35, equipSlot: 'belt', value: 440, level: 8, color: '#8B0000', gridW: 2, gridH: 1 },
 
   // Küpeler — gridW:1, gridH:1 (1 kutu)
-  ring_strength: { id: 'ring_strength', name: 'Güç Yüzüğü', desc: 'Saldırı gücünü +3 artırır.', type: 'accessory', attack: 3, value: 75, level: 3, color: '#FFD700', gridW: 1, gridH: 1 },
-  ring_defense: { id: 'ring_defense', name: 'Koruma Yüzüğü', desc: 'Savunmayı +3 artırır.', type: 'accessory', defense: 3, value: 75, level: 3, color: '#4682B4', gridW: 1, gridH: 1 },
+  ring_strength: { id: 'ring_strength', name: 'Güç Küpesi', desc: 'Saldırı gücünü +3 artırır.', type: 'accessory', attack: 3, value: 75, level: 3, color: '#FFD700', gridW: 1, gridH: 1 },
+  ring_defense: { id: 'ring_defense', name: 'Koruma Küpesi', desc: 'Savunmayı +3 artırır.', type: 'accessory', defense: 3, value: 75, level: 3, color: '#4682B4', gridW: 1, gridH: 1 },
   // Kolye — gridW:2, gridH:2 (4 kutu)
   amulet_hp: { id: 'amulet_hp', name: 'Can Kolyesi', desc: 'Maksimum HP\'yi +20 artırır.', type: 'accessory', maxHp: 20, value: 100, level: 4, color: '#DC143C', gridW: 2, gridH: 2 },
 
@@ -81,7 +81,7 @@ export const ITEMS = {
   mythril_pants: { id: 'mythril_pants', name: 'Mithril Pantolon', desc: 'Mithril zırh pantolon. Savunma +25.', type: 'accessory', defense: 25, equipSlot: 'legs', value: 2400, level: 40, color: '#7EC8E3', gridW: 2, gridH: 2 },
   mythril_gloves: { id: 'mythril_gloves', name: 'Mithril Eldiven', desc: 'Mithril eldiven. Saldırı +15.', type: 'accessory', attack: 15, equipSlot: 'arms', value: 2300, level: 40, color: '#7EC8E3', gridW: 2, gridH: 2 },
   mythril_belt: { id: 'mythril_belt', name: 'Mithril Kemer', desc: 'Mithril kemer. Max HP +80.', type: 'accessory', maxHp: 80, equipSlot: 'belt', value: 2000, level: 40, color: '#7EC8E3', gridW: 2, gridH: 1 },
-  maze_ring: { id: 'maze_ring', name: 'Labirent Yüzüğü', desc: 'Labirentin gücünü taşıyan yüzük. ATK+10 DEF+10.', type: 'accessory', attack: 10, defense: 10, value: 2800, level: 45, color: '#9370DB', gridW: 1, gridH: 1 },
+  maze_ring: { id: 'maze_ring', name: 'Labirent Küpesi', desc: 'Labirentin gücünü taşıyan küpe. ATK+10 DEF+10.', type: 'accessory', attack: 10, defense: 10, value: 2800, level: 45, color: '#9370DB', gridW: 1, gridH: 1 },
   maze_amulet: { id: 'maze_amulet', name: 'Labirent Kolyesi', desc: 'Kadim labirent kolyesi. HP+60 Mana+30.', type: 'accessory', maxHp: 60, maxMana: 30, value: 3200, level: 45, color: '#9370DB', gridW: 2, gridH: 2 },
   // İksirler (Labirent tier)
   mega_health_potion: { id: 'mega_health_potion', name: 'Dev Can İksiri', desc: 'Çok güçlü can iksiri. 300 HP yeniler.', type: 'consumable', heal: 300, value: 80, level: 40, color: '#FF0066', gridW: 1, gridH: 1 },
@@ -103,7 +103,7 @@ export const ITEMS = {
   abyssal_pants: { id: 'abyssal_pants', name: 'Uçurum Pantolonu', desc: 'Uçurum zırh pantolon. Savunma +50.', type: 'accessory', defense: 50, equipSlot: 'legs', value: 5800, level: 60, color: '#4A0028', gridW: 2, gridH: 2 },
   abyssal_gloves: { id: 'abyssal_gloves', name: 'Uçurum Eldiveni', desc: 'Uçurum eldiven. Saldırı +30.', type: 'accessory', attack: 30, equipSlot: 'arms', value: 5500, level: 60, color: '#4A0028', gridW: 2, gridH: 2 },
   abyssal_belt: { id: 'abyssal_belt', name: 'Uçurum Kemeri', desc: 'Uçurum kemeri. Max HP +150.', type: 'accessory', maxHp: 150, equipSlot: 'belt', value: 5000, level: 60, color: '#4A0028', gridW: 2, gridH: 1 },
-  dark_ring: { id: 'dark_ring', name: 'Karanlık Yüzük', desc: 'Karanlık güçle dolu yüzük. ATK+20 DEF+20.', type: 'accessory', attack: 20, defense: 20, value: 7000, level: 65, color: '#2A0A3A', gridW: 1, gridH: 1 },
+  dark_ring: { id: 'dark_ring', name: 'Karanlık Küpe', desc: 'Karanlık güçle dolu küpe. ATK+20 DEF+20.', type: 'accessory', attack: 20, defense: 20, value: 7000, level: 65, color: '#2A0A3A', gridW: 1, gridH: 1 },
   dark_amulet: { id: 'dark_amulet', name: 'Karanlık Kolye', desc: 'Derin karanlık kolyesi. HP+120 Mana+60.', type: 'accessory', maxHp: 120, maxMana: 60, value: 8000, level: 65, color: '#2A0A3A', gridW: 2, gridH: 2 },
   // Malzeme
   abyssal_shard: { id: 'abyssal_shard', name: 'Uçurum Parçası', desc: 'Derinliklerden gelen karanlık parça.', type: 'material', value: 500, level: 60, color: '#4A0028', gridW: 1, gridH: 1 },
@@ -122,7 +122,7 @@ export const ITEMS = {
   duskhollow_pants: { id: 'duskhollow_pants', name: 'Alacakaranlık Pantolonu', desc: 'Efsanevi pantolon. Savunma +90.', type: 'accessory', defense: 90, equipSlot: 'legs', value: 17000, level: 75, color: '#6A0DAD', gridW: 2, gridH: 2 },
   duskhollow_gloves: { id: 'duskhollow_gloves', name: 'Alacakaranlık Eldiveni', desc: 'Efsanevi eldiven. Saldırı +50.', type: 'accessory', attack: 50, equipSlot: 'arms', value: 16000, level: 75, color: '#6A0DAD', gridW: 2, gridH: 2 },
   duskhollow_belt: { id: 'duskhollow_belt', name: 'Alacakaranlık Kemeri', desc: 'Efsanevi kemer. Max HP +250.', type: 'accessory', maxHp: 250, equipSlot: 'belt', value: 15000, level: 75, color: '#6A0DAD', gridW: 2, gridH: 1 },
-  duskhollow_ring: { id: 'duskhollow_ring', name: 'Alacakaranlık Yüzüğü', desc: 'Efsanevi yüzük. ATK+35 DEF+35.', type: 'accessory', attack: 35, defense: 35, value: 20000, level: 78, color: '#6A0DAD', gridW: 1, gridH: 1 },
+  duskhollow_ring: { id: 'duskhollow_ring', name: 'Alacakaranlık Küpesi', desc: 'Efsanevi küpe. ATK+35 DEF+35.', type: 'accessory', attack: 35, defense: 35, value: 20000, level: 78, color: '#6A0DAD', gridW: 1, gridH: 1 },
   duskhollow_amulet: { id: 'duskhollow_amulet', name: 'Alacakaranlık Kolyesi', desc: 'Efsanevi kolye. HP+200 Mana+100.', type: 'accessory', maxHp: 200, maxMana: 100, value: 22000, level: 78, color: '#6A0DAD', gridW: 2, gridH: 2 },
   // Malzeme
   duskhollow_essence: { id: 'duskhollow_essence', name: 'Alacakaranlık Özü', desc: 'Alacakaranlığın saf özü. Efsanevi malzeme.', type: 'material', value: 2000, level: 75, color: '#6A0DAD', gridW: 1, gridH: 1 },

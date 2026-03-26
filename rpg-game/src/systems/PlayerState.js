@@ -309,7 +309,7 @@ export class PlayerState {
       bonuses.maxHp = Math.floor(Math.random() * 10) + 5;
       if (Math.random() < 0.3) bonuses.defense = Math.floor(Math.random() * 3) + 1;
     }
-    // Yüzük: bonus attack/defense + bazen maxMana
+    // Küpe: bonus attack/defense + bazen maxMana
     else if (baseItemId.includes('ring')) {
       bonuses.attack = Math.floor(Math.random() * 3) + 1;
       bonuses.defense = Math.floor(Math.random() * 3) + 1;
