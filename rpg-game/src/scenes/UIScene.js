@@ -426,17 +426,17 @@ export class UIScene extends Phaser.Scene {
 
     // Left: Equipment info (hover tooltip for equipped items)
     this._add(this.add.rectangle(tipLeftX, tipY, halfW, 80, 0x15153a, 0.9).setDepth(401).setStrokeStyle(1, 0x3a3a5a));
-    const equipTooltipText = this._add(this.add.text(tipLeftX, tipY, 'Ekipman bilgisi için\nüzerine gel', {
+    const equipTooltipText = this._add(this.add.text(tipLeftX - halfW / 2 + 8, tipY - 32, '', {
       fontSize: '11px', fontFamily: 'Arial, sans-serif', color: '#777',
-      align: 'center', wordWrap: { width: halfW - 16 }
-    }).setOrigin(0.5).setDepth(402));
+      align: 'left', wordWrap: { width: halfW - 16 }
+    }).setOrigin(0, 0).setDepth(402));
 
     // Right: Item info (hover tooltip for inventory items)
     this._add(this.add.rectangle(tipRightX, tipY, halfW, 80, 0x15153a, 0.9).setDepth(401).setStrokeStyle(1, 0x3a3a5a));
-    const tooltipText = this._add(this.add.text(tipRightX, tipY, 'Item bilgisi için\nüzerine gel', {
+    const tooltipText = this._add(this.add.text(tipRightX - halfW / 2 + 8, tipY - 32, '', {
       fontSize: '11px', fontFamily: 'Arial, sans-serif', color: '#777',
-      align: 'center', wordWrap: { width: halfW - 16 }
-    }).setOrigin(0.5).setDepth(402));
+      align: 'left', wordWrap: { width: halfW - 16 }
+    }).setOrigin(0, 0).setDepth(402));
 
     // Inventory grid - 10x10 = 100 slots, ortalı
     const cellSize = 36;

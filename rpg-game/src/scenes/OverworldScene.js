@@ -1176,6 +1176,24 @@ export class OverworldScene extends Phaser.Scene {
 
       const cooldown = wType === 'sword' ? 500 : wType === 'bow' ? 700 : 900;
       this.attackCooldown = time + cooldown;
+    } else {
+      // No monster found — attack nearest resource (tree/rock/bush)
+      let closestRes = null;
+      let closestResDist = Math.min(attackRange, 120);
+      this.resourceObjects.forEach(r => {
+        if (!r || !r.active || !r.visible) return;
+        const dist = Phaser.Math.Distance.Between(this.player.x, this.player.y, r.x, r.y);
+        if (dist < closestResDist) {
+          closestResDist = dist;
+          closestRes = r;
+        }
+      });
+      if (closestRes) {
+        this.attackResource(closestRes);
+        if (this.audio) this.audio.play('sword_swing');
+        const cooldown = wType === 'sword' ? 500 : wType === 'bow' ? 700 : 900;
+        this.attackCooldown = time + cooldown;
+      }
     }
   }
 
@@ -1203,6 +1221,71 @@ export class OverworldScene extends Phaser.Scene {
 
     if (monster.monsterData.currentHp <= 0) {
       this.killMonster(monster);
+    }
+  }
+
+  attackResource(res) {
+    res.hp--;
+
+    // Hit flash
+    res.setTintFill(0xFFFFFF);
+    this.time.delayedCall(100, () => {
+      if (res.active) res.clearTint();
+    });
+
+    // Hit particles
+    this.add.particles(res.x, res.y, 'particle_hit', {
+      speed: { min: 20, max: 40 },
+      lifespan: 300,
+      scale: { start: 0.4, end: 0 },
+      quantity: 2,
+      emitting: false
+    }).explode(2);
+
+    if (res.hp <= 0) {
+      const ps = this.playerState;
+      const rx = res.x, ry = res.y;
+
+      // Drop item
+      const itemId = res.resourceItem;
+      const itemData = ITEMS[itemId];
+      if (itemData && ps.addItem(itemId)) {
+        this.showDamageNumber(rx, ry - 8, `+${itemData.name}`, itemData.color);
+        ps.addGather(itemId);
+        this.checkQuestProgress('gather', itemId);
+      }
+
+      // Small EXP
+      const baseExp = Phaser.Math.Between(2, 5);
+      ps.addExp(baseExp);
+      this.showDamageNumber(rx, ry - 20, `+${Math.floor(baseExp * ps.getExpMultiplier())} EXP`, '#9a6aea');
+
+      // Rare pot drop (1.5%)
+      if (Math.random() < 0.015) {
+        const potId = Math.random() < 0.5 ? 'health_potion' : 'mana_potion';
+        const potData = ITEMS[potId];
+        if (potData && ps.addItem(potId)) {
+          this.showDamageNumber(rx, ry - 44, `+${potData.name}!`, '#FFD700');
+        }
+      }
+
+      // Destroy and respawn
+      const rType = res.resourceType;
+      const rItem = res.resourceItem;
+      const idx = this.resourceObjects.indexOf(res);
+      res.destroy();
+
+      this.time.delayedCall(20000, () => {
+        const texKey = rType === 'tree' ? 'tree' : rType === 'bush' ? 'bush' : 'rock';
+        const newRes = this.add.image(rx + Phaser.Math.Between(-20, 20), ry + Phaser.Math.Between(-20, 20), texKey);
+        newRes.setDepth(newRes.y);
+        newRes.resourceType = rType;
+        newRes.resourceItem = rItem;
+        newRes.hp = rType === 'tree' ? 3 : rType === 'rock' ? 2 : 1;
+        newRes.maxHp = newRes.hp;
+        if (idx >= 0) this.resourceObjects[idx] = newRes;
+        else this.resourceObjects.push(newRes);
+      });
     }
   }
 
