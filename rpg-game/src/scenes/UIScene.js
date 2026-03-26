@@ -286,7 +286,7 @@ export class UIScene extends Phaser.Scene {
     this._add(this.add.text(400, 30, 'KARAKTER & ENVANTER', { fontSize: '18px', fontFamily: 'Arial, sans-serif', color: '#c0a0e0', fontStyle: 'bold' }).setOrigin(0.5).setDepth(402));
 
     // ===== LEFT PANEL: Character =====
-    const charX = 160, charY = 210;
+    const charX = 160, charY = 240;
 
     // Character panel bg
     this._add(this.add.rectangle(160, 300, 280, 520, 0x0a0a1a, 0.5).setDepth(400).setStrokeStyle(1, 0x3a3a5a));
