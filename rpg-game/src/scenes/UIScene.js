@@ -392,7 +392,7 @@ export class UIScene extends Phaser.Scene {
     });
 
     // ===== STATS BELOW EQUIPMENT =====
-    const barY = 380;
+    const barY = 410;
     const barW = 140;
     // HP
     this._add(this.add.text(charX - barW/2, barY, `HP`, { fontSize: '11px', fontFamily: 'Arial, sans-serif', color: '#FF6666', fontStyle: 'bold' }).setDepth(402));
