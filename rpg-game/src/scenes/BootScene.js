@@ -482,11 +482,15 @@ export class BootScene extends Phaser.Scene {
       else if (d === 2) { g.fillStyle(c); g.fillRoundedRect(x + 46, y + 30, 10, 18, 2); }
       else { g.fillStyle(c); g.fillRoundedRect(x + 6, y + 30, 10, 18, 2); g.fillRoundedRect(x + 48, y + 30, 10, 18, 2); }
     } else if (slot === 'legs') {
-      // Pants
+      // Pants — extend to fully cover legs and feet
       g.fillStyle(c);
-      g.fillRect(x + 17 + walk, y + 54, 11, 26);
-      g.fillRect(x + 35 - walk, y + 54, 11, 26);
+      g.fillRect(x + 17 + walk, y + 54, 11, 32);
+      g.fillRect(x + 35 - walk, y + 54, 11, 32);
       g.fillRect(x + 16, y + 50, 32, 6);
+      // Shoe/boot cuff at bottom
+      g.fillStyle(cDark);
+      g.fillRect(x + 17 + walk, y + 82, 11, 4);
+      g.fillRect(x + 35 - walk, y + 82, 11, 4);
     } else if (slot === 'head') {
       // Helmet
       g.fillStyle(c); g.fillRoundedRect(x + 15, y + 0, 34, 18, 5);
@@ -731,9 +735,12 @@ export class BootScene extends Phaser.Scene {
       g.fillStyle(cDark); g.fillRect(x + 18, y + 54, 12, 4); g.fillRect(x + 34, y + 54, 12, 4);
     } else if (slot === 'legs') {
       g.fillStyle(c);
-      g.fillRect(x + 19 + walk, y + 54, 9, 26);
-      g.fillRect(x + 36 - walk, y + 54, 9, 26);
+      g.fillRect(x + 19 + walk, y + 54, 9, 32);
+      g.fillRect(x + 36 - walk, y + 54, 9, 32);
       g.fillRect(x + 18, y + 50, 28, 6);
+      g.fillStyle(cDark);
+      g.fillRect(x + 19 + walk, y + 82, 9, 4);
+      g.fillRect(x + 36 - walk, y + 82, 9, 4);
     } else if (slot === 'head') {
       g.fillStyle(c); g.fillRoundedRect(x + 16, y + 0, 32, 16, 6);
       g.fillStyle(cDark); g.fillRect(x + 17, y + 14, 30, 4);
