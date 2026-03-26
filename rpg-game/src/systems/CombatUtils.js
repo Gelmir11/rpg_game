@@ -83,6 +83,11 @@ export class CombatUtils {
           // Hit effect
           this.showHitEffect(monster.x, monster.y, damage);
 
+          // Death check
+          if (monster.monsterData.currentHp <= 0 && this.scene.killMonster) {
+            this.scene.killMonster(monster);
+          }
+
           // AOE
           if (proj._options.aoe && proj._options.aoeRadius) {
             children.forEach(m => {
@@ -93,6 +98,10 @@ export class CombatUtils {
                 m.monsterData.currentHp -= aoeDmg;
                 m.monsterData.aggroed = true;
                 this.showHitEffect(m.x, m.y, aoeDmg);
+                // Death check for AOE targets
+                if (m.monsterData.currentHp <= 0 && this.scene.killMonster) {
+                  this.scene.killMonster(m);
+                }
               }
             });
           }
