@@ -40,6 +40,16 @@ export class BootScene extends Phaser.Scene {
           failedKeys.forEach(key => {
             if (this.textures.exists(key)) this.textures.remove(key);
           });
+          // Also remove textures with zero frames (wrong PNG dimensions)
+          Object.keys(manifest.sprites).forEach(key => {
+            if (failedKeys.has(key)) return;
+            if (!this.textures.exists(key)) return;
+            const tex = this.textures.get(key);
+            // frameTotal includes __BASE, so a valid spritesheet has frameTotal > 1
+            if (tex.frameTotal <= 1 && manifest.sprites[key].frameCount > 1) {
+              this.textures.remove(key);
+            }
+          });
           this.generateAllSprites(); // Procedural fallback for missing PNGs
           this.scene.start('PreloadScene');
         });
@@ -490,21 +500,22 @@ export class BootScene extends Phaser.Scene {
   }
 
   generatePlayerSprite() {
-    if (this.textures.exists('player') && this.textures.exists('player_female')) return;
     const fw = 64, fh = 96;
     const frames = 8;
 
     // Base body (underwear only)
-    const g = this.make.graphics({ x: 0, y: 0, add: false });
-    for (let d = 0; d < 4; d++) {
-      for (let f = 0; f < 2; f++) {
-        this.drawPlayerBase(g, (d * 2 + f) * fw, 0, d, f);
+    if (!this.textures.exists('player')) {
+      const g = this.make.graphics({ x: 0, y: 0, add: false });
+      for (let d = 0; d < 4; d++) {
+        for (let f = 0; f < 2; f++) {
+          this.drawPlayerBase(g, (d * 2 + f) * fw, 0, d, f);
+        }
       }
+      g.generateTexture('player', frames * fw, fh);
+      const tex = this.textures.get('player');
+      for (let i = 0; i < frames; i++) tex.add(i, 0, i * fw, 0, fw, fh);
+      g.destroy();
     }
-    g.generateTexture('player', frames * fw, fh);
-    const tex = this.textures.get('player');
-    for (let i = 0; i < frames; i++) tex.add(i, 0, i * fw, 0, fw, fh);
-    g.destroy();
 
     // Equipment overlay layers — each slot gets its own spritesheet
     const equipLayers = [
@@ -519,6 +530,7 @@ export class BootScene extends Phaser.Scene {
     ];
 
     equipLayers.forEach(layer => {
+      if (this.textures.exists(layer.key)) return;
       const lg = this.make.graphics({ x: 0, y: 0, add: false });
       for (let d = 0; d < 4; d++) {
         for (let f = 0; f < 2; f++) {
@@ -532,19 +544,22 @@ export class BootScene extends Phaser.Scene {
     });
 
     // ===== FEMALE CHARACTER =====
-    const gf = this.make.graphics({ x: 0, y: 0, add: false });
-    for (let d = 0; d < 4; d++) {
-      for (let f = 0; f < 2; f++) {
-        this.drawPlayerBaseFemale(gf, (d * 2 + f) * fw, 0, d, f);
+    if (!this.textures.exists('player_female')) {
+      const gf = this.make.graphics({ x: 0, y: 0, add: false });
+      for (let d = 0; d < 4; d++) {
+        for (let f = 0; f < 2; f++) {
+          this.drawPlayerBaseFemale(gf, (d * 2 + f) * fw, 0, d, f);
+        }
       }
+      gf.generateTexture('player_female', frames * fw, fh);
+      const texF = this.textures.get('player_female');
+      for (let i = 0; i < frames; i++) texF.add(i, 0, i * fw, 0, fw, fh);
+      gf.destroy();
     }
-    gf.generateTexture('player_female', frames * fw, fh);
-    const texF = this.textures.get('player_female');
-    for (let i = 0; i < frames; i++) texF.add(i, 0, i * fw, 0, fw, fh);
-    gf.destroy();
 
     // Female equipment overlays
     equipLayers.forEach(layer => {
+      if (this.textures.exists(layer.key + '_f')) return;
       const lg = this.make.graphics({ x: 0, y: 0, add: false });
       for (let d = 0; d < 4; d++) {
         for (let f = 0; f < 2; f++) {
