@@ -135,7 +135,7 @@ export class BootScene extends Phaser.Scene {
     const g = this.make.graphics({ x: 0, y: 0, add: false });
 
     // Row base colors used for extrusion fill
-    const rowBase = [0x1a3a1a, 0x3e2a1a, 0x555555, 0x0a1840, 0x222222, 0x6a4a2a, 0x0a0a1a, 0x020202];
+    const rowBase = [0x2a5a2a, 0x3e2a1a, 0x555555, 0x0a1840, 0x222222, 0x6a4a2a, 0x0a0a1a, 0x020202];
 
     for (let i = 0; i < cols; i++) {
       const rng = new Phaser.Math.RandomDataGenerator([`g${i}`]);
@@ -145,33 +145,51 @@ export class BootScene extends Phaser.Scene {
         g.fillStyle(rowBase[r]); g.fillRect(i * S, r * S, S, S);
       }
 
-      // ========== Row 0: Twilight Grass ==========
+      // ========== Row 0: Grass — vivid, varied, natural ==========
       const x = i * S + M, y = 0 * S + M;
-      this.grad(g, x, y, T, T, 0x2e522e, 0x1a3a1a);
-      for (let j = 0; j < 20; j++) {
-        g.fillStyle(rng.pick([0x244824, 0x1e3e1e, 0x2a4a2a]), 0.5);
-        g.fillRect(x + rng.between(0, T - 3), y + rng.between(0, T - 3), rng.between(3, 7), rng.between(3, 5));
+      // Brighter base gradient with per-tile variation
+      const baseLight = [0x3e7a3e, 0x3a6e3a, 0x408040, 0x367036, 0x3c7a3c, 0x387438, 0x3a6e3a, 0x347034][i];
+      const baseDark = [0x2a5a2a, 0x285428, 0x2c5e2c, 0x265226, 0x2a5a2a, 0x285628, 0x265226, 0x2a582a][i];
+      this.grad(g, x, y, T, T, baseLight, baseDark);
+      // Natural ground patches — earthy spots for variation
+      for (let j = 0; j < 12; j++) {
+        g.fillStyle(rng.pick([0x306030, 0x2a5228, 0x346834, 0x2e5a30]), 0.4);
+        g.fillRect(x + rng.between(0, T - 5), y + rng.between(0, T - 5), rng.between(4, 10), rng.between(3, 7));
       }
-      for (let j = 0; j < 40; j++) {
+      // Light dappled sunlight patches
+      for (let j = 0; j < 3; j++) {
+        g.fillStyle(rng.pick([0x4a8a4a, 0x509050, 0x48864a]), 0.2);
+        g.fillCircle(x + rng.between(12, 52), y + rng.between(12, 52), rng.between(6, 14));
+      }
+      // Grass blades — varied heights, more vivid greens
+      for (let j = 0; j < 35; j++) {
         const gx = x + rng.between(1, T - 2);
-        const gy = y + rng.between(8, T - 2);
-        const gh = rng.between(5, 12);
-        const shade = rng.pick([0x3a6a3a, 0x4a7a4a, 0x5a8a5a, 0x3a5a2a, 0x2a5a3a]);
-        g.fillStyle(shade, 0.8); g.fillRect(gx, gy - gh, 1, gh);
-        g.fillStyle(shade, 0.4); g.fillRect(gx + 1, gy - gh + 1, 1, gh - 2);
+        const gy = y + rng.between(10, T - 2);
+        const gh = rng.between(4, 10);
+        const shade = rng.pick([0x4a8a4a, 0x58985a, 0x68a868, 0x4a7a3a, 0x3a7a4a, 0x509850]);
+        g.fillStyle(shade, 0.75); g.fillRect(gx, gy - gh, 1, gh);
+        if (rng.frac() > 0.5) { g.fillStyle(shade, 0.35); g.fillRect(gx + 1, gy - gh + 1, 1, gh - 2); }
       }
-      if (i >= 4) { g.fillStyle(0x2a1a40, 0.18); g.fillRect(x, y, T, T); }
+      // Subtle twilight tint on darker variants (reduced intensity)
+      if (i >= 5) { g.fillStyle(0x1a1030, 0.1); g.fillRect(x, y, T, T); }
+      // Wildflowers on some tiles
       if (i === 1 || i === 5) {
-        g.fillStyle(0xDA70D6); g.fillCircle(x + 14, y + 26, 3); g.fillStyle(0xFFD700, 0.8); g.fillCircle(x + 14, y + 26, 1);
-        g.fillStyle(0x9370DB); g.fillCircle(x + 48, y + 42, 2.5); g.fillStyle(0xFFD700, 0.8); g.fillCircle(x + 48, y + 42, 1);
-        g.fillStyle(0xFF69B4); g.fillCircle(x + 32, y + 54, 2); g.fillStyle(0xFFFFFF, 0.7); g.fillCircle(x + 32, y + 54, 0.8);
+        g.fillStyle(0xE88AE8); g.fillCircle(x + 14, y + 28, 2.5); g.fillStyle(0xFFE060, 0.9); g.fillCircle(x + 14, y + 28, 1);
+        g.fillStyle(0xAA80DD); g.fillCircle(x + 48, y + 44, 2); g.fillStyle(0xFFE060, 0.8); g.fillCircle(x + 48, y + 44, 0.8);
+        g.fillStyle(0xFF8CAA); g.fillCircle(x + 32, y + 18, 2); g.fillStyle(0xFFFFFF, 0.6); g.fillCircle(x + 32, y + 18, 0.8);
+      }
+      // Small clover / ground detail on other tiles
+      if (i === 2 || i === 6) {
+        for (let c = 0; c < 3; c++) {
+          const cx2 = x + rng.between(8, 56), cy2 = y + rng.between(8, 56);
+          g.fillStyle(0x3a8a3a, 0.5); g.fillCircle(cx2, cy2, 2); g.fillCircle(cx2 + 2, cy2 - 1, 2); g.fillCircle(cx2 + 1, cy2 + 2, 2);
+        }
       }
       if (i === 3 || i === 7) {
-        g.fillStyle(0xD2B48C); g.fillRect(x + 20, y + 40, 2, 6);
-        g.fillStyle(0xCC3333); g.fillEllipse(x + 21, y + 39, 8, 5);
-        g.fillStyle(0xFFFFFF, 0.7); g.fillCircle(x + 19, y + 38, 1); g.fillCircle(x + 23, y + 39, 0.8);
+        // Small pebbles
+        g.fillStyle(0x7a7a6a, 0.4); g.fillCircle(x + 20, y + 42, 2); g.fillCircle(x + 44, y + 28, 1.5);
+        g.fillStyle(0x8a8a7a, 0.3); g.fillCircle(x + 36, y + 52, 2.5);
       }
-      g.fillStyle(0x5a9a5a, 0.12); g.fillCircle(x + rng.between(10, 54), y + rng.between(10, 54), rng.between(6, 12));
 
       // ========== Row 1: Dirt ==========
       const y1 = 1 * S + M;
@@ -991,114 +1009,134 @@ export class BootScene extends Phaser.Scene {
           }
 
         } else if (m.key === 'drake') {
-          // === EJDER YAVRUSU (96x88) - Mini ejder ===
+          // === EJDER YAVRUSU (96x88) - Yatay 4 ayaklı mini ejder ===
           const W = m.w, H = m.h;
-          g.fillStyle(0x000000, 0.3); g.fillEllipse(x + W/2, y + H - 6, W - 24, 12);
-          // Kuyruk
-          g.fillStyle(0x991100); g.fillTriangle(x + 6, y + H - 16, x + 22, y + H - 28, x + 16, y + H - 8);
-          // Bacaklar
-          g.fillStyle(0x991100);
-          g.fillRect(x + 24 + b, y + 60, 12, 20); g.fillRect(x + 58 - b, y + 60, 12, 20);
+          // Gölge
+          g.fillStyle(0x000000, 0.25); g.fillEllipse(x + W/2, y + H - 6, W - 20, 10);
+          // Kuyruk (sola uzanan, sivri)
+          g.fillStyle(0xBB3300); g.fillTriangle(x + 2, y + 52, x + 22, y + 44, x + 20, y + 58);
+          g.fillStyle(0x991100); g.fillTriangle(x + 0, y + 50, x + 14, y + 46, x + 12, y + 56);
+          // Kuyruk dikeni
+          g.fillStyle(0x660000); g.fillTriangle(x + 0, y + 48, x + 6, y + 42, x + 6, y + 54);
+          // 4 Bacak (kısa, sürüngen tarzı)
+          g.fillStyle(0xAA2800);
+          g.fillRect(x + 24 + b, y + 62, 8, 16); g.fillRect(x + 38 + b, y + 62, 8, 16);
+          g.fillRect(x + 56 - b, y + 62, 8, 16); g.fillRect(x + 70 - b, y + 62, 8, 16);
+          // Pençeler
           g.fillStyle(0x660000);
-          g.fillTriangle(x + 22 + b, y + 76, x + 30 + b, y + 74, x + 30 + b, y + 82);
-          g.fillTriangle(x + 62 - b, y + 74, x + 72 - b, y + 76, x + 62 - b, y + 82);
-          // Gövde
-          this.grad(g, x + 18, y + 28, 60, 36, 0xCC3300, 0x991100);
-          g.fillStyle(0xDD6644, 0.4); g.fillEllipse(x + W/2, y + 52, 36, 16);
+          g.fillTriangle(x + 22 + b, y + 76, x + 28 + b, y + 74, x + 34 + b, y + 78);
+          g.fillTriangle(x + 36 + b, y + 76, x + 42 + b, y + 74, x + 48 + b, y + 78);
+          g.fillTriangle(x + 54 - b, y + 76, x + 60 - b, y + 74, x + 66 - b, y + 78);
+          g.fillTriangle(x + 68 - b, y + 76, x + 74 - b, y + 74, x + 80 - b, y + 78);
+          // Gövde (yatay elips)
+          this.grad(g, x + 16, y + 36, 66, 30, 0xCC3300, 0xAA2200);
+          g.fillStyle(0xDD6644, 0.35); g.fillEllipse(x + W/2 + 2, y + 56, 40, 12);
+          // Karın pulları
+          g.fillStyle(0xDD7755, 0.4);
+          for (let s = 0; s < 4; s++) g.fillRect(x + 28 + s * 12, y + 50, 8, 5);
           // Sırt dikenleri
+          g.fillStyle(0x770000);
+          for (let s = 0; s < 5; s++) g.fillTriangle(x + 22 + s * 11, y + 36, x + 25 + s * 11, y + 28 - b, x + 28 + s * 11, y + 36);
+          // Kanatlar (sırt üstünde, küçük)
+          g.fillStyle(0xCC3300, 0.7);
+          g.fillTriangle(x + 32, y + 36, x + 26, y + 16, x + 44, y + 34);
+          g.fillTriangle(x + 52, y + 36, x + 68, y + 16, x + 60, y + 34);
+          g.fillStyle(0xDD5544, 0.25);
+          g.fillTriangle(x + 34, y + 34, x + 28, y + 20, x + 42, y + 32);
+          g.fillTriangle(x + 54, y + 34, x + 66, y + 20, x + 58, y + 32);
+          // Boyun (yatay, sağa uzanan)
+          g.fillStyle(0xCC3300);
+          g.fillRect(x + 68, y + 36, 14, 14);
+          // Baş (sağa bakan, sivri burun)
+          g.fillStyle(0xCC3300); g.fillRoundedRect(x + 72, y + 28, 22, 18, 4);
+          g.fillStyle(0xBB2800); g.fillTriangle(x + 90, y + 32, x + 96, y + 38, x + 90, y + 42);
+          // Boynuzlar
           g.fillStyle(0x660000);
-          for (let s = 0; s < 4; s++) g.fillTriangle(x + 28 + s * 10, y + 28, x + 32 + s * 10, y + 20 - b, x + 36 + s * 10, y + 28);
-          // Kanatlar
-          g.fillStyle(0xCC3300, 0.75);
-          g.fillTriangle(x + 4, y + 28, x + 22, y + 14, x + 26, y + 50);
-          g.fillTriangle(x + 70, y + 14, x + 92, y + 28, x + 68, y + 50);
-          g.fillStyle(0xDD5544, 0.3);
-          g.fillTriangle(x + 8, y + 26, x + 22, y + 18, x + 24, y + 44);
-          g.fillTriangle(x + 72, y + 18, x + 88, y + 26, x + 70, y + 44);
-          // Boyun + Baş
-          g.fillStyle(0xCC3300); g.fillRect(x + 32, y + 16, 20, 14);
-          g.fillStyle(0xCC3300); g.fillRoundedRect(x + 28, y + 2, 36, 20, 5);
-          // Boynuzlar (küçük)
-          g.fillStyle(0x660000);
-          g.fillTriangle(x + 28, y + 6, x + 22, y - 4, x + 34, y + 6);
-          g.fillTriangle(x + 58, y + 6, x + 70, y - 4, x + 64, y + 6);
+          g.fillTriangle(x + 74, y + 28, x + 72, y + 20, x + 78, y + 28);
+          g.fillTriangle(x + 84, y + 28, x + 86, y + 20, x + 88, y + 28);
           // Gözler
-          g.fillStyle(0x1a0000); g.fillRect(x + 34, y + 8, 8, 6); g.fillRect(x + 52, y + 8, 8, 6);
-          g.fillStyle(0xFFFF00); g.fillRect(x + 35, y + 9, 6, 4); g.fillRect(x + 53, y + 9, 6, 4);
-          g.fillStyle(0xFF0000); g.fillCircle(x + 38, y + 11, 1.5); g.fillCircle(x + 56, y + 11, 1.5);
-          // Ateş
+          g.fillStyle(0xFFFF00); g.fillRect(x + 80, y + 33, 5, 4);
+          g.fillStyle(0xFF0000); g.fillCircle(x + 83, y + 35, 1.5);
+          // Burun delikleri
+          g.fillStyle(0x550000); g.fillCircle(x + 92, y + 36, 1); g.fillCircle(x + 92, y + 40, 1);
+          // Ateş nefesi
           if (f === 1) {
-            g.fillStyle(0xFF4500, 0.6); g.fillTriangle(x + 62, y + 8, x + 82, y + 12, x + 62, y + 16);
-            g.fillStyle(0xFFD700, 0.4); g.fillTriangle(x + 64, y + 10, x + 76, y + 12, x + 64, y + 14);
+            g.fillStyle(0xFF4500, 0.6); g.fillTriangle(x + 94, y + 34, x + 96, y + 42, x + 86, y + 38);
+            g.fillStyle(0xFFD700, 0.4); g.fillTriangle(x + 92, y + 36, x + 94, y + 40, x + 88, y + 38);
           }
 
         } else if (m.key === 'drake_mother') {
-          // === EJDER ANASI (120x112) - Büyük kırmızı ejder, altın taçlı ===
+          // === EJDER ANASI (120x112) - Yatay 4 ayaklı büyük ejder, altın taçlı ===
           const W = m.w, H = m.h;
-          g.fillStyle(0x000000, 0.45); g.fillEllipse(x + W/2, y + H - 8, W - 28, 14);
-          // Kuyruk (uzun, dikenli)
-          g.fillStyle(0x770000);
-          g.fillTriangle(x + 4, y + H - 18, x + 26, y + H - 34, x + 16, y + H - 8);
-          g.fillStyle(0x550000); g.fillTriangle(x + 2, y + H - 20, x + 8, y + H - 28, x + 12, y + H - 14);
-          g.fillTriangle(x + 10, y + H - 24, x + 16, y + H - 32, x + 18, y + H - 18);
-          // Bacaklar
-          g.fillStyle(0x770000);
-          g.fillRect(x + 32 + b, y + 78, 16, 24); g.fillRect(x + 72 - b, y + 78, 16, 24);
+          // Gölge
+          g.fillStyle(0x000000, 0.35); g.fillEllipse(x + W/2, y + H - 8, W - 20, 14);
+          // Kuyruk (sola uzanan, dikenli)
+          g.fillStyle(0x880000); g.fillTriangle(x + 2, y + 66, x + 28, y + 54, x + 24, y + 76);
+          g.fillStyle(0x660000); g.fillTriangle(x + 0, y + 64, x + 16, y + 56, x + 14, y + 74);
+          // Kuyruk dikenleri
           g.fillStyle(0x550000);
-          g.fillTriangle(x + 30 + b, y + 98, x + 38 + b, y + 94, x + 38 + b, y + 106);
-          g.fillTriangle(x + 44 + b, y + 98, x + 50 + b, y + 94, x + 50 + b, y + 106);
-          g.fillTriangle(x + 70 - b, y + 98, x + 78 - b, y + 94, x + 78 - b, y + 106);
-          g.fillTriangle(x + 82 - b, y + 98, x + 90 - b, y + 94, x + 90 - b, y + 106);
-          // Gövde
-          this.grad(g, x + 22, y + 34, 76, 48, 0xAA0000, 0x770000);
-          g.fillStyle(0xCC5544, 0.45); g.fillEllipse(x + W/2, y + 66, 48, 20);
+          g.fillTriangle(x + 0, y + 60, x + 6, y + 52, x + 8, y + 68);
+          g.fillTriangle(x + 10, y + 58, x + 16, y + 50, x + 18, y + 66);
+          // 4 Bacak (güçlü, sürüngen tarzı)
+          g.fillStyle(0x880000);
+          g.fillRect(x + 28 + b, y + 80, 12, 22); g.fillRect(x + 46 + b, y + 80, 12, 22);
+          g.fillRect(x + 68 - b, y + 80, 12, 22); g.fillRect(x + 86 - b, y + 80, 12, 22);
+          // Pençeler (büyük)
+          g.fillStyle(0x550000);
+          g.fillTriangle(x + 24 + b, y + 98, x + 34 + b, y + 96, x + 42 + b, y + 102);
+          g.fillTriangle(x + 42 + b, y + 98, x + 52 + b, y + 96, x + 60 + b, y + 102);
+          g.fillTriangle(x + 64 - b, y + 98, x + 74 - b, y + 96, x + 82 - b, y + 102);
+          g.fillTriangle(x + 82 - b, y + 98, x + 92 - b, y + 96, x + 100 - b, y + 102);
+          // Gövde (büyük yatay elips)
+          this.grad(g, x + 18, y + 44, 88, 40, 0xAA0000, 0x770000);
+          g.fillStyle(0xCC5544, 0.4); g.fillEllipse(x + W/2 + 4, y + 72, 56, 16);
           // Karın pulları
           g.fillStyle(0xCC6655, 0.4);
-          for (let s = 0; s < 5; s++) g.fillRect(x + 38 + s * 10, y + 54, 8, 7);
+          for (let s = 0; s < 6; s++) g.fillRect(x + 32 + s * 12, y + 64, 10, 6);
           // Sırt dikenleri (büyük)
           g.fillStyle(0x550000);
-          for (let s = 0; s < 6; s++) g.fillTriangle(x + 32 + s * 10, y + 32, x + 36 + s * 10, y + 22 - b * 2, x + 40 + s * 10, y + 32);
-          // Kanatlar (büyük, geniş)
+          for (let s = 0; s < 7; s++) g.fillTriangle(x + 24 + s * 12, y + 42, x + 28 + s * 12, y + 30 - b * 2, x + 32 + s * 12, y + 42);
+          // Kanatlar (büyük, geniş — sırt üstünde)
           g.fillStyle(0xAA0000, 0.85);
-          g.fillTriangle(x + 2, y + 32, x + 28, y + 10, x + 34, y + 60);
-          g.fillTriangle(x + 86, y + 10, x + 118, y + 32, x + 84, y + 60);
+          g.fillTriangle(x + 36, y + 42, x + 20, y + 12, x + 56, y + 40);
+          g.fillTriangle(x + 66, y + 42, x + 96, y + 12, x + 78, y + 40);
           g.fillStyle(0xCC2222, 0.35);
-          g.fillTriangle(x + 6, y + 30, x + 28, y + 14, x + 32, y + 52);
-          g.fillTriangle(x + 88, y + 14, x + 114, y + 30, x + 86, y + 52);
-          g.lineStyle(2, 0x660000, 0.5);
-          g.lineBetween(x + 28, y + 16, x + 10, y + 42);
-          g.lineBetween(x + 28, y + 20, x + 14, y + 48);
-          g.lineBetween(x + 88, y + 16, x + 110, y + 42);
-          g.lineBetween(x + 88, y + 20, x + 106, y + 48);
-          // Boyun
-          g.fillStyle(0xAA0000); g.fillRect(x + 40, y + 18, 26, 18);
-          // Baş (büyük, çeneli)
-          g.fillStyle(0xAA0000); g.fillRoundedRect(x + 32, y + 2, 48, 24, 6);
-          g.fillStyle(0x880000); g.fillRoundedRect(x + 34, y + 4, 44, 20, 5);
-          // Boynuzlar + Altın taç
+          g.fillTriangle(x + 38, y + 40, x + 24, y + 18, x + 52, y + 38);
+          g.fillTriangle(x + 68, y + 40, x + 92, y + 18, x + 76, y + 38);
+          // Kanat damarları
+          g.lineStyle(1.5, 0x660000, 0.4);
+          g.lineBetween(x + 36, y + 34, x + 24, y + 20); g.lineBetween(x + 40, y + 36, x + 28, y + 24);
+          g.lineBetween(x + 78, y + 34, x + 92, y + 20); g.lineBetween(x + 74, y + 36, x + 88, y + 24);
+          // Boyun (yatay, sağa uzanan)
+          g.fillStyle(0xAA0000); g.fillRect(x + 86, y + 44, 18, 18);
+          // Baş (sağa bakan, büyük sivri burun)
+          g.fillStyle(0xAA0000); g.fillRoundedRect(x + 88, y + 32, 28, 24, 5);
+          g.fillStyle(0x880000); g.fillTriangle(x + 112, y + 38, x + 120, y + 44, x + 112, y + 50);
+          // Boynuzlar (büyük)
           g.fillStyle(0x660000);
-          g.fillTriangle(x + 32, y + 6, x + 22, y - 10, x + 38, y + 6);
-          g.fillTriangle(x + 74, y + 6, x + 90, y - 10, x + 80, y + 6);
-          g.fillStyle(0xFFD700); // Taç
-          g.fillRect(x + 36, y + 2, 40, 4);
-          g.fillTriangle(x + 40, y + 2, x + 44, y - 6, x + 48, y + 2);
-          g.fillTriangle(x + 52, y + 2, x + 56, y - 8, x + 60, y + 2);
-          g.fillTriangle(x + 64, y + 2, x + 68, y - 6, x + 72, y + 2);
-          g.fillStyle(0xFF0000); g.fillCircle(x + 56, y - 4, 2);
+          g.fillTriangle(x + 90, y + 32, x + 86, y + 20, x + 96, y + 32);
+          g.fillTriangle(x + 106, y + 32, x + 110, y + 20, x + 112, y + 32);
+          // Altın taç
+          g.fillStyle(0xFFD700);
+          g.fillRect(x + 92, y + 30, 18, 4);
+          g.fillTriangle(x + 94, y + 30, x + 97, y + 24, x + 100, y + 30);
+          g.fillTriangle(x + 102, y + 30, x + 105, y + 22, x + 108, y + 30);
+          g.fillStyle(0xFF0000); g.fillCircle(x + 101, y + 24, 2);
           // Gözler
-          g.fillStyle(0x1a0000); g.fillRect(x + 40, y + 10, 10, 7); g.fillRect(x + 62, y + 10, 10, 7);
-          g.fillStyle(0xFFFF00); g.fillRect(x + 42, y + 11, 7, 5); g.fillRect(x + 64, y + 11, 7, 5);
-          g.fillStyle(0xFF0000); g.fillCircle(x + 45, y + 13, 2); g.fillCircle(x + 67, y + 13, 2);
+          g.fillStyle(0xFFFF00); g.fillRect(x + 100, y + 39, 7, 5);
+          g.fillStyle(0xFF0000); g.fillCircle(x + 104, y + 41, 2);
           // Burun + Ağız
-          g.fillStyle(0x550000); g.fillCircle(x + 48, y + 20, 2); g.fillCircle(x + 64, y + 20, 2);
-          g.fillStyle(0x1a0000); g.fillRect(x + 42, y + 22, 28, 4);
+          g.fillStyle(0x550000); g.fillCircle(x + 116, y + 42, 1.5); g.fillCircle(x + 116, y + 48, 1.5);
+          g.fillStyle(0x1a0000); g.fillRect(x + 110, y + 52, 8, 3);
+          // Dişler
           g.fillStyle(0xFFFFE0);
-          for (let t = 0; t < 4; t++) g.fillTriangle(x + 44 + t * 7, y + 22, x + 47 + t * 7, y + 18, x + 50 + t * 7, y + 22);
-          // Ateş
+          g.fillTriangle(x + 110, y + 52, x + 112, y + 48, x + 114, y + 52);
+          g.fillTriangle(x + 114, y + 52, x + 116, y + 48, x + 118, y + 52);
+          // Ateş nefesi
           if (f === 1) {
-            g.fillStyle(0xFF0000, 0.8); g.fillTriangle(x + 78, y + 10, x + 112, y + 14, x + 78, y + 20);
-            g.fillStyle(0xFF4500, 0.6); g.fillTriangle(x + 80, y + 12, x + 104, y + 14, x + 80, y + 18);
-            g.fillStyle(0xFFD700, 0.4); g.fillTriangle(x + 82, y + 13, x + 96, y + 14, x + 82, y + 17);
+            g.fillStyle(0xFF0000, 0.7); g.fillTriangle(x + 118, y + 40, x + 118, y + 52, x + 108, y + 46);
+            g.fillStyle(0xFF4500, 0.5); g.fillTriangle(x + 116, y + 42, x + 116, y + 50, x + 110, y + 46);
+            g.fillStyle(0xFFD700, 0.3); g.fillTriangle(x + 114, y + 44, x + 114, y + 48, x + 112, y + 46);
           }
 
         } else if (m.key === 'ancient_dragon') {

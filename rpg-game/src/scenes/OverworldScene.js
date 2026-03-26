@@ -818,7 +818,7 @@ export class OverworldScene extends Phaser.Scene {
     this.cameras.main.setZoom(0.6);
 
     // Twilight overlay
-    this.twilightOverlay = this.add.rectangle(this.mapWidth / 2, this.mapHeight / 2, this.mapWidth, this.mapHeight, 0x1a0a2a, 0.15).setDepth(45).setScrollFactor(1);
+    this.twilightOverlay = this.add.rectangle(this.mapWidth / 2, this.mapHeight / 2, this.mapWidth, this.mapHeight, 0x1a0a2a, 0.08).setDepth(45).setScrollFactor(1);
   }
 
   setupInput() {
