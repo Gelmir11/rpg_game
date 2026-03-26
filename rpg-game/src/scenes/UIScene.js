@@ -360,26 +360,33 @@ export class UIScene extends Phaser.Scene {
           }).setOrigin(0.5).setDepth(410));
 
           const hasBonus = eq._bonuses;
-          let desc = `${hasBonus ? '✦ ' : ''}${eqItem.name}\n${eqItem.desc || ''}\nDeğer: ${formatGold(eqItem.value || 0)}`;
-          if (eqItem.attack) desc += `\nSaldırı: +${eqItem.attack}`;
-          if (eqItem.defense) desc += `\nSavunma: +${eqItem.defense}`;
-          if (eqItem.maxHp) desc += `\nMax HP: +${eqItem.maxHp}`;
-          if (eqItem.maxMana) desc += `\nMax Mana: +${eqItem.maxMana}`;
-          if (eqItem.manaCost) desc += `\nMana: ${eqItem.manaCost}/atış`;
+          // Right: name + description
+          let info = `${hasBonus ? '✦ ' : ''}${eqItem.name}`;
+          if (eqItem.desc) info += `\n${eqItem.desc}`;
+          info += `\nDeğer: ${formatGold(eqItem.value || 0)}`;
+          tooltipText.setText(info);
+          tooltipText.setColor('#c0a0e0');
+          // Left: stats
+          let stats = '';
+          if (eqItem.attack) stats += `Saldırı: +${eqItem.attack}\n`;
+          if (eqItem.defense) stats += `Savunma: +${eqItem.defense}\n`;
+          if (eqItem.maxHp) stats += `Max HP: +${eqItem.maxHp}\n`;
+          if (eqItem.maxMana) stats += `Max Mana: +${eqItem.maxMana}\n`;
+          if (eqItem.manaCost) stats += `Mana: ${eqItem.manaCost}/atış\n`;
           if (hasBonus) {
-            desc += '\n--- ✦ BONUS ✦ ---';
-            if (hasBonus.attack) desc += `\n+${hasBonus.attack} Saldırı`;
-            if (hasBonus.defense) desc += `\n+${hasBonus.defense} Savunma`;
-            if (hasBonus.maxHp) desc += `\n+${hasBonus.maxHp} Max HP`;
-            if (hasBonus.maxMana) desc += `\n+${hasBonus.maxMana} Max Mana`;
+            stats += '--- ✦ BONUS ✦ ---\n';
+            if (hasBonus.attack) stats += `+${hasBonus.attack} Saldırı\n`;
+            if (hasBonus.defense) stats += `+${hasBonus.defense} Savunma\n`;
+            if (hasBonus.maxHp) stats += `+${hasBonus.maxHp} Max HP\n`;
+            if (hasBonus.maxMana) stats += `+${hasBonus.maxMana} Max Mana\n`;
           }
-          equipTooltipText.setText(desc);
+          equipTooltipText.setText(stats.trim());
           equipTooltipText.setColor('#c0a0e0');
         });
         eqIcon.on('pointerout', () => {
           if (eqHover) { eqHover.destroy(); eqHover = null; }
-          equipTooltipText.setText('Ekipman bilgisi için\nüzerine gel');
-          equipTooltipText.setColor('#777');
+          equipTooltipText.setText(''); equipTooltipText.setColor('#777');
+          tooltipText.setText(''); tooltipText.setColor('#777');
         });
       }
     });
@@ -639,30 +646,38 @@ export class UIScene extends Phaser.Scene {
           fontSize: '13px', fontFamily: 'Arial, sans-serif', color: '#FFD700',
           backgroundColor: '#0a0a1a', padding: { x: 4, y: 2 }, stroke: '#000', strokeThickness: 2
         }).setOrigin(0.5).setDepth(410));
-        let desc = `${stack.enhanced ? '✦ ' : ''}${item.name}${countStr}\n${item.desc}\nDeğer: ${formatGold(item.value)}`;
-        if (item.attack) desc += `\nSaldırı: +${item.attack}`;
-        if (item.defense) desc += `\nSavunma: +${item.defense}`;
-        if (item.heal) desc += `\nİyileşme: +${item.heal}`;
-        if (item.mana) desc += `\nMana: +${item.mana}`;
-        if (item.maxHp) desc += `\nMax HP: +${item.maxHp}`;
-        if (item.maxMana) desc += `\nMax Mana: +${item.maxMana}`;
-        if (item.manaCost) desc += `\nMana maliyeti: ${item.manaCost}`;
-        // Enhanced bonus bilgisi
+        // Right: name + description
+        let info = `${stack.enhanced ? '✦ ' : ''}${item.name}${countStr}`;
+        if (item.desc) info += `\n${item.desc}`;
+        info += `\nDeğer: ${formatGold(item.value)}`;
+        tooltipText.setText(info);
+        tooltipText.setColor('#c0a0e0');
+        // Left: stats
+        let stats = '';
+        if (item.attack) stats += `Saldırı: +${item.attack}\n`;
+        if (item.defense) stats += `Savunma: +${item.defense}\n`;
+        if (item.heal) stats += `İyileşme: +${item.heal}\n`;
+        if (item.mana) stats += `Mana: +${item.mana}\n`;
+        if (item.maxHp) stats += `Max HP: +${item.maxHp}\n`;
+        if (item.maxMana) stats += `Max Mana: +${item.maxMana}\n`;
+        if (item.manaCost) stats += `Mana: ${item.manaCost}/atış\n`;
         if (stack.enhanced) {
           const bonuses = ps.getItemBonuses(stack.entry);
           if (bonuses) {
-            desc += '\n--- ✦ BONUS ✦ ---';
-            if (bonuses.attack) desc += `\n+${bonuses.attack} Saldırı`;
-            if (bonuses.defense) desc += `\n+${bonuses.defense} Savunma`;
-            if (bonuses.maxHp) desc += `\n+${bonuses.maxHp} Max HP`;
-            if (bonuses.maxMana) desc += `\n+${bonuses.maxMana} Max Mana`;
+            stats += '--- ✦ BONUS ✦ ---\n';
+            if (bonuses.attack) stats += `+${bonuses.attack} Saldırı\n`;
+            if (bonuses.defense) stats += `+${bonuses.defense} Savunma\n`;
+            if (bonuses.maxHp) stats += `+${bonuses.maxHp} Max HP\n`;
+            if (bonuses.maxMana) stats += `+${bonuses.maxMana} Max Mana\n`;
           }
         }
-        tooltipText.setText(desc);
+        equipTooltipText.setText(stats.trim());
+        equipTooltipText.setColor('#c0a0e0');
       });
       icon.on('pointerout', () => {
         if (hoverLabel) { hoverLabel.destroy(); hoverLabel = null; }
-        tooltipText.setText('Item bilgisi için üzerine gel');
+        equipTooltipText.setText(''); equipTooltipText.setColor('#777');
+        tooltipText.setText(''); tooltipText.setColor('#777');
       });
 
       // Left click: equip or use
