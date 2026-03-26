@@ -375,11 +375,13 @@ export class UIScene extends Phaser.Scene {
             if (hasBonus.maxMana) desc += `\n+${hasBonus.maxMana} Max Mana`;
           }
           desc += `\n\n[Sol tık: Çıkar]`;
-          tooltipText.setText(desc);
+          equipTooltipText.setText(desc);
+          equipTooltipText.setColor('#c0a0e0');
         });
         eqIcon.on('pointerout', () => {
           if (eqHover) { eqHover.destroy(); eqHover = null; }
-          tooltipText.setText('Item bilgisi için üzerine gel');
+          equipTooltipText.setText('Ekipman bilgisi için\nüzerine gel');
+          equipTooltipText.setColor('#777');
         });
       }
     });
@@ -428,28 +430,14 @@ export class UIScene extends Phaser.Scene {
     const tipLeftX = rightX - halfW / 2 - 2;  // left panel center
     const tipRightX = rightX + halfW / 2 + 2;  // right panel center
 
-    // Left: Weapon info (always visible)
+    // Left: Equipment info (hover tooltip for equipped items)
     this._add(this.add.rectangle(tipLeftX, tipY, halfW, 80, 0x15153a, 0.9).setDepth(401).setStrokeStyle(1, 0x3a3a5a));
-    const wpn = ps.equipped.weapon;
-    let weaponDesc = 'Silah yok';
-    if (wpn) {
-      const wpnItem = ITEMS[wpn.id] || wpn;
-      const tipLabel = { sword: 'Kılıç', bow: 'Yay', staff: 'Asa' };
-      weaponDesc = `⚔ ${wpnItem.name}`;
-      weaponDesc += `\nTip: ${tipLabel[wpnItem.weaponType] || wpnItem.weaponType}`;
-      weaponDesc += `\nSaldırı: +${wpnItem.attack}`;
-      if (wpnItem.manaCost) weaponDesc += `\nMana: ${wpnItem.manaCost}/atış`;
-      if (wpn._bonuses) {
-        if (wpn._bonuses.attack) weaponDesc += `\n✦ +${wpn._bonuses.attack} Saldırı`;
-        if (wpn._bonuses.maxMana) weaponDesc += `\n✦ +${wpn._bonuses.maxMana} Mana`;
-      }
-    }
-    this._add(this.add.text(tipLeftX, tipY, weaponDesc, {
-      fontSize: '11px', fontFamily: 'Arial, sans-serif', color: '#c0a0e0',
+    const equipTooltipText = this._add(this.add.text(tipLeftX, tipY, 'Ekipman bilgisi için\nüzerine gel', {
+      fontSize: '11px', fontFamily: 'Arial, sans-serif', color: '#777',
       align: 'center', wordWrap: { width: halfW - 16 }
     }).setOrigin(0.5).setDepth(402));
 
-    // Right: Item info (hover tooltip)
+    // Right: Item info (hover tooltip for inventory items)
     this._add(this.add.rectangle(tipRightX, tipY, halfW, 80, 0x15153a, 0.9).setDepth(401).setStrokeStyle(1, 0x3a3a5a));
     const tooltipText = this._add(this.add.text(tipRightX, tipY, 'Item bilgisi için\nüzerine gel', {
       fontSize: '11px', fontFamily: 'Arial, sans-serif', color: '#777',
