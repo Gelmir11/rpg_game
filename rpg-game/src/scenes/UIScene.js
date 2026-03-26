@@ -482,8 +482,8 @@ export class UIScene extends Phaser.Scene {
       }
     });
 
-    const itemCount = this.add.text(gridStartX + gridW / 2, gridStartY - 30, `Envanter (${ps.getUsedSlots()}/${ps.maxInventory})`, {
-      fontSize: '16px', fontFamily: 'Arial, sans-serif', color: '#FFD700', fontStyle: 'bold', stroke: '#000', strokeThickness: 4
+    const itemCount = this.add.text(gridStartX + gridW / 2, gridStartY - 30, `${ps.getUsedSlots()}/${ps.maxInventory}`, {
+      fontSize: '13px', fontFamily: 'Arial, sans-serif', color: '#888', stroke: '#000', strokeThickness: 3
     }).setOrigin(0.5).setDepth(405);
     this.invElements.push(itemCount);
 
