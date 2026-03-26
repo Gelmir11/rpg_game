@@ -322,7 +322,7 @@ export class UIScene extends Phaser.Scene {
       { slot: 'belt',     label: 'Kemer',   angle: 3 * Math.PI / 4 },       // bottom-left
       { slot: 'weapon',   label: 'Silah',   angle: Math.PI },                // left
       { slot: 'earring',  label: 'Küpe',    angle: -3 * Math.PI / 4 },     // top-left
-    ].map(s => ({ ...s, x: charX + Math.cos(s.angle) * slotRX, y: charY + Math.sin(s.angle) * slotRY }));
+    ].map(s => ({ ...s, x: charX + Math.cos(s.angle) * slotRX, y: charY + Math.sin(s.angle) * slotRY + (s.slot === 'head' ? -15 : 0) }));
 
     equipSlots.forEach(es => {
       // Slot background
