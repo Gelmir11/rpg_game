@@ -1,0 +1,75 @@
+// Zanaat tarifleri
+export const RECIPES = [
+  // === SİLAHLAR ===
+  { id: 'craft_wooden_sword', result: 'wooden_sword', count: 1, category: 'Silahlar',
+    materials: [{ item: 'wood', count: 5 }, { item: 'stone', count: 3 }], minLevel: 1 },
+  { id: 'craft_wooden_bow', result: 'wooden_bow', count: 1, category: 'Silahlar',
+    materials: [{ item: 'wood', count: 8 }, { item: 'herb', count: 2 }], minLevel: 1 },
+  { id: 'craft_wooden_staff', result: 'wooden_staff', count: 1, category: 'Silahlar',
+    materials: [{ item: 'wood', count: 6 }, { item: 'crystal', count: 1 }], minLevel: 1 },
+  { id: 'craft_iron_sword', result: 'iron_sword', count: 1, category: 'Silahlar',
+    materials: [{ item: 'stone', count: 10 }, { item: 'wood', count: 5 }, { item: 'monster_fang', count: 3 }], minLevel: 3 },
+  { id: 'craft_hunter_bow', result: 'hunter_bow', count: 1, category: 'Silahlar',
+    materials: [{ item: 'wood', count: 12 }, { item: 'monster_fang', count: 5 }], minLevel: 4 },
+  { id: 'craft_crystal_staff', result: 'crystal_staff', count: 1, category: 'Silahlar',
+    materials: [{ item: 'crystal', count: 5 }, { item: 'wood', count: 8 }], minLevel: 4 },
+  { id: 'craft_steel_sword', result: 'steel_sword', count: 1, category: 'Silahlar',
+    materials: [{ item: 'stone', count: 20 }, { item: 'crystal', count: 3 }, { item: 'monster_fang', count: 8 }], minLevel: 5 },
+  { id: 'craft_fire_sword', result: 'fire_sword', count: 1, category: 'Silahlar',
+    materials: [{ item: 'dragon_scale', count: 3 }, { item: 'crystal', count: 5 }, { item: 'stone', count: 15 }], minLevel: 8 },
+  { id: 'craft_mythril_sword', result: 'mythril_sword', count: 1, category: 'Silahlar',
+    materials: [{ item: 'mythril_ore', count: 8 }, { item: 'crystal', count: 10 }, { item: 'dragon_scale', count: 5 }], minLevel: 40 },
+  { id: 'craft_mythril_bow', result: 'mythril_bow', count: 1, category: 'Silahlar',
+    materials: [{ item: 'mythril_ore', count: 6 }, { item: 'wood', count: 20 }, { item: 'dragon_scale', count: 3 }], minLevel: 41 },
+  { id: 'craft_mythril_staff', result: 'mythril_staff', count: 1, category: 'Silahlar',
+    materials: [{ item: 'mythril_ore', count: 7 }, { item: 'crystal', count: 12 }], minLevel: 42 },
+
+  // === ZIRHLAR ===
+  { id: 'craft_leather_armor', result: 'leather_armor', count: 1, category: 'Zırhlar',
+    materials: [{ item: 'wood', count: 3 }, { item: 'herb', count: 5 }], minLevel: 1 },
+  { id: 'craft_iron_armor', result: 'iron_armor', count: 1, category: 'Zırhlar',
+    materials: [{ item: 'stone', count: 15 }, { item: 'wood', count: 5 }], minLevel: 3 },
+  { id: 'craft_steel_armor', result: 'steel_armor', count: 1, category: 'Zırhlar',
+    materials: [{ item: 'stone', count: 25 }, { item: 'crystal', count: 3 }], minLevel: 5 },
+  { id: 'craft_dragon_armor', result: 'dragon_armor', count: 1, category: 'Zırhlar',
+    materials: [{ item: 'dragon_scale', count: 5 }, { item: 'crystal', count: 5 }, { item: 'stone', count: 20 }], minLevel: 8 },
+  { id: 'craft_mythril_armor', result: 'mythril_armor', count: 1, category: 'Zırhlar',
+    materials: [{ item: 'mythril_ore', count: 10 }, { item: 'dragon_scale', count: 5 }], minLevel: 40 },
+
+  // === EKİPMAN ===
+  { id: 'craft_leather_helm', result: 'leather_helm', count: 1, category: 'Ekipman',
+    materials: [{ item: 'wood', count: 3 }, { item: 'herb', count: 3 }], minLevel: 1 },
+  { id: 'craft_iron_helm', result: 'iron_helm', count: 1, category: 'Ekipman',
+    materials: [{ item: 'stone', count: 10 }], minLevel: 3 },
+  { id: 'craft_leather_pants', result: 'leather_pants', count: 1, category: 'Ekipman',
+    materials: [{ item: 'wood', count: 3 }, { item: 'herb', count: 4 }], minLevel: 1 },
+  { id: 'craft_leather_gloves', result: 'leather_gloves', count: 1, category: 'Ekipman',
+    materials: [{ item: 'wood', count: 2 }, { item: 'herb', count: 3 }], minLevel: 1 },
+  { id: 'craft_leather_belt', result: 'leather_belt', count: 1, category: 'Ekipman',
+    materials: [{ item: 'wood', count: 2 }, { item: 'herb', count: 2 }], minLevel: 1 },
+  { id: 'craft_ring_strength', result: 'ring_strength', count: 1, category: 'Ekipman',
+    materials: [{ item: 'crystal', count: 3 }, { item: 'monster_fang', count: 5 }], minLevel: 3 },
+  { id: 'craft_amulet_hp', result: 'amulet_hp', count: 1, category: 'Ekipman',
+    materials: [{ item: 'crystal', count: 4 }, { item: 'herb', count: 10 }], minLevel: 4 },
+
+  // === İKSİRLER ===
+  { id: 'craft_health_potion', result: 'health_potion', count: 3, category: 'İksirler',
+    materials: [{ item: 'herb', count: 3 }], minLevel: 1 },
+  { id: 'craft_mana_potion', result: 'mana_potion', count: 3, category: 'İksirler',
+    materials: [{ item: 'herb', count: 2 }, { item: 'crystal', count: 1 }], minLevel: 1 },
+  { id: 'craft_big_health_potion', result: 'big_health_potion', count: 2, category: 'İksirler',
+    materials: [{ item: 'herb', count: 8 }, { item: 'monster_fang', count: 2 }], minLevel: 3 },
+  { id: 'craft_big_mana_potion', result: 'big_mana_potion', count: 2, category: 'İksirler',
+    materials: [{ item: 'herb', count: 6 }, { item: 'crystal', count: 3 }], minLevel: 3 },
+  { id: 'craft_strength_potion', result: 'strength_potion', count: 1, category: 'İksirler',
+    materials: [{ item: 'monster_fang', count: 5 }, { item: 'herb', count: 5 }], minLevel: 5 },
+  { id: 'craft_defense_potion', result: 'defense_potion', count: 1, category: 'İksirler',
+    materials: [{ item: 'stone', count: 8 }, { item: 'herb', count: 5 }], minLevel: 5 },
+  { id: 'craft_mega_health_potion', result: 'mega_health_potion', count: 1, category: 'İksirler',
+    materials: [{ item: 'herb', count: 15 }, { item: 'dragon_scale', count: 1 }, { item: 'crystal', count: 3 }], minLevel: 8 },
+  { id: 'craft_mega_mana_potion', result: 'mega_mana_potion', count: 1, category: 'İksirler',
+    materials: [{ item: 'crystal', count: 8 }, { item: 'herb', count: 10 }], minLevel: 8 }
+];
+
+// Kategori sırası
+export const RECIPE_CATEGORIES = ['Silahlar', 'Zırhlar', 'Ekipman', 'İksirler'];
