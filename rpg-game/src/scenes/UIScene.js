@@ -374,7 +374,6 @@ export class UIScene extends Phaser.Scene {
             if (hasBonus.maxHp) desc += `\n+${hasBonus.maxHp} Max HP`;
             if (hasBonus.maxMana) desc += `\n+${hasBonus.maxMana} Max Mana`;
           }
-          desc += `\n\n[Sol tık: Çıkar]`;
           equipTooltipText.setText(desc);
           equipTooltipText.setColor('#c0a0e0');
         });
@@ -665,7 +664,6 @@ export class UIScene extends Phaser.Scene {
             if (bonuses.maxMana) desc += `\n+${bonuses.maxMana} Max Mana`;
           }
         }
-        desc += `\n\n[Sol tık: Kullan/Kuşan] [Sağ tık: Yere at]`;
         tooltipText.setText(desc);
       });
       icon.on('pointerout', () => {
@@ -721,11 +719,6 @@ export class UIScene extends Phaser.Scene {
     closeBtn.on('pointerdown', () => this.closeInventory());
     closeBtn.on('pointerover', () => closeBtn.setColor('#FF9999'));
     closeBtn.on('pointerout', () => closeBtn.setColor('#FF6666'));
-
-    // Hint
-    this._add(this.add.text(400, 575, '[K] Kapat', {
-      fontSize: '12px', fontFamily: 'Arial, sans-serif', color: '#555'
-    }).setOrigin(0.5).setDepth(402));
   }
 
   closeInventory() {
