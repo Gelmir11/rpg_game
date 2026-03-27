@@ -60,10 +60,7 @@ export class UIScene extends Phaser.Scene {
     this.minimapPlayerDot = this.add.circle(0, 0, 3, 0x00FF00).setDepth(203);
     this.minimapData = { x: mmX, y: mmY, size: mmSize };
 
-    // Controls hint (bottom)
-    this.controlsText = this.add.text(400, 578, 'WASD: Hareket   E: Etkileşim   F: Topla   K: Envanter   T: Köye Işınlan   1-4: Yetenek', {
-      fontSize: '14px', fontFamily: 'Nunito, Arial, sans-serif', color: '#777', fontStyle: 'bold', stroke: '#000', strokeThickness: 3
-    }).setOrigin(0.5).setDepth(200);
+    // Controls hint removed — clean UI
 
     // Skill bar
     this.createSkillBar();
