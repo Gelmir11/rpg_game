@@ -114,7 +114,7 @@ export class HomeScene extends Phaser.Scene {
     g.fillStyle(0x3a4a7a); g.fillRoundedRect(bx + 4, by + 34, 74, 70, 3);
     g.fillStyle(0x4a5a8a, 0.5); g.fillRect(bx + 6, by + 36, 70, 6);
     g.fillStyle(0x4a2a0a); g.fillRect(bx, by, 82, 5);
-    this.add.text(bx + 41, by - 12, 'Yatak [E]', { fontSize: '14px', fontFamily: 'Arial, sans-serif', color: '#87CEEB', fontStyle: 'bold', stroke: '#000', strokeThickness: 3 }).setOrigin(0.5).setDepth(20);
+    this.add.text(bx + 41, by - 12, 'Yatak [E]', { fontSize: '14px', fontFamily: 'Nunito, Arial, sans-serif', color: '#87CEEB', fontStyle: 'bold', stroke: '#000', strokeThickness: 3 }).setOrigin(0.5).setDepth(20);
     this.bedZone = this.add.zone(bx + 41, by + 55, 90, 120);
     this.physics.world.enable(this.bedZone); this.bedZone.body.setAllowGravity(false);
 
@@ -140,7 +140,7 @@ export class HomeScene extends Phaser.Scene {
     g.fillStyle(0xFFD700); g.fillRect(sx + 54, sy + 38, 20, 10);
     g.fillStyle(0x1a1a1a); g.fillCircle(sx + 64, sy + 52, 3);
     g.fillStyle(0x808080); g.fillRect(sx + 30, sy + 10, 24, 5); g.fillRect(sx + 76, sy + 10, 24, 5);
-    this.add.text(sx + 65, sy - 12, 'Depo [E]', { fontSize: '14px', fontFamily: 'Arial, sans-serif', color: '#DEB887', fontStyle: 'bold', stroke: '#000', strokeThickness: 3 }).setOrigin(0.5).setDepth(20);
+    this.add.text(sx + 65, sy - 12, 'Depo [E]', { fontSize: '14px', fontFamily: 'Nunito, Arial, sans-serif', color: '#DEB887', fontStyle: 'bold', stroke: '#000', strokeThickness: 3 }).setOrigin(0.5).setDepth(20);
     this.chestZone = this.add.zone(sx + 65, sy + 42, 140, 90);
     this.physics.world.enable(this.chestZone); this.chestZone.body.setAllowGravity(false);
 
@@ -186,7 +186,7 @@ export class HomeScene extends Phaser.Scene {
     g.fillStyle(0x3a2a1a); g.fillRoundedRect(dx, dy, 36, wallT + 2, 2);
     g.fillStyle(0x5a3a1a); g.fillRoundedRect(dx + 2, dy + 2, 32, wallT - 4, 2);
     g.fillStyle(0xDAA520); g.fillCircle(dx + 28, dy + 12, 2);
-    this.add.text(cx, dy - 10, 'Çıkış [E]', { fontSize: '14px', fontFamily: 'Arial, sans-serif', color: '#aa6aee', fontStyle: 'bold', stroke: '#000', strokeThickness: 3 }).setOrigin(0.5).setDepth(20);
+    this.add.text(cx, dy - 10, 'Çıkış [E]', { fontSize: '14px', fontFamily: 'Nunito, Arial, sans-serif', color: '#aa6aee', fontStyle: 'bold', stroke: '#000', strokeThickness: 3 }).setOrigin(0.5).setDepth(20);
     this.exitZone = this.add.zone(cx, dy + 10, 50, 30);
     this.physics.world.enable(this.exitZone); this.exitZone.body.setAllowGravity(false);
 
@@ -486,7 +486,7 @@ export class HomeScene extends Phaser.Scene {
 
       if (stack.count > 1)
         els.push(this.add.text(ix + cellSize / 2 - 4, iy + (gh * cellSize / 2) - 4, `${stack.count}`, {
-          fontSize: '12px', fontFamily: 'Arial, sans-serif', color: '#fff', fontStyle: 'bold',
+          fontSize: '12px', fontFamily: 'Nunito, Arial, sans-serif', color: '#fff', fontStyle: 'bold',
           backgroundColor: '#333', padding: { x: 2, y: 0 }, stroke: '#000', strokeThickness: 2
         }).setOrigin(1, 1).setDepth(depth + 2));
 
@@ -494,7 +494,7 @@ export class HomeScene extends Phaser.Scene {
       icon.on('pointerover', () => {
         const cs = stack.count > 1 ? ` (x${stack.count})` : '';
         hoverLabel = this.add.text(ix, iy - gh * cellSize / 2 - 10, item.name + cs, {
-          fontSize: '12px', fontFamily: 'Arial, sans-serif', color: '#FFD700',
+          fontSize: '12px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FFD700',
           backgroundColor: '#0a0a1a', padding: { x: 4, y: 2 }, stroke: '#000', strokeThickness: 2
         }).setOrigin(0.5).setDepth(depth + 5);
         els.push(hoverLabel);
@@ -518,11 +518,11 @@ export class HomeScene extends Phaser.Scene {
     add(this.add.rectangle(400, 300, 760, 560, 0x0a0a1a, 0.98).setDepth(100).setStrokeStyle(2, 0x4a4a8a));
 
     // Title
-    add(this.add.text(400, 24, 'DEPO', { fontSize: '20px', fontFamily: 'Arial, sans-serif', color: '#DEB887', fontStyle: 'bold' }).setOrigin(0.5).setDepth(101));
+    add(this.add.text(400, 24, 'DEPO', { fontSize: '20px', fontFamily: 'Nunito, Arial, sans-serif', color: '#DEB887', fontStyle: 'bold' }).setOrigin(0.5).setDepth(101));
 
     // Left: Inventory
     add(this.add.text(190, 55, `Envanter (${ps.getUsedSlots()}/${ps.maxInventory})`, {
-      fontSize: '15px', fontFamily: 'Arial, sans-serif', color: '#cc99ff', fontStyle: 'bold'
+      fontSize: '15px', fontFamily: 'Nunito, Arial, sans-serif', color: '#cc99ff', fontStyle: 'bold'
     }).setOrigin(0.5).setDepth(103));
 
     const invEls = this.buildStackedGrid(ps.inventory, 45, 85, 7, 10, 38, 101, (itemId) => {
@@ -535,7 +535,7 @@ export class HomeScene extends Phaser.Scene {
 
     // Right: Storage
     add(this.add.text(600, 55, `Depo (${ps.storage.length}/${ps.maxStorage})`, {
-      fontSize: '15px', fontFamily: 'Arial, sans-serif', color: '#cc99ff', fontStyle: 'bold'
+      fontSize: '15px', fontFamily: 'Nunito, Arial, sans-serif', color: '#cc99ff', fontStyle: 'bold'
     }).setOrigin(0.5).setDepth(103));
 
     const stoEls = this.buildStackedGrid(ps.storage, 420, 85, 8, 10, 38, 101, (itemId) => {
@@ -545,12 +545,12 @@ export class HomeScene extends Phaser.Scene {
 
     // Close button
     const closeBtn = add(this.add.text(760, 24, 'X', {
-      fontSize: '20px', fontFamily: 'Arial, sans-serif', color: '#FF6666', fontStyle: 'bold',
+      fontSize: '20px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FF6666', fontStyle: 'bold',
       backgroundColor: '#2a0a0a', padding: { x: 8, y: 3 }
     }).setOrigin(0.5).setDepth(102).setInteractive({ useHandCursor: true }));
     closeBtn.on('pointerdown', () => this.closeStorage());
 
-    add(this.add.text(400, 575, '[E] Kapat', { fontSize: '12px', fontFamily: 'Arial, sans-serif', color: '#555' }).setOrigin(0.5).setDepth(101));
+    add(this.add.text(400, 575, '[E] Kapat', { fontSize: '12px', fontFamily: 'Nunito, Arial, sans-serif', color: '#555' }).setOrigin(0.5).setDepth(101));
   }
 
   closeStorage() {

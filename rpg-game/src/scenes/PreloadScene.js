@@ -25,13 +25,13 @@ export class PreloadScene extends Phaser.Scene {
 
     // Title
     this.add.text(width / 2, 60, 'LEGEND OF DUSKHOLLOW', {
-      fontSize: '34px', fontFamily: 'Arial, sans-serif', color: '#c0a0e0',
+      fontSize: '34px', fontFamily: 'Nunito, Arial, sans-serif', color: '#c0a0e0',
       stroke: '#2a1a4a', strokeThickness: 5,
       shadow: { offsetX: 2, offsetY: 2, color: '#1a0a2a', blur: 8, fill: true }
     }).setOrigin(0.5);
 
     this.add.text(width / 2, 100, 'Alacakaranlık Vadisi Efsanesi', {
-      fontSize: '16px', fontFamily: 'Arial, sans-serif', color: '#8a7aaa'
+      fontSize: '16px', fontFamily: 'Nunito, Arial, sans-serif', color: '#8a7aaa'
     }).setOrigin(0.5);
 
     // 3 Save Slots
@@ -39,7 +39,7 @@ export class PreloadScene extends Phaser.Scene {
 
     // Version
     this.add.text(width / 2, height - 16, 'v0.2 - Duskhollow', {
-      fontSize: '12px', fontFamily: 'Arial, sans-serif', color: '#2a2a4a'
+      fontSize: '12px', fontFamily: 'Nunito, Arial, sans-serif', color: '#2a2a4a'
     }).setOrigin(0.5);
   }
 
@@ -61,7 +61,7 @@ export class PreloadScene extends Phaser.Scene {
 
       // Slot number
       this.add.text(x, slotY - slotH / 2 + 18, `Kayıt ${i + 1}`, {
-        fontSize: '16px', fontFamily: 'Arial, sans-serif',
+        fontSize: '16px', fontFamily: 'Nunito, Arial, sans-serif',
         color: saveData ? '#c0a0e0' : '#5a5a7a', fontStyle: 'bold'
       }).setOrigin(0.5);
 
@@ -85,27 +85,27 @@ export class PreloadScene extends Phaser.Scene {
         const infoY = slotY + 40;
         const classDef = CLASS_DEFINITIONS[saveData.playerClass] || CLASS_DEFINITIONS.warrior;
         this.add.text(x, infoY, `${saveData.playerName || 'Kahraman'}`, {
-          fontSize: '18px', fontFamily: 'Arial, sans-serif', color: '#FFD700', fontStyle: 'bold'
+          fontSize: '18px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FFD700', fontStyle: 'bold'
         }).setOrigin(0.5);
         this.add.text(x, infoY + 24, `Lv.${saveData.level} ${classDef.displayName}`, {
-          fontSize: '17px', fontFamily: 'Arial, sans-serif', color: classDef.color, fontStyle: 'bold'
+          fontSize: '17px', fontFamily: 'Nunito, Arial, sans-serif', color: classDef.color, fontStyle: 'bold'
         }).setOrigin(0.5);
 
         this.add.text(x, infoY + 50, `HP: ${saveData.hp}/${saveData.maxHp}`, {
-          fontSize: '13px', fontFamily: 'Arial, sans-serif', color: '#FF8888'
+          fontSize: '13px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FF8888'
         }).setOrigin(0.5);
 
         this.add.text(x, infoY + 70, `Altın: ${saveData.gold}`, {
-          fontSize: '13px', fontFamily: 'Arial, sans-serif', color: '#FFD700'
+          fontSize: '13px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FFD700'
         }).setOrigin(0.5);
 
         this.add.text(x, infoY + 90, `ATK:${this.calcAttack(saveData)}  DEF:${this.calcDefense(saveData)}`, {
-          fontSize: '12px', fontFamily: 'Arial, sans-serif', color: '#aaa'
+          fontSize: '12px', fontFamily: 'Nunito, Arial, sans-serif', color: '#aaa'
         }).setOrigin(0.5);
 
         // Continue button — near bottom
         const contBtn = this.add.text(x, slotY + slotH / 2 - 50, 'Devam Et', {
-          fontSize: '17px', fontFamily: 'Arial, sans-serif', color: '#90ee90',
+          fontSize: '17px', fontFamily: 'Nunito, Arial, sans-serif', color: '#90ee90',
           backgroundColor: '#1a3a1a', padding: { x: 20, y: 8 }, fontStyle: 'bold'
         }).setOrigin(0.5).setInteractive({ useHandCursor: true });
         contBtn.on('pointerover', () => contBtn.setColor('#bbffbb'));
@@ -114,7 +114,7 @@ export class PreloadScene extends Phaser.Scene {
 
         // Delete button
         const delBtn = this.add.text(x, slotY + slotH / 2 - 15, 'Sil', {
-          fontSize: '13px', fontFamily: 'Arial, sans-serif', color: '#ff6666',
+          fontSize: '13px', fontFamily: 'Nunito, Arial, sans-serif', color: '#ff6666',
           padding: { x: 10, y: 4 }
         }).setOrigin(0.5).setInteractive({ useHandCursor: true });
         delBtn.on('pointerover', () => delBtn.setColor('#ffaaaa'));
@@ -131,11 +131,11 @@ export class PreloadScene extends Phaser.Scene {
       } else {
         // Empty slot - New Game button
         this.add.text(x, slotY - 20, 'Boş Kayıt', {
-          fontSize: '14px', fontFamily: 'Arial, sans-serif', color: '#4a4a6a'
+          fontSize: '14px', fontFamily: 'Nunito, Arial, sans-serif', color: '#4a4a6a'
         }).setOrigin(0.5);
 
         const newBtn = this.add.text(x, slotY + 30, 'Yeni Oyun', {
-          fontSize: '18px', fontFamily: 'Arial, sans-serif', color: '#c0a0e0',
+          fontSize: '18px', fontFamily: 'Nunito, Arial, sans-serif', color: '#c0a0e0',
           backgroundColor: '#2a1a3a', padding: { x: 20, y: 8 }, fontStyle: 'bold'
         }).setOrigin(0.5).setInteractive({ useHandCursor: true });
         newBtn.on('pointerover', () => { newBtn.setColor('#e0c0ff'); newBtn.setScale(1.05); });
@@ -201,12 +201,12 @@ export class PreloadScene extends Phaser.Scene {
     bg.fillRect(0, 0, width, height);
 
     this.add.text(width / 2, 60, 'Karakter Seçimi', {
-      fontSize: '30px', fontFamily: 'Arial, sans-serif', color: '#c0a0e0',
+      fontSize: '30px', fontFamily: 'Nunito, Arial, sans-serif', color: '#c0a0e0',
       fontStyle: 'bold', stroke: '#2a1a4a', strokeThickness: 4
     }).setOrigin(0.5);
 
     this.add.text(width / 2, 100, 'Karakterini seç ve maceraya başla!', {
-      fontSize: '14px', fontFamily: 'Arial, sans-serif', color: '#7a6a9a'
+      fontSize: '14px', fontFamily: 'Nunito, Arial, sans-serif', color: '#7a6a9a'
     }).setOrigin(0.5);
 
     // Two character cards
@@ -219,18 +219,18 @@ export class PreloadScene extends Phaser.Scene {
     // Male card
     const maleCard = this.add.rectangle(maleX, cardY, cardW, cardH, 0x12122a, 0.9).setStrokeStyle(2, 0x4a5aaa);
     this.add.text(maleX, cardY - cardH / 2 + 24, 'Erkek', {
-      fontSize: '22px', fontFamily: 'Arial, sans-serif', color: '#88aaff', fontStyle: 'bold'
+      fontSize: '22px', fontFamily: 'Nunito, Arial, sans-serif', color: '#88aaff', fontStyle: 'bold'
     }).setOrigin(0.5);
 
     const maleChar = this.add.image(maleX, cardY - 30, 'player').setScale(2);
     maleChar.setFrame(0);
 
     this.add.text(maleX, cardY + 80, 'Güçlü savaşçı', {
-      fontSize: '13px', fontFamily: 'Arial, sans-serif', color: '#8888aa'
+      fontSize: '13px', fontFamily: 'Nunito, Arial, sans-serif', color: '#8888aa'
     }).setOrigin(0.5);
 
     const maleBtn = this.add.text(maleX, cardY + cardH / 2 - 35, 'Seç', {
-      fontSize: '20px', fontFamily: 'Arial, sans-serif', color: '#88ccff',
+      fontSize: '20px', fontFamily: 'Nunito, Arial, sans-serif', color: '#88ccff',
       backgroundColor: '#1a2a4a', padding: { x: 30, y: 10 }, fontStyle: 'bold'
     }).setOrigin(0.5).setInteractive({ useHandCursor: true });
     maleBtn.on('pointerover', () => { maleBtn.setColor('#bbddff'); maleCard.setStrokeStyle(3, 0x88aaff); });
@@ -240,18 +240,18 @@ export class PreloadScene extends Phaser.Scene {
     // Female card
     const femaleCard = this.add.rectangle(femaleX, cardY, cardW, cardH, 0x12122a, 0.9).setStrokeStyle(2, 0xaa5a8a);
     this.add.text(femaleX, cardY - cardH / 2 + 24, 'Kız', {
-      fontSize: '22px', fontFamily: 'Arial, sans-serif', color: '#ff88aa', fontStyle: 'bold'
+      fontSize: '22px', fontFamily: 'Nunito, Arial, sans-serif', color: '#ff88aa', fontStyle: 'bold'
     }).setOrigin(0.5);
 
     const femaleChar = this.add.image(femaleX, cardY - 30, 'player_female').setScale(2);
     femaleChar.setFrame(0);
 
     this.add.text(femaleX, cardY + 80, 'Çevik büyücü', {
-      fontSize: '13px', fontFamily: 'Arial, sans-serif', color: '#aa8888'
+      fontSize: '13px', fontFamily: 'Nunito, Arial, sans-serif', color: '#aa8888'
     }).setOrigin(0.5);
 
     const femaleBtn = this.add.text(femaleX, cardY + cardH / 2 - 35, 'Seç', {
-      fontSize: '20px', fontFamily: 'Arial, sans-serif', color: '#ffaacc',
+      fontSize: '20px', fontFamily: 'Nunito, Arial, sans-serif', color: '#ffaacc',
       backgroundColor: '#4a1a2a', padding: { x: 30, y: 10 }, fontStyle: 'bold'
     }).setOrigin(0.5).setInteractive({ useHandCursor: true });
     femaleBtn.on('pointerover', () => { femaleBtn.setColor('#ffccdd'); femaleCard.setStrokeStyle(3, 0xff88aa); });
@@ -260,7 +260,7 @@ export class PreloadScene extends Phaser.Scene {
 
     // Back button
     const backBtn = this.add.text(width / 2, height - 30, '< Geri', {
-      fontSize: '16px', fontFamily: 'Arial, sans-serif', color: '#666'
+      fontSize: '16px', fontFamily: 'Nunito, Arial, sans-serif', color: '#666'
     }).setOrigin(0.5).setInteractive({ useHandCursor: true });
     backBtn.on('pointerdown', () => this.scene.restart());
   }
@@ -281,12 +281,12 @@ export class PreloadScene extends Phaser.Scene {
     bg.fillRect(0, 0, width, height);
 
     this.add.text(width / 2, 50, 'Sınıf Seçimi', {
-      fontSize: '30px', fontFamily: 'Arial, sans-serif', color: '#c0a0e0',
+      fontSize: '30px', fontFamily: 'Nunito, Arial, sans-serif', color: '#c0a0e0',
       fontStyle: 'bold', stroke: '#2a1a4a', strokeThickness: 4
     }).setOrigin(0.5);
 
     this.add.text(width / 2, 85, 'Savaş tarzını belirle!', {
-      fontSize: '14px', fontFamily: 'Arial, sans-serif', color: '#7a6a9a'
+      fontSize: '14px', fontFamily: 'Nunito, Arial, sans-serif', color: '#7a6a9a'
     }).setOrigin(0.5);
 
     const classes = ['warrior', 'archer', 'mage'];
@@ -310,12 +310,12 @@ export class PreloadScene extends Phaser.Scene {
 
       // Class name
       this.add.text(x, cardY - 70, def.displayName, {
-        fontSize: '24px', fontFamily: 'Arial, sans-serif', color: def.color, fontStyle: 'bold'
+        fontSize: '24px', fontFamily: 'Nunito, Arial, sans-serif', color: def.color, fontStyle: 'bold'
       }).setOrigin(0.5);
 
       // Description
       this.add.text(x, cardY - 40, def.description, {
-        fontSize: '11px', fontFamily: 'Arial, sans-serif', color: '#8a8aaa',
+        fontSize: '11px', fontFamily: 'Nunito, Arial, sans-serif', color: '#8a8aaa',
         wordWrap: { width: cardW - 30 }, align: 'center'
       }).setOrigin(0.5);
 
@@ -332,19 +332,19 @@ export class PreloadScene extends Phaser.Scene {
       ];
       statLines.forEach((line, si) => {
         this.add.text(x, statsY + si * 22, line, {
-          fontSize: '13px', fontFamily: 'Arial, sans-serif', color: '#b0b0d0'
+          fontSize: '13px', fontFamily: 'Nunito, Arial, sans-serif', color: '#b0b0d0'
         }).setOrigin(0.5);
       });
 
       // Starting weapon
       const weaponNames = { wooden_sword: 'Tahta Kılıç', wooden_bow: 'Tahta Yay', wooden_staff: 'Tahta Asa' };
       this.add.text(x, statsY + 120, `Başlangıç: ${weaponNames[def.startWeapon]}`, {
-        fontSize: '12px', fontFamily: 'Arial, sans-serif', color: '#FFD700'
+        fontSize: '12px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FFD700'
       }).setOrigin(0.5);
 
       // Select button
       const btn = this.add.text(x, cardY + cardH / 2 - 30, 'Seç', {
-        fontSize: '20px', fontFamily: 'Arial, sans-serif', color: def.color,
+        fontSize: '20px', fontFamily: 'Nunito, Arial, sans-serif', color: def.color,
         backgroundColor: '#1a1a2a', padding: { x: 30, y: 10 }, fontStyle: 'bold'
       }).setOrigin(0.5).setInteractive({ useHandCursor: true });
 
@@ -358,7 +358,7 @@ export class PreloadScene extends Phaser.Scene {
 
     // Back button
     const backBtn = this.add.text(width / 2, height - 20, '< Geri', {
-      fontSize: '16px', fontFamily: 'Arial, sans-serif', color: '#666'
+      fontSize: '16px', fontFamily: 'Nunito, Arial, sans-serif', color: '#666'
     }).setOrigin(0.5).setInteractive({ useHandCursor: true });
     backBtn.on('pointerdown', () => this.showGenderSelect());
   }
@@ -378,7 +378,7 @@ export class PreloadScene extends Phaser.Scene {
     charImg.setFrame(0);
 
     this.add.text(width / 2, 380, 'Karakterine İsim Ver', {
-      fontSize: '28px', fontFamily: 'Arial, sans-serif', color: '#c0a0e0',
+      fontSize: '28px', fontFamily: 'Nunito, Arial, sans-serif', color: '#c0a0e0',
       fontStyle: 'bold', stroke: '#2a1a4a', strokeThickness: 4
     }).setOrigin(0.5);
 
@@ -412,7 +412,7 @@ export class PreloadScene extends Phaser.Scene {
 
     // Preview name below character
     const namePreview = this.add.text(width / 2, 280, '', {
-      fontSize: '22px', fontFamily: 'Arial, sans-serif', color: '#FFD700',
+      fontSize: '22px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FFD700',
       fontStyle: 'bold', stroke: '#000', strokeThickness: 4
     }).setOrigin(0.5);
 
@@ -427,7 +427,7 @@ export class PreloadScene extends Phaser.Scene {
 
     // Start button
     const startBtn = this.add.text(width / 2, 510, 'Maceraya Başla!', {
-      fontSize: '22px', fontFamily: 'Arial, sans-serif', color: '#90ee90',
+      fontSize: '22px', fontFamily: 'Nunito, Arial, sans-serif', color: '#90ee90',
       backgroundColor: '#1a3a1a', padding: { x: 24, y: 10 }, fontStyle: 'bold'
     }).setOrigin(0.5).setInteractive({ useHandCursor: true });
     startBtn.on('pointerover', () => startBtn.setColor('#bbffbb'));
@@ -447,7 +447,7 @@ export class PreloadScene extends Phaser.Scene {
 
     // Back button
     const backBtn = this.add.text(width / 2, 560, '< Geri', {
-      fontSize: '14px', fontFamily: 'Arial, sans-serif', color: '#666'
+      fontSize: '14px', fontFamily: 'Nunito, Arial, sans-serif', color: '#666'
     }).setOrigin(0.5).setInteractive({ useHandCursor: true });
     backBtn.on('pointerdown', () => {
       this.cleanupNameInput();

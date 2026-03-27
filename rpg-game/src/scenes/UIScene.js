@@ -27,13 +27,13 @@ export class UIScene extends Phaser.Scene {
     // HP/MP bars will be drawn above player in-game
 
     // Top left: Level + EXP bar
-    this.levelText = this.add.text(10, 8, '', { fontSize: '20px', fontFamily: 'Arial, sans-serif', color: '#d0b0f0', fontStyle: 'bold', stroke: '#000', strokeThickness: 4 }).setDepth(200);
+    this.levelText = this.add.text(10, 8, '', { fontSize: '20px', fontFamily: 'Nunito, Arial, sans-serif', color: '#d0b0f0', fontStyle: 'bold', stroke: '#000', strokeThickness: 4 }).setDepth(200);
 
     // EXP bar under level text
-    this.add.text(10, 32, 'EXP', { fontSize: '14px', fontFamily: 'Arial, sans-serif', color: '#6688FF', fontStyle: 'bold', stroke: '#000', strokeThickness: 3 }).setDepth(200);
+    this.add.text(10, 32, 'EXP', { fontSize: '14px', fontFamily: 'Nunito, Arial, sans-serif', color: '#6688FF', fontStyle: 'bold', stroke: '#000', strokeThickness: 3 }).setDepth(200);
     this.expBarBg = this.add.rectangle(50, 40, 160, 12, 0x1a1a1a).setOrigin(0, 0.5).setDepth(200).setStrokeStyle(1, 0x444);
     this.expBarFill = this.add.rectangle(51, 40, 158, 10, 0x4169E1).setOrigin(0, 0.5).setDepth(201);
-    this.expText = this.add.text(130, 32, '', { fontSize: '12px', fontFamily: 'Arial, sans-serif', color: '#AAAAFF', fontStyle: 'bold', stroke: '#000', strokeThickness: 3 }).setOrigin(0.5, 0).setDepth(202);
+    this.expText = this.add.text(130, 32, '', { fontSize: '12px', fontFamily: 'Nunito, Arial, sans-serif', color: '#AAAAFF', fontStyle: 'bold', stroke: '#000', strokeThickness: 3 }).setOrigin(0.5, 0).setDepth(202);
 
     this.goldText = { setText: () => {} };
 
@@ -47,7 +47,7 @@ export class UIScene extends Phaser.Scene {
 
     // Active quests (top right)
     this.questText = this.add.text(790, 8, '', {
-      fontSize: '13px', fontFamily: 'Arial, sans-serif', color: '#cc99ff',
+      fontSize: '13px', fontFamily: 'Nunito, Arial, sans-serif', color: '#cc99ff',
       align: 'right', wordWrap: { width: 200 }, fontStyle: 'bold', stroke: '#000', strokeThickness: 3
     }).setOrigin(1, 0).setDepth(200);
 
@@ -62,7 +62,7 @@ export class UIScene extends Phaser.Scene {
 
     // Controls hint (bottom)
     this.controlsText = this.add.text(400, 578, 'WASD: Hareket   E: Etkileşim   F: Topla   K: Envanter   T: Köye Işınlan   1-4: Yetenek', {
-      fontSize: '14px', fontFamily: 'Arial, sans-serif', color: '#777', fontStyle: 'bold', stroke: '#000', strokeThickness: 3
+      fontSize: '14px', fontFamily: 'Nunito, Arial, sans-serif', color: '#777', fontStyle: 'bold', stroke: '#000', strokeThickness: 3
     }).setOrigin(0.5).setDepth(200);
 
     // Skill bar
@@ -70,19 +70,19 @@ export class UIScene extends Phaser.Scene {
 
     // Notification area
     this.notifText = this.add.text(400, 70, '', {
-      fontSize: '24px', fontFamily: 'Arial, sans-serif', color: '#FFD700',
+      fontSize: '24px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FFD700',
       fontStyle: 'bold', stroke: '#000', strokeThickness: 4
     }).setOrigin(0.5).setDepth(200).setAlpha(0);
 
     // Dialogue box
     this.dialogueBg = this.add.rectangle(400, 510, 740, 150, 0x0a0a1a, 0.94).setDepth(300).setStrokeStyle(2, 0x6a4aaa).setVisible(false);
-    this.dialogueName = this.add.text(60, 448, '', { fontSize: '22px', fontFamily: 'Arial, sans-serif', color: '#DAA520', fontStyle: 'bold', stroke: '#000', strokeThickness: 3 }).setDepth(301).setVisible(false);
+    this.dialogueName = this.add.text(60, 448, '', { fontSize: '22px', fontFamily: 'Nunito, Arial, sans-serif', color: '#DAA520', fontStyle: 'bold', stroke: '#000', strokeThickness: 3 }).setDepth(301).setVisible(false);
     this.dialogueText = this.add.text(60, 475, '', {
-      fontSize: '18px', fontFamily: 'Arial, sans-serif', color: '#ddd',
+      fontSize: '18px', fontFamily: 'Nunito, Arial, sans-serif', color: '#ddd',
       wordWrap: { width: 660 }, lineSpacing: 6
     }).setDepth(301).setVisible(false);
     this.dialogueHint = this.add.text(720, 570, '[E] Kapat', {
-      fontSize: '18px', fontFamily: 'Arial, sans-serif', color: '#666'
+      fontSize: '18px', fontFamily: 'Nunito, Arial, sans-serif', color: '#666'
     }).setOrigin(1, 0.5).setDepth(301).setVisible(false);
 
     this.updateHUD();
@@ -283,7 +283,7 @@ export class UIScene extends Phaser.Scene {
 
     // Title bar
     this._add(this.add.rectangle(400, 30, 760, 36, 0x1a1a3a).setDepth(401));
-    this._add(this.add.text(400, 30, 'KARAKTER & ENVANTER', { fontSize: '18px', fontFamily: 'Arial, sans-serif', color: '#c0a0e0', fontStyle: 'bold' }).setOrigin(0.5).setDepth(402));
+    this._add(this.add.text(400, 30, 'KARAKTER & ENVANTER', { fontSize: '18px', fontFamily: 'Nunito, Arial, sans-serif', color: '#c0a0e0', fontStyle: 'bold' }).setOrigin(0.5).setDepth(402));
 
     // ===== LEFT PANEL: Character =====
     const charX = 160, charY = 240;
@@ -293,7 +293,7 @@ export class UIScene extends Phaser.Scene {
 
     // Character name + level
     this._add(this.add.text(charX, 58, `Lv.${ps.level} ${ps.playerName || 'Kahraman'}`, {
-      fontSize: '16px', fontFamily: 'Arial, sans-serif', color: '#c0a0e0', fontStyle: 'bold'
+      fontSize: '16px', fontFamily: 'Nunito, Arial, sans-serif', color: '#c0a0e0', fontStyle: 'bold'
     }).setOrigin(0.5).setDepth(402));
 
     // Character sprite (centered, not too big)
@@ -335,7 +335,7 @@ export class UIScene extends Phaser.Scene {
 
       // Slot label below
       this._add(this.add.text(es.x, es.y + 28, es.label, {
-        fontSize: '11px', fontFamily: 'Arial, sans-serif', color: '#9999cc',
+        fontSize: '11px', fontFamily: 'Nunito, Arial, sans-serif', color: '#9999cc',
         stroke: '#000', strokeThickness: 3
       }).setOrigin(0.5).setDepth(405));
 
@@ -363,7 +363,7 @@ export class UIScene extends Phaser.Scene {
         let eqHover = null;
         eqIcon.on('pointerover', () => {
           eqHover = this._add(this.add.text(es.x, es.y - 32, eqItem.name, {
-            fontSize: '13px', fontFamily: 'Arial, sans-serif', color: '#FFD700',
+            fontSize: '13px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FFD700',
             backgroundColor: '#111', padding: { x: 6, y: 3 }, stroke: '#000', strokeThickness: 2
           }).setOrigin(0.5).setDepth(410));
 
@@ -403,30 +403,30 @@ export class UIScene extends Phaser.Scene {
     const barY = 410;
     const barW = 140;
     // HP
-    this._add(this.add.text(charX - barW/2, barY, `HP`, { fontSize: '11px', fontFamily: 'Arial, sans-serif', color: '#FF6666', fontStyle: 'bold' }).setDepth(402));
-    this._add(this.add.text(charX + barW/2, barY, `${ps.hp}/${ps.getMaxHp()}`, { fontSize: '11px', fontFamily: 'Arial, sans-serif', color: '#FF8888' }).setOrigin(1, 0).setDepth(402));
+    this._add(this.add.text(charX - barW/2, barY, `HP`, { fontSize: '11px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FF6666', fontStyle: 'bold' }).setDepth(402));
+    this._add(this.add.text(charX + barW/2, barY, `${ps.hp}/${ps.getMaxHp()}`, { fontSize: '11px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FF8888' }).setOrigin(1, 0).setDepth(402));
     this._add(this.add.rectangle(charX, barY + 16, barW, 8, 0x111).setDepth(401));
     this._add(this.add.rectangle(charX - barW/2 + barW * (ps.hp / ps.getMaxHp()) / 2, barY + 16, barW * (ps.hp / ps.getMaxHp()), 6, 0xCC0000).setDepth(402));
     // MP
-    this._add(this.add.text(charX - barW/2, barY + 26, `MP`, { fontSize: '11px', fontFamily: 'Arial, sans-serif', color: '#9966FF', fontStyle: 'bold' }).setDepth(402));
-    this._add(this.add.text(charX + barW/2, barY + 26, `${ps.mana}/${ps.getMaxMana()}`, { fontSize: '11px', fontFamily: 'Arial, sans-serif', color: '#aa88ff' }).setOrigin(1, 0).setDepth(402));
+    this._add(this.add.text(charX - barW/2, barY + 26, `MP`, { fontSize: '11px', fontFamily: 'Nunito, Arial, sans-serif', color: '#9966FF', fontStyle: 'bold' }).setDepth(402));
+    this._add(this.add.text(charX + barW/2, barY + 26, `${ps.mana}/${ps.getMaxMana()}`, { fontSize: '11px', fontFamily: 'Nunito, Arial, sans-serif', color: '#aa88ff' }).setOrigin(1, 0).setDepth(402));
     this._add(this.add.rectangle(charX, barY + 42, barW, 8, 0x111).setDepth(401));
     this._add(this.add.rectangle(charX - barW/2 + barW * (ps.mana / ps.getMaxMana()) / 2, barY + 42, barW * (ps.mana / ps.getMaxMana()), 6, 0x6a5acd).setDepth(402));
     // EXP
     const expCur = ps.getExpForLevel(ps.level);
     const expNext = ps.getExpForLevel(ps.level + 1);
     const expProg = Math.max(0, (ps.exp - expCur) / (expNext - expCur));
-    this._add(this.add.text(charX - barW/2, barY + 52, `EXP`, { fontSize: '11px', fontFamily: 'Arial, sans-serif', color: '#6688FF', fontStyle: 'bold' }).setDepth(402));
-    this._add(this.add.text(charX + barW/2, barY + 52, `${ps.exp}/${expNext}`, { fontSize: '11px', fontFamily: 'Arial, sans-serif', color: '#8888FF' }).setOrigin(1, 0).setDepth(402));
+    this._add(this.add.text(charX - barW/2, barY + 52, `EXP`, { fontSize: '11px', fontFamily: 'Nunito, Arial, sans-serif', color: '#6688FF', fontStyle: 'bold' }).setDepth(402));
+    this._add(this.add.text(charX + barW/2, barY + 52, `${ps.exp}/${expNext}`, { fontSize: '11px', fontFamily: 'Nunito, Arial, sans-serif', color: '#8888FF' }).setOrigin(1, 0).setDepth(402));
     this._add(this.add.rectangle(charX, barY + 68, barW, 8, 0x111).setDepth(401));
     this._add(this.add.rectangle(charX - barW/2 + barW * expProg / 2, barY + 68, barW * expProg, 6, 0x4169E1).setDepth(402));
     // Stats line
     this._add(this.add.text(charX, barY + 84, `ATK: ${ps.getAttack()}   DEF: ${ps.getDefense()}`, {
-      fontSize: '12px', fontFamily: 'Arial, sans-serif', color: '#ccc', fontStyle: 'bold'
+      fontSize: '12px', fontFamily: 'Nunito, Arial, sans-serif', color: '#ccc', fontStyle: 'bold'
     }).setOrigin(0.5).setDepth(402));
     // Gold prominently displayed
     this._add(this.add.text(charX, barY + 102, `Altın: ${formatGold(ps.gold)}`, {
-      fontSize: '14px', fontFamily: 'Arial, sans-serif', color: '#FFD700', fontStyle: 'bold'
+      fontSize: '14px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FFD700', fontStyle: 'bold'
     }).setOrigin(0.5).setDepth(402));
 
     // ===== RIGHT PANEL: Inventory Grid =====
@@ -442,14 +442,14 @@ export class UIScene extends Phaser.Scene {
     // Left: Equipment info (hover tooltip for equipped items)
     this._add(this.add.rectangle(tipLeftX, tipY, halfW, 80, 0x15153a, 0.9).setDepth(401).setStrokeStyle(1, 0x3a3a5a));
     const equipTooltipText = this._add(this.add.text(tipLeftX - halfW / 2 + 8, tipY - 32, '', {
-      fontSize: '11px', fontFamily: 'Arial, sans-serif', color: '#777',
+      fontSize: '11px', fontFamily: 'Nunito, Arial, sans-serif', color: '#777',
       align: 'left', wordWrap: { width: halfW - 16 }
     }).setOrigin(0, 0).setDepth(402));
 
     // Right: Item info (hover tooltip for inventory items)
     this._add(this.add.rectangle(tipRightX, tipY, halfW, 80, 0x15153a, 0.9).setDepth(401).setStrokeStyle(1, 0x3a3a5a));
     const tooltipText = this._add(this.add.text(tipRightX - halfW / 2 + 8, tipY - 32, '', {
-      fontSize: '11px', fontFamily: 'Arial, sans-serif', color: '#777',
+      fontSize: '11px', fontFamily: 'Nunito, Arial, sans-serif', color: '#777',
       align: 'left', wordWrap: { width: halfW - 16 }
     }).setOrigin(0, 0).setDepth(402));
 
@@ -491,7 +491,7 @@ export class UIScene extends Phaser.Scene {
     });
 
     const itemCount = this.add.text(gridStartX + gridW / 2, gridStartY - 30, `${ps.getUsedSlots()}/${ps.maxInventory}`, {
-      fontSize: '13px', fontFamily: 'Arial, sans-serif', color: '#888', stroke: '#000', strokeThickness: 3
+      fontSize: '13px', fontFamily: 'Nunito, Arial, sans-serif', color: '#888', stroke: '#000', strokeThickness: 3
     }).setOrigin(0.5).setDepth(405);
     this.invElements.push(itemCount);
 
@@ -634,14 +634,14 @@ export class UIScene extends Phaser.Scene {
       // Size label for big items
       if (gw > 1 || gh > 1) {
         this._add(this.add.text(ix + gw * cellSize / 2 - 4, iy + gh * cellSize / 2 - 4, `${gw}x${gh}`, {
-          fontSize: '9px', fontFamily: 'Arial, sans-serif', color: '#555'
+          fontSize: '9px', fontFamily: 'Nunito, Arial, sans-serif', color: '#555'
         }).setOrigin(1, 1).setDepth(403));
       }
 
       // Stack count badge
       if (stack.count > 1) {
         this._add(this.add.text(ix + cellSize / 2 - 4, iy + cellSize / 2 - 4, `${stack.count}`, {
-          fontSize: '13px', fontFamily: 'Arial, sans-serif', color: '#fff', fontStyle: 'bold',
+          fontSize: '13px', fontFamily: 'Nunito, Arial, sans-serif', color: '#fff', fontStyle: 'bold',
           backgroundColor: '#333', padding: { x: 2, y: 0 }, stroke: '#000', strokeThickness: 2
         }).setOrigin(1, 1).setDepth(403));
       }
@@ -651,7 +651,7 @@ export class UIScene extends Phaser.Scene {
       icon.on('pointerover', () => {
         const countStr = stack.count > 1 ? ` (x${stack.count})` : '';
         hoverLabel = this._add(this.add.text(ix, iy - gh * cellSize / 2 - 12, item.name + countStr, {
-          fontSize: '13px', fontFamily: 'Arial, sans-serif', color: '#FFD700',
+          fontSize: '13px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FFD700',
           backgroundColor: '#0a0a1a', padding: { x: 4, y: 2 }, stroke: '#000', strokeThickness: 2
         }).setOrigin(0.5).setDepth(410));
         // Right: name + description
@@ -729,7 +729,7 @@ export class UIScene extends Phaser.Scene {
 
     // Close button (top right corner)
     const closeBtn = this._add(this.add.text(765, 30, 'X', {
-      fontSize: '20px', fontFamily: 'Arial, sans-serif', color: '#FF6666', fontStyle: 'bold',
+      fontSize: '20px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FF6666', fontStyle: 'bold',
       backgroundColor: '#2a0a0a', padding: { x: 8, y: 3 }
     }).setOrigin(0.5).setDepth(403).setInteractive({ useHandCursor: true }));
     closeBtn.on('pointerdown', () => this.closeInventory());
@@ -794,19 +794,19 @@ export class UIScene extends Phaser.Scene {
 
       // Key number
       this.add.text(x - slotSize / 2 + 3, barY - slotSize / 2 + 1, `${i + 1}`, {
-        fontSize: '10px', fontFamily: 'Arial, sans-serif', color: '#888'
+        fontSize: '10px', fontFamily: 'Nunito, Arial, sans-serif', color: '#888'
       }).setDepth(202);
 
       // Skill name (short)
       const nameText = this.add.text(x, barY + 4, skill ? skill.name.split(' ')[0] : '', {
-        fontSize: '9px', fontFamily: 'Arial, sans-serif',
+        fontSize: '9px', fontFamily: 'Nunito, Arial, sans-serif',
         color: unlocked ? (skill?.color || '#aaa') : '#444',
         fontStyle: 'bold'
       }).setOrigin(0.5).setDepth(202);
 
       // Mana cost
       const manaText = this.add.text(x, barY + slotSize / 2 - 5, skill ? `${skill.manaCost}` : '', {
-        fontSize: '9px', fontFamily: 'Arial, sans-serif', color: '#4488ff'
+        fontSize: '9px', fontFamily: 'Nunito, Arial, sans-serif', color: '#4488ff'
       }).setOrigin(0.5).setDepth(202);
 
       // Cooldown overlay (initially invisible)
@@ -815,13 +815,13 @@ export class UIScene extends Phaser.Scene {
 
       // Cooldown text
       const cdText = this.add.text(x, barY - 6, '', {
-        fontSize: '12px', fontFamily: 'Arial, sans-serif', color: '#ff8888', fontStyle: 'bold'
+        fontSize: '12px', fontFamily: 'Nunito, Arial, sans-serif', color: '#ff8888', fontStyle: 'bold'
       }).setOrigin(0.5).setDepth(203).setVisible(false);
 
       // Lock icon for unavailable
       if (skill && !unlocked) {
         this.add.text(x, barY - 6, `Lv.${skill.level}`, {
-          fontSize: '10px', fontFamily: 'Arial, sans-serif', color: '#ff6666'
+          fontSize: '10px', fontFamily: 'Nunito, Arial, sans-serif', color: '#ff6666'
         }).setOrigin(0.5).setDepth(203);
       }
 

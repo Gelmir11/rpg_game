@@ -158,7 +158,7 @@ export class OverworldScene extends Phaser.Scene {
 
       // Label
       this.add.text((bStartX + bEndX) / 2, bTop - 22, bridgeNames[idx], {
-        fontSize: '20px', fontFamily: 'Arial, sans-serif', color: '#8a6a3a',
+        fontSize: '20px', fontFamily: 'Nunito, Arial, sans-serif', color: '#8a6a3a',
         fontStyle: 'bold', stroke: '#000', strokeThickness: 4
       }).setOrigin(0.5).setDepth(9999);
     });
@@ -253,7 +253,7 @@ export class OverworldScene extends Phaser.Scene {
 
     // Village label
     this.add.text(cx, cy - radiusY - 20, 'Alacakaranlık Köyü', {
-      fontSize: '40px', fontFamily: 'Arial, sans-serif', color: '#DAA520',
+      fontSize: '40px', fontFamily: 'Nunito, Arial, sans-serif', color: '#DAA520',
       stroke: '#000', strokeThickness: 6
     }).setOrigin(0.5).setDepth(9999);
 
@@ -326,7 +326,7 @@ export class OverworldScene extends Phaser.Scene {
       if (!this.playerBarsGfx || !this.playerBarsGfx.scene) {
         this.playerBarsGfx = this.add.graphics().setDepth(9990);
         this.playerNameText = this.add.text(0, 0, '', {
-          fontSize: '20px', fontFamily: 'Arial, sans-serif', color: '#ddd', fontStyle: 'bold', stroke: '#000', strokeThickness: 4
+          fontSize: '20px', fontFamily: 'Nunito, Arial, sans-serif', color: '#ddd', fontStyle: 'bold', stroke: '#000', strokeThickness: 4
         }).setOrigin(0.5).setDepth(9991);
       }
     } catch (e) { return; }
@@ -449,7 +449,7 @@ export class OverworldScene extends Phaser.Scene {
       spawns.push({ type: zb.type, x: zb.x, y: zb.y });
       // Boss etiketi - monster'a bağlanacak
       const lbl = this.add.text(zb.x, zb.y - 50, `👑 ${zb.label}`, {
-        fontSize: '22px', fontFamily: 'Arial, sans-serif', color: '#FFD700',
+        fontSize: '22px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FFD700',
         fontStyle: 'bold', stroke: '#000', strokeThickness: 4
       }).setOrigin(0.5).setDepth(9999).setAlpha(0.8);
       this._zoneBossLabels[zb.type] = lbl;
@@ -461,7 +461,7 @@ export class OverworldScene extends Phaser.Scene {
 
     // Boss bölgesi etiketi
     this.add.text(4800, 1400, 'Kadim Ejder Yuvası', {
-      fontSize: '36px', fontFamily: 'Arial, sans-serif', color: '#FF4444',
+      fontSize: '36px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FF4444',
       fontStyle: 'bold', stroke: '#000', strokeThickness: 5
     }).setOrigin(0.5).setDepth(9999).setAlpha(0.7);
 
@@ -540,7 +540,7 @@ export class OverworldScene extends Phaser.Scene {
 
     // Name label
     monster.nameLabel = this.add.text(x, y - monster.height / 2 - 22, `${data.name} Lv.${data.level}`, {
-      fontSize: '22px', fontFamily: 'Arial, sans-serif', color: '#ffcccc',
+      fontSize: '22px', fontFamily: 'Nunito, Arial, sans-serif', color: '#ffcccc',
       fontStyle: 'bold', stroke: '#000', strokeThickness: 5
     }).setOrigin(0.5).setDepth(9997);
 
@@ -579,14 +579,14 @@ export class OverworldScene extends Phaser.Scene {
 
       // Name label
       const label = this.add.text(pos.x, pos.y - 60, npc.npcData.name, {
-        fontSize: '22px', fontFamily: 'Arial, sans-serif', color: '#FFD700',
+        fontSize: '22px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FFD700',
         fontStyle: 'bold', stroke: '#000', strokeThickness: 5
       }).setOrigin(0.5).setDepth(9999);
       npc.label = label;
 
       // Quest indicator
       const questMark = this.add.text(pos.x, pos.y - 82, '!', {
-        fontSize: '28px', fontFamily: 'Arial, sans-serif', color: '#FFD700',
+        fontSize: '28px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FFD700',
         fontStyle: 'bold', stroke: '#000', strokeThickness: 5
       }).setOrigin(0.5).setDepth(9999);
       npc.questMark = questMark;
@@ -722,12 +722,12 @@ export class OverworldScene extends Phaser.Scene {
 
     const dungeonLocked = !this.playerState.hasBossKill('ancient_dragon');
     this.add.text(dnX, dnY - 36, dungeonLocked ? '🔒 Zindan' : 'Zindan', {
-      fontSize: '32px', fontFamily: 'Arial, sans-serif', color: dungeonLocked ? '#888888' : '#aa6aee',
+      fontSize: '32px', fontFamily: 'Nunito, Arial, sans-serif', color: dungeonLocked ? '#888888' : '#aa6aee',
       stroke: '#000', strokeThickness: 5
     }).setOrigin(0.5).setDepth(9999);
     if (dungeonLocked) {
       this.add.text(dnX, dnY + 20, 'Kadim Ejderi yen!', {
-        fontSize: '16px', fontFamily: 'Arial, sans-serif', color: '#FF6666',
+        fontSize: '16px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FF6666',
         stroke: '#000', strokeThickness: 3
       }).setOrigin(0.5).setDepth(9999);
     }
@@ -764,7 +764,7 @@ export class OverworldScene extends Phaser.Scene {
     hg.fillStyle(0x4a2a0a); hg.fillRoundedRect(hpx - 22, hpy - 54, 44, 18, 4);
     hg.fillStyle(0x6a4a2a); hg.fillRoundedRect(hpx - 20, hpy - 52, 40, 14, 3);
     this.add.text(hpx, hpy - 50, 'EV', {
-      fontSize: '28px', fontFamily: 'Arial, sans-serif', color: '#FFD700',
+      fontSize: '28px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FFD700',
       fontStyle: 'bold', stroke: '#000', strokeThickness: 6
     }).setOrigin(0.5).setDepth(9999);
     const homePortal = this.physics.add.staticSprite(hpx, hpy - 6, 'door_tex');
@@ -787,12 +787,12 @@ export class OverworldScene extends Phaser.Scene {
     labG.fillStyle(0x44AAFF, 0.3); labG.fillCircle(labX, labY - 14, 8);
     const labLocked = !this.playerState.hasBossKill('ancient_dragon');
     this.add.text(labX, labY - 56, labLocked ? '🔒 Labirent' : 'Labirent', {
-      fontSize: '32px', fontFamily: 'Arial, sans-serif', color: labLocked ? '#888888' : '#8B8B83',
+      fontSize: '32px', fontFamily: 'Nunito, Arial, sans-serif', color: labLocked ? '#888888' : '#8B8B83',
       fontStyle: 'bold', stroke: '#000', strokeThickness: 5
     }).setOrigin(0.5).setDepth(9999);
     if (labLocked) {
       this.add.text(labX, labY + 20, 'Kadim Ejderi yen!', {
-        fontSize: '16px', fontFamily: 'Arial, sans-serif', color: '#FF6666',
+        fontSize: '16px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FF6666',
         stroke: '#000', strokeThickness: 3
       }).setOrigin(0.5).setDepth(9999);
     }
@@ -892,7 +892,7 @@ export class OverworldScene extends Phaser.Scene {
     }).setDepth(50);
 
     // Zone labels on map
-    const zoneStyle = { fontSize: '36px', fontFamily: 'Arial, sans-serif', fontStyle: 'bold', stroke: '#000', strokeThickness: 5 };
+    const zoneStyle = { fontSize: '36px', fontFamily: 'Nunito, Arial, sans-serif', fontStyle: 'bold', stroke: '#000', strokeThickness: 5 };
     this.add.text(1800, 1800, 'Balçık Ormanı', { ...zoneStyle, color: '#44AA44' }).setOrigin(0.5).setDepth(9999).setAlpha(0.6);
     this.add.text(4000, 3500, 'Goblin Kampı', { ...zoneStyle, color: '#3CB371' }).setOrigin(0.5).setDepth(9999).setAlpha(0.6);
     this.add.text(6000, 2000, 'İskelet Mezarlığı', { ...zoneStyle, color: '#CCCCAA' }).setOrigin(0.5).setDepth(9999).setAlpha(0.6);
@@ -1427,7 +1427,7 @@ export class OverworldScene extends Phaser.Scene {
           }
         }
         const label = this.add.text(lx, ly + 32, labelText, {
-          fontSize: '22px', fontFamily: 'Arial, sans-serif', color: labelColor, fontStyle: 'bold',
+          fontSize: '22px', fontFamily: 'Nunito, Arial, sans-serif', color: labelColor, fontStyle: 'bold',
           stroke: '#000', strokeThickness: 5, align: 'center'
         }).setOrigin(0.5).setDepth(9999);
 
@@ -1496,7 +1496,7 @@ export class OverworldScene extends Phaser.Scene {
     lootSprite.itemId = itemId;
 
     const label = this.add.text(x, y + 32, itemData.name, {
-      fontSize: '22px', fontFamily: 'Arial, sans-serif', color: itemData.color, fontStyle: 'bold',
+      fontSize: '22px', fontFamily: 'Nunito, Arial, sans-serif', color: itemData.color, fontStyle: 'bold',
       stroke: '#000', strokeThickness: 3
     }).setOrigin(0.5).setDepth(9);
 
@@ -1781,7 +1781,7 @@ export class OverworldScene extends Phaser.Scene {
       if (this._tpWarning) return; // already showing
       this._tpWarning = this.add.text(this.player.x, this.player.y - 80,
         'Savaş sırasında ışınlanamazsın!', {
-          fontSize: '24px', fontFamily: 'Arial, sans-serif', color: '#FF4444',
+          fontSize: '24px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FF4444',
           fontStyle: 'bold', stroke: '#000', strokeThickness: 5
         }).setOrigin(0.5).setDepth(10001).setAlpha(1);
 
@@ -1982,7 +1982,7 @@ export class OverworldScene extends Phaser.Scene {
 
   showDamageNumber(x, y, text, color) {
     const dmgText = this.add.text(x, y, String(text), {
-      fontSize: '32px', fontFamily: 'Arial, sans-serif', color: color,
+      fontSize: '32px', fontFamily: 'Nunito, Arial, sans-serif', color: color,
       stroke: '#000', strokeThickness: 5, fontStyle: 'bold'
     }).setOrigin(0.5).setDepth(10000);
 

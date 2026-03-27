@@ -420,7 +420,7 @@ export class SkillSystem {
     // Damage text
     const color = skill.color || '#ffffff';
     const dmgText = scene.add.text(x, y - 20, `-${damage}`, {
-      fontSize: '18px', fontFamily: 'Arial, sans-serif', color,
+      fontSize: '18px', fontFamily: 'Nunito, Arial, sans-serif', color,
       fontStyle: 'bold', stroke: '#000', strokeThickness: 3
     }).setOrigin(0.5).setDepth(10);
 

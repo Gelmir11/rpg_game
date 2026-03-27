@@ -142,7 +142,7 @@ export class BossPatternSystem {
     // Phase text
     const phaseNames = ['Faz 2', 'Faz 3', 'Son Faz!'];
     const text = scene.add.text(boss.x, boss.y - 60, `⚠ ${phaseNames[phaseIndex - 1] || 'Yeni Faz!'} ⚠`, {
-      fontSize: '20px', fontFamily: 'Arial, sans-serif', color: '#FF4444',
+      fontSize: '20px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FF4444',
       fontStyle: 'bold', stroke: '#000', strokeThickness: 4
     }).setOrigin(0.5).setDepth(10000);
 
@@ -183,7 +183,7 @@ export class BossPatternSystem {
 
     // Warning text
     const warnText = scene.add.text(boss.x, boss.y - radius - 15, 'DİKKAT!', {
-      fontSize: '14px', fontFamily: 'Arial, sans-serif', color: '#FF4444',
+      fontSize: '14px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FF4444',
       fontStyle: 'bold', stroke: '#000', strokeThickness: 2
     }).setOrigin(0.5).setDepth(10);
 
@@ -243,7 +243,7 @@ export class BossPatternSystem {
 
     // Summon text
     const txt = scene.add.text(boss.x, boss.y - 40, 'Yardımcılar çağrıldı!', {
-      fontSize: '13px', fontFamily: 'Arial, sans-serif', color: '#FF8800',
+      fontSize: '13px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FF8800',
       fontStyle: 'bold', stroke: '#000', strokeThickness: 2
     }).setOrigin(0.5).setDepth(10);
     scene.tweens.add({ targets: txt, y: boss.y - 70, alpha: 0, duration: 1500, onComplete: () => txt.destroy() });
@@ -387,7 +387,7 @@ export class BossPatternSystem {
 
     // Text
     const txt = scene.add.text(boss.x, boss.y - 50, '💢 ÖFKE!', {
-      fontSize: '20px', fontFamily: 'Arial, sans-serif', color: '#FF0000',
+      fontSize: '20px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FF0000',
       fontStyle: 'bold', stroke: '#000', strokeThickness: 4
     }).setOrigin(0.5).setDepth(10);
     scene.tweens.add({ targets: txt, y: boss.y - 90, alpha: 0, duration: 2000, onComplete: () => txt.destroy() });
@@ -402,7 +402,7 @@ export class BossPatternSystem {
 
     // Big warning
     const warning = scene.add.text(400, 200, '⚠ KARANLIK PATLAMA! KAÇIN! ⚠', {
-      fontSize: '22px', fontFamily: 'Arial, sans-serif', color: '#FF0000',
+      fontSize: '22px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FF0000',
       fontStyle: 'bold', stroke: '#000', strokeThickness: 4
     }).setOrigin(0.5).setDepth(10000).setScrollFactor(0);
 
@@ -442,7 +442,7 @@ export class BossPatternSystem {
   showBossDamage(x, y, damage) {
     const scene = this.scene;
     const txt = scene.add.text(x, y - 20, `-${damage}`, {
-      fontSize: '20px', fontFamily: 'Arial, sans-serif', color: '#FF4444',
+      fontSize: '20px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FF4444',
       fontStyle: 'bold', stroke: '#000', strokeThickness: 3
     }).setOrigin(0.5).setDepth(10000);
     scene.tweens.add({ targets: txt, y: y - 50, alpha: 0, duration: 800, onComplete: () => txt.destroy() });
