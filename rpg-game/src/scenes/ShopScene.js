@@ -143,7 +143,10 @@ export class ShopScene extends Phaser.Scene {
       return null;
     };
 
+    // Önce eski pozisyonu olan itemleri yerleştir (pozisyonları koru)
     const shopGridEntries = [];
+    const shopWithPos = [];
+    const shopWithoutPos = [];
     invStacked.forEach(stack => {
       const item = ITEMS[stack.id];
       if (!item) return;
@@ -152,16 +155,25 @@ export class ShopScene extends Phaser.Scene {
         if (!stack.enhanced) return ps.getBaseItemId(g.entry) === stack.id;
         return g.entry === stack.entry;
       });
-      let pos = null;
       if (prev && shopCanPlace(prev.col, prev.row, gw, gh)) {
-        pos = { col: prev.col, row: prev.row };
+        shopWithPos.push({ stack, gw, gh, pos: { col: prev.col, row: prev.row } });
       } else {
-        pos = shopFindSlot(gw, gh);
+        shopWithoutPos.push({ stack, gw, gh });
       }
-      if (!pos) return;
+    });
+    const shopMarkOcc = (c, r, gw, gh) => {
       for (let dr = 0; dr < gh; dr++)
         for (let dc = 0; dc < gw; dc++)
-          if (pos.row + dr < maxRows && pos.col + dc < cols) shopOccupied[pos.row + dr][pos.col + dc] = true;
+          if (r + dr < maxRows && c + dc < cols) shopOccupied[r + dr][c + dc] = true;
+    };
+    shopWithPos.forEach(({ stack, gw, gh, pos }) => {
+      shopMarkOcc(pos.col, pos.row, gw, gh);
+      shopGridEntries.push({ ...stack, col: pos.col, row: pos.row, gw, gh });
+    });
+    shopWithoutPos.forEach(({ stack, gw, gh }) => {
+      const pos = shopFindSlot(gw, gh);
+      if (!pos) return;
+      shopMarkOcc(pos.col, pos.row, gw, gh);
       shopGridEntries.push({ ...stack, col: pos.col, row: pos.row, gw, gh });
     });
 

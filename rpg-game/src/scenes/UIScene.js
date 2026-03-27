@@ -502,7 +502,7 @@ export class UIScene extends Phaser.Scene {
       }
     }
 
-    // Grid'i sıfırdan oluştur — önceki pozisyonları hatırla
+    // Mevcut pozisyonları koru — sadece yeni itemler için boş yer bul
     const oldGrid = ps.inventoryGrid || [];
     ps.inventoryGrid = [];
     const occupied = Array.from({ length: maxRows }, () => Array(cols).fill(false));
@@ -526,26 +526,37 @@ export class UIScene extends Phaser.Scene {
       return null;
     };
 
-    // Her stacked item için pozisyon belirle
+    // Önce eski pozisyonu olan itemleri yerleştir (pozisyonları koru)
     const gridEntries = [];
+    const withPos = [];
+    const withoutPos = [];
     stacked.forEach(stack => {
       const item = ITEMS[stack.itemId];
       if (!item) return;
       const gw = item.gridW || 1, gh = item.gridH || 1;
-      // Önceki pozisyonu hatırla
-      const key = stack.stackable ? stack.itemId : stack.entry;
       const prev = oldGrid.find(g => {
         if (stack.stackable) return ps.getBaseItemId(g.entry) === stack.itemId;
         return g.entry === stack.entry;
       });
-      let pos = null;
       if (prev && canPlace(prev.col, prev.row, gw, gh)) {
-        pos = { col: prev.col, row: prev.row };
+        withPos.push({ stack, gw, gh, pos: { col: prev.col, row: prev.row } });
       } else {
-        pos = findSlot(gw, gh);
+        withoutPos.push({ stack, gw, gh });
       }
+    });
+    // Eski pozisyonları önce kilitle
+    withPos.forEach(({ stack, gw, gh, pos }) => {
+      markOcc(pos.col, pos.row, gw, gh);
+      const key = stack.stackable ? stack.itemId : stack.entry;
+      ps.inventoryGrid.push({ entry: key, col: pos.col, row: pos.row });
+      gridEntries.push({ ...stack, col: pos.col, row: pos.row });
+    });
+    // Sonra yeni itemlere boş yer bul
+    withoutPos.forEach(({ stack, gw, gh }) => {
+      const pos = findSlot(gw, gh);
       if (!pos) return;
       markOcc(pos.col, pos.row, gw, gh);
+      const key = stack.stackable ? stack.itemId : stack.entry;
       ps.inventoryGrid.push({ entry: key, col: pos.col, row: pos.row });
       gridEntries.push({ ...stack, col: pos.col, row: pos.row });
     });
