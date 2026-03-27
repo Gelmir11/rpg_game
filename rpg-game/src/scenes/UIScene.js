@@ -302,7 +302,7 @@ export class UIScene extends Phaser.Scene {
     charSprite.setFrame(0);
 
     // Equipment overlay layers on character preview
-    const equipLayers = ['legs', 'chest', 'arms', 'belt', 'head', 'weapon', 'necklace', 'earring'];
+    const equipLayers = ['legs', 'chest', 'arms', 'belt', 'head', 'weapon', 'necklace', 'earring', 'ring'];
     equipLayers.forEach(slot => {
       if (ps.equipped[slot]) {
         const eqSuffix = ps.gender === 'female' ? '_f' : '';
@@ -311,18 +311,23 @@ export class UIScene extends Phaser.Scene {
       }
     });
 
-    // Equipment slots around character — compact ellipse
-    const slotRX = 95, slotRY = 105;
+    // Equipment slots around character — compact ellipse (9 slots)
+    const slotRX = 100, slotRY = 110;
+    const slotCount = 9;
     const equipSlots = [
-      { slot: 'head',     label: 'Kask',     angle: -Math.PI / 2 },          // top
-      { slot: 'necklace', label: 'Kolye',   angle: -Math.PI / 4 },          // top-right
-      { slot: 'chest',    label: 'Zırh',    angle: 0 },                      // right
-      { slot: 'arms',     label: 'Kolluk',  angle: Math.PI / 4 },           // bottom-right
-      { slot: 'legs',     label: 'Pantolon',angle: Math.PI / 2 },           // bottom
-      { slot: 'belt',     label: 'Kemer',   angle: 3 * Math.PI / 4 },       // bottom-left
-      { slot: 'weapon',   label: 'Silah',   angle: Math.PI },                // left
-      { slot: 'earring',  label: 'Küpe',    angle: -3 * Math.PI / 4 },     // top-left
-    ].map(s => ({ ...s, x: charX + Math.cos(s.angle) * slotRX, y: charY + Math.sin(s.angle) * slotRY + (s.slot === 'head' ? -15 : 0) }));
+      { slot: 'head',     label: 'Kask' },
+      { slot: 'necklace', label: 'Kolye' },
+      { slot: 'chest',    label: 'Zırh' },
+      { slot: 'arms',     label: 'Kolluk' },
+      { slot: 'legs',     label: 'Pantolon' },
+      { slot: 'belt',     label: 'Kemer' },
+      { slot: 'ring',     label: 'Yüzük' },
+      { slot: 'weapon',   label: 'Silah' },
+      { slot: 'earring',  label: 'Küpe' },
+    ].map((s, i) => {
+      const angle = -Math.PI / 2 + i * (2 * Math.PI / slotCount);
+      return { ...s, angle, x: charX + Math.cos(angle) * slotRX, y: charY + Math.sin(angle) * slotRY + (s.slot === 'head' ? -15 : 0) };
+    });
 
     equipSlots.forEach(es => {
       // Slot background

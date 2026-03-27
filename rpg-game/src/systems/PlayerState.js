@@ -79,7 +79,7 @@ export class PlayerState {
     this.baseDefense = classDef.baseStats.baseDefense;
     this.speed = classDef.baseStats.speed;
 
-    // Ekipman (8 slot)
+    // Ekipman (9 slot)
     this.equipped = {
       head: null,
       chest: null,
@@ -88,7 +88,8 @@ export class PlayerState {
       weapon: null,
       necklace: null,
       earring: null,
-      belt: null
+      belt: null,
+      ring: null
     };
 
     // Envanter (max 100 slot)
@@ -503,6 +504,7 @@ export class PlayerState {
     if (itemData.type === 'weapon') return 'weapon';
     if (itemData.type === 'armor') return 'chest';
     if (itemData.type === 'accessory') {
+      if (itemData.id.includes('yuzuk')) return 'ring';
       if (itemData.id.includes('ring')) return 'earring';
       if (itemData.id.includes('amulet')) return 'necklace';
       if (itemData.id.includes('helm')) return 'head';
@@ -674,6 +676,7 @@ export class PlayerState {
     Object.assign(this, data);
     // Geriye uyumluluk: eski kayıtlarda sınıf yoksa warrior
     if (!this.playerClass) this.playerClass = 'warrior';
+    if (this.equipped && !this.equipped.ring) this.equipped.ring = null;
     this.saveSlot = slot;
     return true;
   }
