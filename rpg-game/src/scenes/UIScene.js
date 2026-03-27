@@ -877,8 +877,10 @@ export class UIScene extends Phaser.Scene {
       }
 
       // Gray out if no mana
-      const color = !hasManа ? '#666' : (slot.skill.color || '#aaa');
-      slot.nameText.setColor(unlocked ? color : '#444');
+      if (slot.nameText) {
+        const color = !hasManа ? '#666' : (slot.skill.color || '#aaa');
+        slot.nameText.setColor(unlocked ? color : '#444');
+      }
     });
   }
 }
