@@ -135,7 +135,7 @@ export class BootScene extends Phaser.Scene {
     const g = this.make.graphics({ x: 0, y: 0, add: false });
 
     // Row base colors used for extrusion fill
-    const rowBase = [0x2a5a2a, 0x3e2a1a, 0x555555, 0x0a1840, 0x222222, 0x6a4a2a, 0x0a0a1a, 0x020202];
+    const rowBase = [0x347034, 0x3e2a1a, 0x555555, 0x0a1840, 0x222222, 0x6a4a2a, 0x0a0a1a, 0x020202];
 
     for (let i = 0; i < cols; i++) {
       const rng = new Phaser.Math.RandomDataGenerator([`g${i}`]);
@@ -145,50 +145,60 @@ export class BootScene extends Phaser.Scene {
         g.fillStyle(rowBase[r]); g.fillRect(i * S, r * S, S, S);
       }
 
-      // ========== Row 0: Grass — vivid, varied, natural ==========
+      // ========== Row 0: Grass — seamless, organic, no grid lines ==========
       const x = i * S + M, y = 0 * S + M;
-      // Brighter base gradient with per-tile variation
-      const baseLight = [0x3e7a3e, 0x3a6e3a, 0x408040, 0x367036, 0x3c7a3c, 0x387438, 0x3a6e3a, 0x347034][i];
-      const baseDark = [0x2a5a2a, 0x285428, 0x2c5e2c, 0x265226, 0x2a5a2a, 0x285628, 0x265226, 0x2a582a][i];
-      this.grad(g, x, y, T, T, baseLight, baseDark);
-      // Natural ground patches — earthy spots for variation
-      for (let j = 0; j < 12; j++) {
-        g.fillStyle(rng.pick([0x306030, 0x2a5228, 0x346834, 0x2e5a30]), 0.4);
-        g.fillRect(x + rng.between(0, T - 5), y + rng.between(0, T - 5), rng.between(4, 10), rng.between(3, 7));
+      // Uniform base color across ALL tiles to eliminate grid borders
+      const grassBase = 0x347034;
+      g.fillStyle(grassBase); g.fillRect(x, y, T, T);
+      // Organic noise patches — large soft blobs that overlap tile edges
+      for (let j = 0; j < 20; j++) {
+        const nx = x + rng.between(-4, T + 4);
+        const ny = y + rng.between(-4, T + 4);
+        const nr = rng.between(6, 18);
+        g.fillStyle(rng.pick([0x2e6830, 0x387038, 0x306630, 0x3a7a3a, 0x2a5e2c, 0x368036]), rng.realInRange(0.15, 0.35));
+        g.fillCircle(nx, ny, nr);
       }
-      // Light dappled sunlight patches
-      for (let j = 0; j < 3; j++) {
-        g.fillStyle(rng.pick([0x4a8a4a, 0x509050, 0x48864a]), 0.2);
-        g.fillCircle(x + rng.between(12, 52), y + rng.between(12, 52), rng.between(6, 14));
+      // Soft light patches — dappled sunlight feel
+      for (let j = 0; j < 5; j++) {
+        g.fillStyle(rng.pick([0x48884a, 0x4a8e4c, 0x509050]), rng.realInRange(0.08, 0.18));
+        g.fillCircle(x + rng.between(4, 60), y + rng.between(4, 60), rng.between(8, 20));
       }
-      // Grass blades — varied heights, more vivid greens
-      for (let j = 0; j < 35; j++) {
+      // Subtle dark patches for depth
+      for (let j = 0; j < 4; j++) {
+        g.fillStyle(rng.pick([0x265226, 0x2a5428, 0x224e22]), rng.realInRange(0.1, 0.2));
+        g.fillCircle(x + rng.between(4, 60), y + rng.between(4, 60), rng.between(5, 14));
+      }
+      // Grass blades — dense and varied
+      for (let j = 0; j < 40; j++) {
         const gx = x + rng.between(1, T - 2);
-        const gy = y + rng.between(10, T - 2);
-        const gh = rng.between(4, 10);
-        const shade = rng.pick([0x4a8a4a, 0x58985a, 0x68a868, 0x4a7a3a, 0x3a7a4a, 0x509850]);
-        g.fillStyle(shade, 0.75); g.fillRect(gx, gy - gh, 1, gh);
-        if (rng.frac() > 0.5) { g.fillStyle(shade, 0.35); g.fillRect(gx + 1, gy - gh + 1, 1, gh - 2); }
+        const gy = y + rng.between(6, T - 2);
+        const gh = rng.between(3, 8);
+        const shade = rng.pick([0x4a8a4a, 0x58985a, 0x5aa85a, 0x4a7a3a, 0x3a7a4a, 0x509850, 0x489048]);
+        g.fillStyle(shade, rng.realInRange(0.5, 0.8)); g.fillRect(gx, gy - gh, 1, gh);
+        if (rng.frac() > 0.4) { g.fillStyle(shade, 0.25); g.fillRect(gx + 1, gy - gh + 1, 1, gh - 2); }
       }
-      // Subtle twilight tint on darker variants (reduced intensity)
-      if (i >= 5) { g.fillStyle(0x1a1030, 0.1); g.fillRect(x, y, T, T); }
-      // Wildflowers on some tiles
-      if (i === 1 || i === 5) {
-        g.fillStyle(0xE88AE8); g.fillCircle(x + 14, y + 28, 2.5); g.fillStyle(0xFFE060, 0.9); g.fillCircle(x + 14, y + 28, 1);
-        g.fillStyle(0xAA80DD); g.fillCircle(x + 48, y + 44, 2); g.fillStyle(0xFFE060, 0.8); g.fillCircle(x + 48, y + 44, 0.8);
-        g.fillStyle(0xFF8CAA); g.fillCircle(x + 32, y + 18, 2); g.fillStyle(0xFFFFFF, 0.6); g.fillCircle(x + 32, y + 18, 0.8);
-      }
-      // Small clover / ground detail on other tiles
-      if (i === 2 || i === 6) {
-        for (let c = 0; c < 3; c++) {
-          const cx2 = x + rng.between(8, 56), cy2 = y + rng.between(8, 56);
-          g.fillStyle(0x3a8a3a, 0.5); g.fillCircle(cx2, cy2, 2); g.fillCircle(cx2 + 2, cy2 - 1, 2); g.fillCircle(cx2 + 1, cy2 + 2, 2);
+      // Wildflowers scattered naturally
+      if (i === 1 || i === 4) {
+        const fc = rng.between(2, 4);
+        for (let f = 0; f < fc; f++) {
+          const fx = x + rng.between(8, 56), fy = y + rng.between(8, 56);
+          g.fillStyle(rng.pick([0xE88AE8, 0xAA80DD, 0xFF8CAA, 0xFFCC44])); g.fillCircle(fx, fy, 2);
+          g.fillStyle(0xFFE060, 0.9); g.fillCircle(fx, fy, 0.8);
         }
       }
+      // Clover patches
+      if (i === 2 || i === 5) {
+        for (let c = 0; c < 3; c++) {
+          const cx2 = x + rng.between(8, 56), cy2 = y + rng.between(8, 56);
+          g.fillStyle(0x3a8a3a, 0.45); g.fillCircle(cx2, cy2, 2); g.fillCircle(cx2 + 2, cy2 - 1, 2); g.fillCircle(cx2 + 1, cy2 + 2, 2);
+        }
+      }
+      // Tiny pebbles
       if (i === 3 || i === 7) {
-        // Small pebbles
-        g.fillStyle(0x7a7a6a, 0.4); g.fillCircle(x + 20, y + 42, 2); g.fillCircle(x + 44, y + 28, 1.5);
-        g.fillStyle(0x8a8a7a, 0.3); g.fillCircle(x + 36, y + 52, 2.5);
+        for (let p = 0; p < 3; p++) {
+          g.fillStyle(rng.pick([0x7a7a6a, 0x8a8a7a, 0x6a6a5a]), 0.3);
+          g.fillCircle(x + rng.between(8, 56), y + rng.between(8, 56), rng.realInRange(1, 2.5));
+        }
       }
 
       // ========== Row 1: Dirt ==========
