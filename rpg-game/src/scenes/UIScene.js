@@ -357,7 +357,7 @@ export class UIScene extends Phaser.Scene {
         // Hover: show name + full description in tooltip
         let eqHover = null;
         eqIcon.on('pointerover', () => {
-          eqHover = this._add(this.add.text(es.x, es.y - 32, eq.name, {
+          eqHover = this._add(this.add.text(es.x, es.y - 32, eqItem.name, {
             fontSize: '13px', fontFamily: 'Arial, sans-serif', color: '#FFD700',
             backgroundColor: '#111', padding: { x: 6, y: 3 }, stroke: '#000', strokeThickness: 2
           }).setOrigin(0.5).setDepth(410));
