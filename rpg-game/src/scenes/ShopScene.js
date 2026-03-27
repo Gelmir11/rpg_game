@@ -506,7 +506,13 @@ export class ShopScene extends Phaser.Scene {
     this.cleanupQtyInput();
     this.activeTab = 'shop';
     this.playerState.save();
-    this.scene.start('OverworldScene');
+    // Wake sleeping OverworldScene instead of full restart (instant return)
+    if (this.scene.isSleeping('OverworldScene')) {
+      this.scene.wake('OverworldScene');
+      this.scene.stop('ShopScene');
+    } else {
+      this.scene.start('OverworldScene');
+    }
   }
 
   // ===== ZANAAT SİSTEMİ =====

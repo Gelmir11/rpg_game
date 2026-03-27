@@ -47,6 +47,13 @@ export class OverworldScene extends Phaser.Scene {
 
     // Event bus for UI communication
     this.events.on('shutdown', () => this.cleanup());
+
+    // Wake event — resume after returning from ShopScene
+    this.events.on('wake', () => {
+      this.playerState = PlayerState.getInstance();
+      const uiScene = this.scene.get('UIScene');
+      if (uiScene && uiScene.refreshUI) uiScene.refreshUI();
+    });
   }
 
   createMap() {
@@ -1765,6 +1772,12 @@ export class OverworldScene extends Phaser.Scene {
     }
 
     ps.save();
+    // ShopScene: sleep overworld instead of destroying it (avoid 1-2 min rebuild)
+    if (portal.targetScene === 'ShopScene') {
+      this.scene.sleep('OverworldScene');
+      this.scene.launch('ShopScene');
+      return;
+    }
     this.scene.start(portal.targetScene);
   }
 
