@@ -10,6 +10,7 @@ export class HomeScene extends Phaser.Scene {
   create() {
     this.playerState = PlayerState.getInstance();
     this.storageOpen = false;
+    this.storagePage = 0; // 0 = sayfa 1, 1 = sayfa 2
 
     this.drawRoom();
     this.createPlayer();
@@ -342,7 +343,7 @@ export class HomeScene extends Phaser.Scene {
   }
 
   // Helper to stack items and place in variable-size grid
-  buildStackedGrid(items, gridX, gridY, cols, maxRows, cellSize, depth, onClickFn, gridArrayName) {
+  buildStackedGrid(items, gridX, gridY, cols, maxRows, cellSize, depth, onClickFn, gridArrayName, rowOffset = 0) {
     const els = [];
     const ps = PlayerState.getInstance();
     const gridArray = gridArrayName === 'storage' ? ps.storageGrid : ps.inventoryGrid;
@@ -430,7 +431,7 @@ export class HomeScene extends Phaser.Scene {
       const gw = item.gridW || 1, gh = item.gridH || 1;
 
       const ix = gridX + stack.col * cellSize + (gw - 1) * cellSize / 2;
-      const iy = gridY + stack.row * cellSize + (gh - 1) * cellSize / 2;
+      const iy = gridY + (stack.row - rowOffset) * cellSize + (gh - 1) * cellSize / 2;
 
       if (gw > 1 || gh > 1)
         els.push(this.add.rectangle(ix, iy, gw * cellSize - 4, gh * cellSize - 4, 0x1a1a3a, 0.8).setDepth(depth).setStrokeStyle(1, 0x4a4a6a));
@@ -458,8 +459,8 @@ export class HomeScene extends Phaser.Scene {
         icon.setAlpha(1);
         icon.setDepth(depth + 1);
         const dropCol = Math.round((icon.x - gridX) / cellSize);
-        const dropRow = Math.round((icon.y - gridY) / cellSize);
-        if (dropCol >= 0 && dropCol + gw <= cols && dropRow >= 0 && dropRow + gh <= maxRows) {
+        const dropRow = Math.round((icon.y - gridY) / cellSize) + rowOffset;
+        if (dropCol >= 0 && dropCol + gw <= cols && dropRow >= rowOffset && dropRow + gh <= rowOffset + maxRows) {
           let canPlace = true;
           const gridIdx = activeGrid.findIndex(g => g.entry === stack.entry || (stack.stackable && ps.getBaseItemId(g.entry) === stack.itemId));
           for (let dr = 0; dr < gh && canPlace; dr++)
@@ -533,15 +534,44 @@ export class HomeScene extends Phaser.Scene {
     // Divider
     add(this.add.rectangle(395, 310, 3, 490, 0x5555aa).setDepth(101));
 
-    // Right: Storage
+    // Right: Storage with pagination (2 pages × 100 slots)
+    const page = this.storagePage || 0;
+    const totalPages = 2;
     add(this.add.text(600, 55, `Depo (${ps.storage.length}/${ps.maxStorage})`, {
       fontSize: '15px', fontFamily: 'Nunito, Arial, sans-serif', color: '#cc99ff', fontStyle: 'bold'
     }).setOrigin(0.5).setDepth(103));
 
-    const stoEls = this.buildStackedGrid(ps.storage, 420, 85, 8, 10, 38, 101, (itemId) => {
+    // Filter storage items by page — page 0: grid rows 0-9, page 1: grid rows 10-19
+    const pageRowStart = page * 10;
+    const pageRowEnd = pageRowStart + 10;
+    const pageItems = ps.storage.filter(entry => {
+      const gridEntry = ps.storageGrid.find(g => g.entry === entry);
+      if (!gridEntry) return page === 0; // ungridded items show on page 1
+      return gridEntry.row >= pageRowStart && gridEntry.row < pageRowEnd;
+    });
+
+    const stoEls = this.buildStackedGrid(pageItems, 420, 85, 10, 10, 38, 101, (itemId) => {
       if (ps.removeFromStorage(itemId) && ps.addItem(itemId)) { this.closeStorage(); this.openStorage(); }
-    }, 'storage');
+    }, 'storage', pageRowStart);
     stoEls.forEach(e => this.storageUIElements.push(e));
+
+    // Page navigation buttons
+    const pageY = 575;
+    const prevBtn = add(this.add.text(540, pageY, '◄', {
+      fontSize: '18px', fontFamily: 'Nunito, Arial, sans-serif', color: page > 0 ? '#88aaff' : '#333',
+      fontStyle: 'bold'
+    }).setOrigin(0.5).setDepth(102).setInteractive({ useHandCursor: page > 0 }));
+    if (page > 0) prevBtn.on('pointerdown', () => { this.storagePage--; this.closeStorage(); this.openStorage(); });
+
+    add(this.add.text(600, pageY, `Sayfa ${page + 1}/${totalPages}`, {
+      fontSize: '14px', fontFamily: 'Nunito, Arial, sans-serif', color: '#aaaacc'
+    }).setOrigin(0.5).setDepth(102));
+
+    const nextBtn = add(this.add.text(660, pageY, '►', {
+      fontSize: '18px', fontFamily: 'Nunito, Arial, sans-serif', color: page < totalPages - 1 ? '#88aaff' : '#333',
+      fontStyle: 'bold'
+    }).setOrigin(0.5).setDepth(102).setInteractive({ useHandCursor: page < totalPages - 1 }));
+    if (page < totalPages - 1) nextBtn.on('pointerdown', () => { this.storagePage++; this.closeStorage(); this.openStorage(); });
 
     // Close button
     const closeBtn = add(this.add.text(760, 24, 'X', {
@@ -550,7 +580,7 @@ export class HomeScene extends Phaser.Scene {
     }).setOrigin(0.5).setDepth(102).setInteractive({ useHandCursor: true }));
     closeBtn.on('pointerdown', () => this.closeStorage());
 
-    add(this.add.text(400, 575, '[E] Kapat', { fontSize: '12px', fontFamily: 'Nunito, Arial, sans-serif', color: '#555' }).setOrigin(0.5).setDepth(101));
+    add(this.add.text(400, pageY, '[E] Kapat', { fontSize: '12px', fontFamily: 'Nunito, Arial, sans-serif', color: '#555' }).setOrigin(0.5).setDepth(101));
   }
 
   closeStorage() {
