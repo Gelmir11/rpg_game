@@ -439,29 +439,25 @@ export class SkillSystem {
     const flash = scene.add.circle(x, y, 6, 0xFFFFFF, 0.7).setDepth(9);
     scene.tweens.add({ targets: flash, scale: 3, alpha: 0, duration: 200, onComplete: () => flash.destroy() });
 
-    // Hit particles (lightweight — max 5)
+    // Hit particles — one-shot explode (NOT continuous emitting)
     if (scene.textures.exists('particle_hit')) {
-      const emitter = scene.add.particles(x, y, 'particle_hit', {
-        speed: { min: 40, max: 100 }, angle: { min: 0, max: 360 },
-        scale: { start: 0.6, end: 0 }, lifespan: 300,
-        quantity: 5, blendMode: 'ADD', tint: c
-      });
-      scene.time.delayedCall(300, () => emitter.destroy());
+      scene.add.particles(x, y, 'particle_hit', {
+        speed: { min: 40, max: 100 }, scale: { start: 0.6, end: 0 },
+        lifespan: 300, blendMode: 'ADD', tint: c, emitting: false
+      }).explode(5);
     }
 
-    // Skill-specific lightweight effects (only 1 extra object each)
+    // Skill-specific one-shot effects
     if (skill.id === 'fireball' && scene.textures.exists('particle_fire')) {
-      const flames = scene.add.particles(x, y, 'particle_fire', {
-        speed: { min: 40, max: 100 }, angle: { min: 0, max: 360 },
-        scale: { start: 0.8, end: 0 }, lifespan: 400, quantity: 8, blendMode: 'ADD'
-      });
-      scene.time.delayedCall(400, () => flames.destroy());
+      scene.add.particles(x, y, 'particle_fire', {
+        speed: { min: 40, max: 100 }, scale: { start: 0.8, end: 0 },
+        lifespan: 400, blendMode: 'ADD', emitting: false
+      }).explode(6);
     } else if (skill.id === 'ice_bolt' && scene.textures.exists('particle_ice')) {
-      const ice = scene.add.particles(x, y, 'particle_ice', {
-        speed: { min: 40, max: 100 }, angle: { min: 0, max: 360 },
-        scale: { start: 0.7, end: 0 }, lifespan: 400, quantity: 6, blendMode: 'ADD', gravityY: 60
-      });
-      scene.time.delayedCall(400, () => ice.destroy());
+      scene.add.particles(x, y, 'particle_ice', {
+        speed: { min: 40, max: 100 }, scale: { start: 0.7, end: 0 },
+        lifespan: 400, blendMode: 'ADD', gravityY: 60, emitting: false
+      }).explode(5);
     } else if (skill.id === 'power_strike' || skill.id === 'shield_bash') {
       const arc = scene.add.graphics().setDepth(9);
       arc.lineStyle(3, c, 0.7);
@@ -491,14 +487,13 @@ export class SkillSystem {
     const scene = this.scene;
     const c = parseInt((color || '#FFD700').replace('#', ''), 16);
 
-    // Sparkle particles (lightweight)
+    // Sparkle particles — one-shot
     if (scene.textures.exists('particle_sparkle')) {
-      const emitter = scene.add.particles(x, y, 'particle_sparkle', {
+      scene.add.particles(x, y, 'particle_sparkle', {
         speed: { min: 30, max: 70 }, angle: { min: 250, max: 290 },
         scale: { start: 0.7, end: 0 }, lifespan: 700,
-        quantity: 8, blendMode: 'ADD', tint: c
-      });
-      scene.time.delayedCall(700, () => emitter.destroy());
+        blendMode: 'ADD', tint: c, emitting: false
+      }).explode(8);
     }
 
     // Buff glow ring
