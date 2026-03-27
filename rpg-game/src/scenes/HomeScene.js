@@ -503,9 +503,7 @@ export class HomeScene extends Phaser.Scene {
       icon.on('pointerout', () => { if (hoverLabel) { hoverLabel.destroy(); hoverLabel = null; } });
       icon.on('pointerdown', (p) => {
         if (!p.primaryDown) return;
-        // Shift+click = transfer all in stack
-        const transferCount = p.event.shiftKey ? stack.count : 1;
-        onClickFn(stack.itemId, transferCount);
+        onClickFn(stack.itemId, stack.count);
       });
     });
 
@@ -531,13 +529,20 @@ export class HomeScene extends Phaser.Scene {
       fontSize: '15px', fontFamily: 'Nunito, Arial, sans-serif', color: '#cc99ff', fontStyle: 'bold'
     }).setOrigin(0.5).setDepth(103));
 
-    const invEls = this.buildStackedGrid(ps.inventory, 45, 85, 7, 10, 38, 101, (itemId, count) => {
-      let moved = 0;
-      for (let i = 0; i < count; i++) {
-        if (ps.removeItem(itemId) && ps.addToStorage(itemId)) moved++;
-        else break;
+    const invEls = this.buildStackedGrid(ps.inventory, 45, 85, 7, 10, 38, 101, (itemId, stackCount) => {
+      const doTransfer = (qty) => {
+        let moved = 0;
+        for (let i = 0; i < qty; i++) {
+          if (ps.removeItem(itemId) && ps.addToStorage(itemId)) moved++;
+          else break;
+        }
+        if (moved > 0) { this.closeStorage(); this.openStorage(); }
+      };
+      if (stackCount > 1) {
+        this.showQtyInput(0, 0, stackCount, doTransfer);
+      } else {
+        doTransfer(1);
       }
-      if (moved > 0) { this.closeStorage(); this.openStorage(); }
     }, 'inventory');
     invEls.forEach(e => this.storageUIElements.push(e));
 
@@ -560,13 +565,20 @@ export class HomeScene extends Phaser.Scene {
       return gridEntry.row >= pageRowStart && gridEntry.row < pageRowEnd;
     });
 
-    const stoEls = this.buildStackedGrid(pageItems, 420, 85, 10, 10, 38, 101, (itemId, count) => {
-      let moved = 0;
-      for (let i = 0; i < count; i++) {
-        if (ps.removeFromStorage(itemId) && ps.addItem(itemId)) moved++;
-        else break;
+    const stoEls = this.buildStackedGrid(pageItems, 420, 85, 10, 10, 38, 101, (itemId, stackCount) => {
+      const doTransfer = (qty) => {
+        let moved = 0;
+        for (let i = 0; i < qty; i++) {
+          if (ps.removeFromStorage(itemId) && ps.addItem(itemId)) moved++;
+          else break;
+        }
+        if (moved > 0) { this.closeStorage(); this.openStorage(); }
+      };
+      if (stackCount > 1) {
+        this.showQtyInput(0, 0, stackCount, doTransfer);
+      } else {
+        doTransfer(1);
       }
-      if (moved > 0) { this.closeStorage(); this.openStorage(); }
     }, 'storage', pageRowStart);
     stoEls.forEach(e => this.storageUIElements.push(e));
 
@@ -596,15 +608,60 @@ export class HomeScene extends Phaser.Scene {
     closeBtn.on('pointerdown', () => this.closeStorage());
 
     add(this.add.text(190, pageY, '[E] Kapat', { fontSize: '12px', fontFamily: 'Nunito, Arial, sans-serif', color: '#555' }).setOrigin(0.5).setDepth(101));
-    add(this.add.text(190, pageY + 16, 'Shift+Tık = Toplu Aktar', { fontSize: '10px', fontFamily: 'Nunito, Arial, sans-serif', color: '#444' }).setOrigin(0.5).setDepth(101));
   }
 
   closeStorage() {
+    this.cleanupQtyInput();
     this.storageOpen = false;
     if (this.storageUIElements) {
       this.storageUIElements.forEach(e => { if (e && e.destroy) e.destroy(); });
       this.storageUIElements = null;
     }
     this.children.list.filter(c => c.depth >= 99 && c.depth <= 110).forEach(c => c.destroy());
+  }
+
+  showQtyInput(x, y, maxQty, callback) {
+    this.cleanupQtyInput();
+    const overlay = this.add.rectangle(400, 300, 800, 600, 0x000000, 0.5).setDepth(150).setInteractive();
+    const popup = this.add.rectangle(400, 280, 240, 160, 0x1a1a3a, 0.98).setDepth(151).setStrokeStyle(2, 0x6a5aaa);
+    const title = this.add.text(400, 230, 'Miktar Gir', { fontSize: '16px', fontFamily: 'Nunito, Arial, sans-serif', color: '#DEB887', fontStyle: 'bold' }).setOrigin(0.5).setDepth(152);
+    const maxLabel = this.add.text(400, 252, `(Max: ${maxQty})`, { fontSize: '12px', fontFamily: 'Nunito, Arial, sans-serif', color: '#888' }).setOrigin(0.5).setDepth(152);
+
+    const canvas = this.sys.game.canvas;
+    const rect = canvas.getBoundingClientRect();
+    const inp = document.createElement('input');
+    inp.type = 'number'; inp.min = '1'; inp.max = String(maxQty); inp.value = String(maxQty);
+    inp.style.cssText = `position:fixed;left:${rect.left + rect.width / 2 - 40}px;top:${rect.top + rect.height * 0.47 - 12}px;width:80px;height:24px;font-size:16px;text-align:center;background:#0a0a2a;color:#fff;border:1px solid #6a5aaa;border-radius:4px;z-index:9999;font-family:Nunito,Arial,sans-serif;`;
+    document.body.appendChild(inp);
+    this.qtyInput = inp;
+    setTimeout(() => { inp.focus(); inp.select(); }, 50);
+
+    const okBtn = this.add.text(360, 320, 'Tamam', { fontSize: '14px', fontFamily: 'Nunito, Arial, sans-serif', color: '#88ff88', fontStyle: 'bold', backgroundColor: '#1a3a1a', padding: { x: 10, y: 4 } }).setOrigin(0.5).setDepth(152).setInteractive({ useHandCursor: true });
+    const cancelBtn = this.add.text(440, 320, 'İptal', { fontSize: '14px', fontFamily: 'Nunito, Arial, sans-serif', color: '#ff8888', fontStyle: 'bold', backgroundColor: '#3a1a1a', padding: { x: 10, y: 4 } }).setOrigin(0.5).setDepth(152).setInteractive({ useHandCursor: true });
+
+    const doConfirm = () => {
+      let qty = parseInt(inp.value) || 1;
+      qty = Math.max(1, Math.min(qty, maxQty));
+      this.cleanupQtyInput();
+      callback(qty);
+    };
+
+    okBtn.on('pointerdown', doConfirm);
+    cancelBtn.on('pointerdown', () => this.cleanupQtyInput());
+    overlay.on('pointerdown', () => this.cleanupQtyInput());
+    inp.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') doConfirm();
+      if (e.key === 'Escape') this.cleanupQtyInput();
+    });
+
+    this._qtyPopupElements = [overlay, popup, title, maxLabel, okBtn, cancelBtn];
+  }
+
+  cleanupQtyInput() {
+    if (this.qtyInput) { this.qtyInput.remove(); this.qtyInput = null; }
+    if (this._qtyPopupElements) {
+      this._qtyPopupElements.forEach(e => { if (e && e.destroy) e.destroy(); });
+      this._qtyPopupElements = null;
+    }
   }
 }
