@@ -302,7 +302,7 @@ export class UIScene extends Phaser.Scene {
     charSprite.setFrame(0);
 
     // Equipment overlay layers on character preview
-    const equipLayers = ['legs', 'chest', 'arms', 'belt', 'head', 'weapon', 'necklace', 'earring', 'ring'];
+    const equipLayers = ['legs', 'chest', 'arms', 'belt', 'head', 'weapon', 'necklace', 'earring'];
     equipLayers.forEach(slot => {
       if (ps.equipped[slot]) {
         const eqSuffix = ps.gender === 'female' ? '_f' : '';
