@@ -938,6 +938,11 @@ export class OverworldScene extends Phaser.Scene {
     // Reveal cells around player (radius of 4 cells)
     const px = Math.floor(this.player.x / this.fogCellSize);
     const py = Math.floor(this.player.y / this.fogCellSize);
+
+    // Performance: skip if player hasn't moved to a new cell
+    if (px === this._lastFogPx && py === this._lastFogPy) return;
+    this._lastFogPx = px;
+    this._lastFogPy = py;
     const radius = 4;
 
     let changed = false;
@@ -1841,11 +1846,19 @@ export class OverworldScene extends Phaser.Scene {
   }
 
   updateMonsters(time, delta) {
+    const px = this.player.x, py = this.player.y;
     this.monsterObjects.forEach(monster => {
       if (!monster.active || monster.monsterData.isDead) return;
 
       const data = monster.monsterData;
-      const distToPlayer = Phaser.Math.Distance.Between(monster.x, monster.y, this.player.x, this.player.y);
+      // Performance: skip monsters far from player (>800px)
+      const dx = monster.x - px, dy = monster.y - py;
+      const distSq = dx * dx + dy * dy;
+      if (distSq > 640000 && !data.aggroed) { // 800^2 = 640000
+        monster.body.setVelocity(0, 0);
+        return;
+      }
+      const distToPlayer = Math.sqrt(distSq);
 
       // Keep monsters out of village
       if (this.isInsideVillage(monster.x, monster.y)) {
@@ -1918,8 +1931,19 @@ export class OverworldScene extends Phaser.Scene {
   }
 
   updateMonsterHPBars() {
+    const px2 = this.player.x, py2 = this.player.y;
     this.monsterObjects.forEach(monster => {
       if (!monster.active || monster.monsterData.isDead) return;
+
+      // Performance: skip HP bars for far monsters (>600px)
+      const dx2 = monster.x - px2, dy2 = monster.y - py2;
+      if (dx2 * dx2 + dy2 * dy2 > 360000) { // 600^2
+        monster.setVisible(false);
+        if (monster.nameLabel) monster.nameLabel.setVisible(false);
+        if (monster.bossLabel) monster.bossLabel.setVisible(false);
+        monster.hpBar.clear();
+        return;
+      }
 
       // Hide monsters in unexplored (dark) areas
       const fogX = Math.floor(monster.x / this.fogCellSize);
