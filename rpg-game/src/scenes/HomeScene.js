@@ -501,7 +501,12 @@ export class HomeScene extends Phaser.Scene {
         els.push(hoverLabel);
       });
       icon.on('pointerout', () => { if (hoverLabel) { hoverLabel.destroy(); hoverLabel = null; } });
-      icon.on('pointerdown', (p) => { if (!p.primaryDown) return; onClickFn(stack.itemId); });
+      icon.on('pointerdown', (p) => {
+        if (!p.primaryDown) return;
+        // Shift+click = transfer all in stack
+        const transferCount = p.event.shiftKey ? stack.count : 1;
+        onClickFn(stack.itemId, transferCount);
+      });
     });
 
     return els;
@@ -526,8 +531,13 @@ export class HomeScene extends Phaser.Scene {
       fontSize: '15px', fontFamily: 'Nunito, Arial, sans-serif', color: '#cc99ff', fontStyle: 'bold'
     }).setOrigin(0.5).setDepth(103));
 
-    const invEls = this.buildStackedGrid(ps.inventory, 45, 85, 7, 10, 38, 101, (itemId) => {
-      if (ps.removeItem(itemId) && ps.addToStorage(itemId)) { this.closeStorage(); this.openStorage(); }
+    const invEls = this.buildStackedGrid(ps.inventory, 45, 85, 7, 10, 38, 101, (itemId, count) => {
+      let moved = 0;
+      for (let i = 0; i < count; i++) {
+        if (ps.removeItem(itemId) && ps.addToStorage(itemId)) moved++;
+        else break;
+      }
+      if (moved > 0) { this.closeStorage(); this.openStorage(); }
     }, 'inventory');
     invEls.forEach(e => this.storageUIElements.push(e));
 
@@ -550,8 +560,13 @@ export class HomeScene extends Phaser.Scene {
       return gridEntry.row >= pageRowStart && gridEntry.row < pageRowEnd;
     });
 
-    const stoEls = this.buildStackedGrid(pageItems, 420, 85, 10, 10, 38, 101, (itemId) => {
-      if (ps.removeFromStorage(itemId) && ps.addItem(itemId)) { this.closeStorage(); this.openStorage(); }
+    const stoEls = this.buildStackedGrid(pageItems, 420, 85, 10, 10, 38, 101, (itemId, count) => {
+      let moved = 0;
+      for (let i = 0; i < count; i++) {
+        if (ps.removeFromStorage(itemId) && ps.addItem(itemId)) moved++;
+        else break;
+      }
+      if (moved > 0) { this.closeStorage(); this.openStorage(); }
     }, 'storage', pageRowStart);
     stoEls.forEach(e => this.storageUIElements.push(e));
 
@@ -580,7 +595,8 @@ export class HomeScene extends Phaser.Scene {
     }).setOrigin(0.5).setDepth(102).setInteractive({ useHandCursor: true }));
     closeBtn.on('pointerdown', () => this.closeStorage());
 
-    add(this.add.text(400, pageY, '[E] Kapat', { fontSize: '12px', fontFamily: 'Nunito, Arial, sans-serif', color: '#555' }).setOrigin(0.5).setDepth(101));
+    add(this.add.text(190, pageY, '[E] Kapat', { fontSize: '12px', fontFamily: 'Nunito, Arial, sans-serif', color: '#555' }).setOrigin(0.5).setDepth(101));
+    add(this.add.text(190, pageY + 16, 'Shift+Tık = Toplu Aktar', { fontSize: '10px', fontFamily: 'Nunito, Arial, sans-serif', color: '#444' }).setOrigin(0.5).setDepth(101));
   }
 
   closeStorage() {
