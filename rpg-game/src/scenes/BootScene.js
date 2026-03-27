@@ -3953,6 +3953,135 @@ export class BootScene extends Phaser.Scene {
   generateUISprites() {
     const mk = (key, w, h, fn) => { const g = this.make.graphics({ add: false }); fn(g); g.generateTexture(key, w, h); g.destroy(); };
 
+    // ===== SKILL ICONS (48x48) =====
+    const S = 48;
+
+    // Warrior: Güçlü Vuruş — kılıç darbesi
+    mk('skill_power_strike', S, S, g => {
+      g.fillStyle(0x1a0808, 0.6); g.fillRoundedRect(0, 0, S, S, 6);
+      g.fillStyle(0xcccccc); g.fillRect(22, 4, 4, 28); // blade
+      g.fillStyle(0xffffff, 0.6); g.fillRect(23, 5, 1, 26); // shine
+      g.fillStyle(0x8B4513); g.fillRect(18, 32, 12, 4); // guard
+      g.fillStyle(0x654321); g.fillRect(22, 36, 4, 10); // handle
+      g.fillStyle(0xe74c3c, 0.5); g.fillCircle(24, 16, 10); // power glow
+      g.lineStyle(2, 0xe74c3c, 0.7);
+      g.lineBetween(10, 10, 18, 18); g.lineBetween(30, 10, 38, 4); // slash lines
+    });
+
+    // Warrior: Kalkan Çarpması — kalkan
+    mk('skill_shield_bash', S, S, g => {
+      g.fillStyle(0x1a1208, 0.6); g.fillRoundedRect(0, 0, S, S, 6);
+      g.fillStyle(0x8B7355); g.fillRoundedRect(10, 6, 28, 36, 4); // shield body
+      g.fillStyle(0xA0894D); g.fillRoundedRect(12, 8, 24, 32, 3); // shield inner
+      g.fillStyle(0xf39c12); g.fillCircle(24, 22, 6); // boss center
+      g.fillStyle(0xFFD700, 0.8); g.fillCircle(24, 22, 3); // boss highlight
+      g.lineStyle(2, 0x6B5B3F); g.strokeRoundedRect(10, 6, 28, 36, 4);
+      g.fillStyle(0xf39c12, 0.4); g.fillCircle(38, 14, 6); // impact flash
+    });
+
+    // Warrior: Kasırga — dönerek saldırı
+    mk('skill_whirlwind', S, S, g => {
+      g.fillStyle(0x1a0e05, 0.6); g.fillRoundedRect(0, 0, S, S, 6);
+      g.lineStyle(2.5, 0xe67e22, 0.8);
+      g.beginPath(); for (let a = 0; a < Math.PI * 4; a += 0.2) {
+        const r = 4 + a * 2.2; const px = 24 + Math.cos(a) * r; const py = 24 + Math.sin(a) * r;
+        a === 0 ? g.moveTo(px, py) : g.lineTo(px, py);
+      } g.strokePath();
+      g.fillStyle(0xcccccc); g.fillRect(22, 20, 4, 12); // sword center
+      g.fillStyle(0xe67e22, 0.3); g.fillCircle(24, 24, 16); // aoe glow
+    });
+
+    // Warrior: Savaş Çığlığı — buff ses dalgası
+    mk('skill_war_cry', S, S, g => {
+      g.fillStyle(0x1a0505, 0.6); g.fillRoundedRect(0, 0, S, S, 6);
+      g.fillStyle(0xc0392b); g.fillCircle(18, 24, 8); // head
+      g.fillStyle(0xc0392b, 0.8); g.fillRect(14, 20, 8, 4); // mouth open
+      g.lineStyle(2, 0xff6644, 0.6);
+      g.strokeCircle(30, 24, 6); g.strokeCircle(34, 24, 10); g.strokeCircle(38, 24, 14); // sound waves
+      g.fillStyle(0xc0392b, 0.2); g.fillCircle(24, 24, 18); // aura
+    });
+
+    // Ranger: Hızlı Atış — tek ok
+    mk('skill_quick_shot', S, S, g => {
+      g.fillStyle(0x081a08, 0.6); g.fillRoundedRect(0, 0, S, S, 6);
+      g.fillStyle(0x27ae60); g.fillTriangle(36, 24, 28, 20, 28, 28); // arrowhead
+      g.fillStyle(0x8B4513); g.fillRect(8, 23, 22, 2); // shaft
+      g.fillStyle(0x27ae60, 0.4);
+      g.fillTriangle(6, 20, 10, 24, 6, 28); // feather
+      g.lineStyle(1, 0x27ae60, 0.5); g.lineBetween(38, 22, 44, 20); g.lineBetween(38, 26, 44, 28); // speed lines
+    });
+
+    // Ranger: Çoklu Ok — 3 ok yayılıyor
+    mk('skill_multi_arrow', S, S, g => {
+      g.fillStyle(0x081a0a, 0.6); g.fillRoundedRect(0, 0, S, S, 6);
+      for (let i = -1; i <= 1; i++) {
+        const ay = 24 + i * 10;
+        g.fillStyle(0x2ecc71); g.fillTriangle(36, ay, 30, ay - 3, 30, ay + 3);
+        g.fillStyle(0x8B4513); g.fillRect(12, ay - 1, 20, 2);
+      }
+      g.fillStyle(0x2ecc71, 0.3); g.fillCircle(24, 24, 16);
+    });
+
+    // Ranger: Zehirli Ok — ok + zehir damlası
+    mk('skill_poison_arrow', S, S, g => {
+      g.fillStyle(0x081a12, 0.6); g.fillRoundedRect(0, 0, S, S, 6);
+      g.fillStyle(0x1abc9c); g.fillTriangle(36, 24, 28, 20, 28, 28);
+      g.fillStyle(0x8B4513); g.fillRect(8, 23, 22, 2);
+      g.fillStyle(0x1abc9c, 0.6); g.fillCircle(32, 30, 4); g.fillCircle(28, 36, 3); g.fillCircle(36, 38, 2); // poison drops
+      g.fillStyle(0x0f8a6a, 0.3); g.fillCircle(30, 32, 8); // poison cloud
+    });
+
+    // Ranger: Kartal Gözü — göz ikonu
+    mk('skill_eagle_eye', S, S, g => {
+      g.fillStyle(0x061a10, 0.6); g.fillRoundedRect(0, 0, S, S, 6);
+      g.fillStyle(0x16a085); g.fillEllipse(24, 24, 28, 16); // eye shape
+      g.fillStyle(0x0a0a0a); g.fillCircle(24, 24, 6); // pupil
+      g.fillStyle(0x16a085, 0.8); g.fillCircle(24, 24, 3); // iris
+      g.fillStyle(0xffffff, 0.7); g.fillCircle(22, 22, 1.5); // eye shine
+      g.lineStyle(2, 0x16a085, 0.5); g.lineBetween(6, 24, 12, 24); g.lineBetween(36, 24, 42, 24); // eye corners
+    });
+
+    // Mage: Ateş Topu — alev küre
+    mk('skill_fireball', S, S, g => {
+      g.fillStyle(0x1a0808, 0.6); g.fillRoundedRect(0, 0, S, S, 6);
+      g.fillStyle(0xe74c3c, 0.3); g.fillCircle(24, 24, 16); // outer glow
+      g.fillStyle(0xe74c3c); g.fillCircle(24, 24, 10); // fireball
+      g.fillStyle(0xf39c12); g.fillCircle(24, 24, 6); // inner fire
+      g.fillStyle(0xFFD700); g.fillCircle(24, 22, 3); // hot center
+      g.fillStyle(0xffffff, 0.5); g.fillCircle(22, 20, 1.5); // shine
+      g.fillStyle(0xe74c3c, 0.5); g.fillEllipse(14, 28, 12, 6); // flame trail
+    });
+
+    // Mage: Buz Oku — buz kristal
+    mk('skill_ice_bolt', S, S, g => {
+      g.fillStyle(0x081018, 0.6); g.fillRoundedRect(0, 0, S, S, 6);
+      g.fillStyle(0x3498db); g.fillTriangle(24, 6, 14, 32, 34, 32); // crystal
+      g.fillStyle(0x85C1E9, 0.6); g.fillTriangle(24, 10, 18, 28, 30, 28); // inner crystal
+      g.fillStyle(0xffffff, 0.4); g.fillTriangle(22, 12, 18, 24, 24, 24); // shine facet
+      g.fillStyle(0x3498db, 0.3); g.fillCircle(24, 24, 14); // frost aura
+      g.fillStyle(0xAED6F1, 0.5); g.fillCircle(16, 36, 2); g.fillCircle(32, 36, 2); g.fillCircle(24, 40, 2); // ice shards
+    });
+
+    // Mage: Zincir Yıldırım — yıldırım
+    mk('skill_chain_lightning', S, S, g => {
+      g.fillStyle(0x141408, 0.6); g.fillRoundedRect(0, 0, S, S, 6);
+      g.fillStyle(0xf1c40f, 0.3); g.fillCircle(24, 24, 16); // glow
+      g.lineStyle(3, 0xf1c40f, 0.9);
+      g.beginPath(); g.moveTo(20, 4); g.lineTo(26, 18); g.lineTo(18, 20); g.lineTo(28, 38); g.lineTo(22, 26); g.lineTo(30, 24); g.lineTo(24, 10); g.strokePath();
+      g.fillStyle(0xffffff, 0.7); g.fillCircle(24, 20, 2); // flash
+      g.lineStyle(1.5, 0xf1c40f, 0.5); g.lineBetween(28, 28, 40, 34); g.lineBetween(18, 28, 6, 36); // chain branches
+    });
+
+    // Mage: Büyü Kalkanı — sihir kalkan
+    mk('skill_arcane_shield', S, S, g => {
+      g.fillStyle(0x100818, 0.6); g.fillRoundedRect(0, 0, S, S, 6);
+      g.lineStyle(3, 0x9b59b6, 0.7); g.strokeCircle(24, 24, 16); // outer ring
+      g.lineStyle(2, 0x9b59b6, 0.4); g.strokeCircle(24, 24, 12); // inner ring
+      g.fillStyle(0x9b59b6, 0.2); g.fillCircle(24, 24, 16); // fill
+      g.fillStyle(0xD2B4DE, 0.6); g.fillCircle(24, 12, 3); g.fillCircle(12, 28, 3); g.fillCircle(36, 28, 3); // rune points
+      g.fillStyle(0xffffff, 0.3); g.fillCircle(20, 18, 4); // highlight
+    });
+
     // HP bar background — embossed look
     mk('hp_bar_bg', 200, 20, g => {
       g.fillStyle(0x0a0a0a); g.fillRoundedRect(0, 0, 200, 20, 3);

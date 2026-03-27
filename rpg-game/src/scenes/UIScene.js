@@ -803,22 +803,24 @@ export class UIScene extends Phaser.Scene {
       const bg = this.add.rectangle(x, barY, slotSize, slotSize, unlocked ? 0x1a1a3a : 0x0a0a1a, 0.85)
         .setDepth(200).setStrokeStyle(1.5, unlocked ? 0x6a5aaa : 0x2a2a4a);
 
-      // Key number
+      // Key number (top-left corner)
       this.add.text(x - slotSize / 2 + 3, barY - slotSize / 2 + 1, `${i + 1}`, {
-        fontSize: '10px', fontFamily: 'Nunito, Arial, sans-serif', color: '#888'
-      }).setDepth(202);
+        fontSize: '10px', fontFamily: 'Nunito, Arial, sans-serif', color: '#888',
+        stroke: '#000', strokeThickness: 2
+      }).setDepth(203);
 
-      // Skill name (short)
-      const nameText = this.add.text(x, barY + 4, skill ? skill.name.split(' ')[0] : '', {
-        fontSize: '9px', fontFamily: 'Nunito, Arial, sans-serif',
-        color: unlocked ? (skill?.color || '#aaa') : '#444',
-        fontStyle: 'bold'
-      }).setOrigin(0.5).setDepth(202);
+      // Skill icon (center)
+      if (skill && this.textures.exists(skill.icon)) {
+        const iconImg = this.add.image(x, barY - 2, skill.icon).setDepth(201).setScale(0.5);
+        if (!unlocked) iconImg.setAlpha(0.3);
+      }
 
-      // Mana cost
-      const manaText = this.add.text(x, barY + slotSize / 2 - 5, skill ? `${skill.manaCost}` : '', {
-        fontSize: '9px', fontFamily: 'Nunito, Arial, sans-serif', color: '#4488ff'
-      }).setOrigin(0.5).setDepth(202);
+      // Mana cost (bottom-right corner)
+      const manaText = this.add.text(x + slotSize / 2 - 3, barY + slotSize / 2 - 3, skill ? `${skill.manaCost}` : '', {
+        fontSize: '9px', fontFamily: 'Nunito, Arial, sans-serif', color: '#4488ff',
+        stroke: '#000', strokeThickness: 2
+      }).setOrigin(1, 1).setDepth(203);
+      const nameText = null; // no name text anymore
 
       // Cooldown overlay (initially invisible)
       const cdOverlay = this.add.rectangle(x, barY, slotSize - 2, slotSize - 2, 0x000000, 0.6)
