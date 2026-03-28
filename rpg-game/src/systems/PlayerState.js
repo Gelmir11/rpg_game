@@ -354,25 +354,25 @@ export class PlayerState {
       bonuses.maxHp = Math.floor(Math.random() * 10) + 5;
       if (Math.random() < 0.3) bonuses.defense = Math.floor(Math.random() * 3) + 1;
     }
-    // Küpe: bonus attack/defense + nadir hpRegen/manaRegen
+    // Küpe: bonus attack/defense + çok nadir hpRegen/manaRegen
     else if (baseItemId.includes('ring')) {
       bonuses.attack = Math.floor(Math.random() * 3) + 1;
       bonuses.defense = Math.floor(Math.random() * 3) + 1;
-      if (Math.random() < 0.10) bonuses.manaRegen = 1;
-      if (Math.random() < 0.08) bonuses.hpRegen = 1;
+      if (Math.random() < 0.04) bonuses.manaRegen = 1;
+      if (Math.random() < 0.03) bonuses.hpRegen = 1;
     }
-    // Yüzük: bonus maxHp/maxMana + nadir hpRegen/manaRegen
+    // Yüzük: bonus maxHp/maxMana + çok nadir hpRegen/manaRegen
     else if (baseItemId.includes('yuzuk')) {
       bonuses.maxHp = Math.floor(Math.random() * 15) + 5;
       bonuses.maxMana = Math.floor(Math.random() * 10) + 3;
-      if (Math.random() < 0.12) bonuses.hpRegen = 1;
-      if (Math.random() < 0.10) bonuses.manaRegen = 1;
+      if (Math.random() < 0.04) bonuses.hpRegen = 1;
+      if (Math.random() < 0.03) bonuses.manaRegen = 1;
     }
-    // Kolye: bonus maxHp + nadir hpRegen/manaRegen
+    // Kolye: bonus maxHp + çok nadir hpRegen/manaRegen
     else if (baseItemId.includes('amulet')) {
       bonuses.maxHp = Math.floor(Math.random() * 15) + 5;
-      if (Math.random() < 0.12) bonuses.hpRegen = 1;
-      if (Math.random() < 0.10) bonuses.manaRegen = 1;
+      if (Math.random() < 0.04) bonuses.hpRegen = 1;
+      if (Math.random() < 0.03) bonuses.manaRegen = 1;
       if (Math.random() < 0.3) bonuses.maxMana = Math.floor(Math.random() * 10) + 5;
     }
 
