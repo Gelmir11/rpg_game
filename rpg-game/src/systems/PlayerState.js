@@ -229,6 +229,30 @@ export class PlayerState {
     return mp;
   }
 
+  // Ekipman bazlı HP rejenerasyonu (saniyede X HP)
+  getHpRegen() {
+    let regen = 0;
+    Object.values(this.equipped).forEach(eq => {
+      if (eq) {
+        if (eq.hpRegen) regen += eq.hpRegen;
+        if (eq._bonuses && eq._bonuses.hpRegen) regen += eq._bonuses.hpRegen;
+      }
+    });
+    return regen;
+  }
+
+  // Ekipman bazlı Mana rejenerasyonu (saniyede X Mana, baz 1 + ekipman)
+  getManaRegen() {
+    let regen = 1; // baz mana regen
+    Object.values(this.equipped).forEach(eq => {
+      if (eq) {
+        if (eq.manaRegen) regen += eq.manaRegen;
+        if (eq._bonuses && eq._bonuses.manaRegen) regen += eq._bonuses.manaRegen;
+      }
+    });
+    return regen;
+  }
+
   restoreMana(amount) {
     this.mana = Math.min(this.mana + amount, this.getMaxMana());
   }
@@ -310,16 +334,25 @@ export class PlayerState {
       bonuses.maxHp = Math.floor(Math.random() * 10) + 5;
       if (Math.random() < 0.3) bonuses.defense = Math.floor(Math.random() * 3) + 1;
     }
-    // Küpe: bonus attack/defense + bazen maxMana
+    // Küpe: bonus attack/defense + bazen manaRegen, hpRegen
     else if (baseItemId.includes('ring')) {
       bonuses.attack = Math.floor(Math.random() * 3) + 1;
       bonuses.defense = Math.floor(Math.random() * 3) + 1;
-      if (Math.random() < 0.3) bonuses.maxMana = Math.floor(Math.random() * 10) + 5;
+      if (Math.random() < 0.35) bonuses.manaRegen = Math.floor(Math.random() * 2) + 1;
+      if (Math.random() < 0.25) bonuses.hpRegen = Math.floor(Math.random() * 2) + 1;
     }
-    // Kolye: bonus maxHp + bazen attack, maxMana
+    // Yüzük: bonus maxHp/maxMana + bazen hpRegen, manaRegen
+    else if (baseItemId.includes('yuzuk')) {
+      bonuses.maxHp = Math.floor(Math.random() * 15) + 5;
+      bonuses.maxMana = Math.floor(Math.random() * 10) + 3;
+      if (Math.random() < 0.4) bonuses.hpRegen = Math.floor(Math.random() * 2) + 1;
+      if (Math.random() < 0.35) bonuses.manaRegen = Math.floor(Math.random() * 2) + 1;
+    }
+    // Kolye: bonus maxHp + bazen hpRegen, manaRegen
     else if (baseItemId.includes('amulet')) {
       bonuses.maxHp = Math.floor(Math.random() * 15) + 5;
-      if (Math.random() < 0.4) bonuses.attack = Math.floor(Math.random() * 3) + 1;
+      if (Math.random() < 0.4) bonuses.hpRegen = Math.floor(Math.random() * 3) + 1;
+      if (Math.random() < 0.35) bonuses.manaRegen = Math.floor(Math.random() * 2) + 1;
       if (Math.random() < 0.3) bonuses.maxMana = Math.floor(Math.random() * 10) + 5;
     }
 
@@ -624,13 +657,27 @@ export class PlayerState {
     return this.gatherCounts[resourceId] || 0;
   }
 
-  // Mana rejenerasyon (saniyede 1 mana)
+  // Mana rejenerasyon (saniyede baz 1 + ekipman bonusu)
   regenMana(delta) {
     this._manaRegenTimer = (this._manaRegenTimer || 0) + delta;
     if (this._manaRegenTimer >= 1000) {
       this._manaRegenTimer -= 1000;
-      if (this.mana < this.getMaxMana()) {
-        this.mana = Math.min(this.mana + 1, this.getMaxMana());
+      const regen = this.getManaRegen();
+      if (regen > 0 && this.mana < this.getMaxMana()) {
+        this.mana = Math.min(this.mana + regen, this.getMaxMana());
+      }
+    }
+  }
+
+  // HP rejenerasyon (ekipman bazlı, saniyede X HP)
+  regenHp(delta) {
+    const regen = this.getHpRegen();
+    if (regen <= 0) return;
+    this._hpRegenTimer = (this._hpRegenTimer || 0) + delta;
+    if (this._hpRegenTimer >= 1000) {
+      this._hpRegenTimer -= 1000;
+      if (this.hp < this.getMaxHp()) {
+        this.hp = Math.min(this.hp + regen, this.getMaxHp());
       }
     }
   }

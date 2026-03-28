@@ -377,6 +377,8 @@ export class UIScene extends Phaser.Scene {
           if (eqItem.defense) stats += `Savunma: +${eqItem.defense}\n`;
           if (eqItem.maxHp) stats += `Max HP: +${eqItem.maxHp}\n`;
           if (eqItem.maxMana) stats += `Max Mana: +${eqItem.maxMana}\n`;
+          if (eqItem.hpRegen) stats += `Can Yen.: +${eqItem.hpRegen}/sn\n`;
+          if (eqItem.manaRegen) stats += `Mana Yen.: +${eqItem.manaRegen}/sn\n`;
           if (eqItem.manaCost) stats += `Mana: ${eqItem.manaCost}/atış\n`;
           if (hasBonus) {
             stats += '--- ✦ BONUS ✦ ---\n';
@@ -384,6 +386,8 @@ export class UIScene extends Phaser.Scene {
             if (hasBonus.defense) stats += `+${hasBonus.defense} Savunma\n`;
             if (hasBonus.maxHp) stats += `+${hasBonus.maxHp} Max HP\n`;
             if (hasBonus.maxMana) stats += `+${hasBonus.maxMana} Max Mana\n`;
+            if (hasBonus.hpRegen) stats += `+${hasBonus.hpRegen} Can Yen./sn\n`;
+            if (hasBonus.manaRegen) stats += `+${hasBonus.manaRegen} Mana Yen./sn\n`;
           }
           equipTooltipText.setText(stats.trim());
           equipTooltipText.setColor('#c0a0e0');
@@ -676,6 +680,8 @@ export class UIScene extends Phaser.Scene {
         if (item.mana) stats += `Mana: +${item.mana}\n`;
         if (item.maxHp) stats += `Max HP: +${item.maxHp}\n`;
         if (item.maxMana) stats += `Max Mana: +${item.maxMana}\n`;
+        if (item.hpRegen) stats += `Can Yen.: +${item.hpRegen}/sn\n`;
+        if (item.manaRegen) stats += `Mana Yen.: +${item.manaRegen}/sn\n`;
         if (item.manaCost) stats += `Mana: ${item.manaCost}/atış\n`;
         if (stack.enhanced) {
           const bonuses = ps.getItemBonuses(stack.entry);
@@ -685,6 +691,8 @@ export class UIScene extends Phaser.Scene {
             if (bonuses.defense) stats += `+${bonuses.defense} Savunma\n`;
             if (bonuses.maxHp) stats += `+${bonuses.maxHp} Max HP\n`;
             if (bonuses.maxMana) stats += `+${bonuses.maxMana} Max Mana\n`;
+            if (bonuses.hpRegen) stats += `+${bonuses.hpRegen} Can Yen./sn\n`;
+            if (bonuses.manaRegen) stats += `+${bonuses.manaRegen} Mana Yen./sn\n`;
           }
         }
         equipTooltipText.setText(stats.trim());

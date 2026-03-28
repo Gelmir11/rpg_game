@@ -1008,6 +1008,7 @@ export class OverworldScene extends Phaser.Scene {
     this.checkPortals();
     this.playerState.updateBuffs();
     this.playerState.regenMana(delta);
+    this.playerState.regenHp(delta);
     if (this.combatUtils) {
       this.combatUtils.checkProjectileCollisions(this.monsterObjects);
       this.combatUtils.updateMonsterEffects(this.monsterObjects);
