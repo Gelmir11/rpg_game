@@ -437,8 +437,9 @@ export class UIScene extends Phaser.Scene {
     this._add(this.add.rectangle(charX, barY + 68, barW, 8, 0x111).setDepth(401));
     this._add(this.add.rectangle(charX - barW/2 + barW * expProg / 2, barY + 68, barW * expProg, 6, 0x4169E1).setDepth(402));
     // Stats line
+    const statFont = { fontSize: '12px', fontFamily: 'Nunito, Arial, sans-serif', fontStyle: 'bold' };
     this._add(this.add.text(charX, barY + 80, `ATK: ${ps.getAttack()}   DEF: ${ps.getDefense()}`, {
-      fontSize: '12px', fontFamily: 'Nunito, Arial, sans-serif', color: '#ccc', fontStyle: 'bold'
+      ...statFont, color: '#ccc'
     }).setOrigin(0.5).setDepth(402));
     // Regen stats
     const hpR = ps.getHpRegen(), manaR = ps.getManaRegen();
@@ -447,18 +448,18 @@ export class UIScene extends Phaser.Scene {
       const regenY = barY + 96;
       if (hpR > 0) {
         this._add(this.add.text(regenX - 40, regenY, `HP+${hpR}/sn`, {
-          fontSize: '11px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FF6666', fontStyle: 'bold'
+          ...statFont, color: '#FF6666'
         }).setOrigin(0.5).setDepth(402));
       }
       if (manaR > 0) {
         this._add(this.add.text(regenX + 40, regenY, `MP+${manaR}/sn`, {
-          fontSize: '11px', fontFamily: 'Nunito, Arial, sans-serif', color: '#6688FF', fontStyle: 'bold'
+          ...statFont, color: '#6688FF'
         }).setOrigin(0.5).setDepth(402));
       }
     }
-    // Gold prominently displayed
+    // Gold
     this._add(this.add.text(charX, barY + 112, `Altın: ${formatGold(ps.gold)}`, {
-      fontSize: '14px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FFD700', fontStyle: 'bold'
+      ...statFont, color: '#FFD700'
     }).setOrigin(0.5).setDepth(402));
 
     // ===== RIGHT PANEL: Inventory Grid =====
