@@ -1025,8 +1025,7 @@ export class UIScene extends Phaser.Scene {
   updateSkillBar() {
     const ps = this.playerState;
     const activeScene = this.scene.get('OverworldScene')?.scene.isActive() ? this.scene.get('OverworldScene') :
-                        this.scene.get('DungeonScene')?.scene.isActive() ? this.scene.get('DungeonScene') :
-                        this.scene.get('LabyrinthScene')?.scene.isActive() ? this.scene.get('LabyrinthScene') : null;
+                        this.scene.get('DungeonScene')?.scene.isActive() ? this.scene.get('DungeonScene') : null;
 
     if (!activeScene || !activeScene.skillSystem) return;
     const ss = activeScene.skillSystem;

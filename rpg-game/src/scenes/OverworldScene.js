@@ -840,10 +840,6 @@ export class OverworldScene extends Phaser.Scene {
       }).setOrigin(0.5).setDepth(9999);
     }
 
-    const labPortal = this.physics.add.staticSprite(labX, labY - 10, 'portal_tex');
-    labPortal.setSize(40, 50).setDepth(5).setAlpha(0);
-    labPortal.targetScene = 'LabyrinthScene';
-    this.portalGroup.add(labPortal);
 
     // Shop removed — Tüccar NPC handles buy/sell directly
 
@@ -1805,15 +1801,13 @@ export class OverworldScene extends Phaser.Scene {
   enterPortal(portal) {
     const ps = this.playerState;
 
-    // Boss gate kontrolü: Overworld boss öldürülmeden zindan/labirent'e geçilemez
-    if (portal.targetScene === 'DungeonScene' || portal.targetScene === 'LabyrinthScene') {
+    // Boss gate kontrolü: Overworld boss öldürülmeden zindana geçilemez
+    if (portal.targetScene === 'DungeonScene') {
       if (!ps.hasBossKill('ancient_dragon')) {
         const uiScene = this.scene.get('UIScene');
         if (uiScene?.showDialogue) {
           uiScene.showDialogue('Gizemli Güç',
-            portal.targetScene === 'DungeonScene'
-              ? 'Bu zindana girmek için önce Kadim Ejderi yenmelisin! Kadim Ejder haritanın kuzeyinde bekliyor.'
-              : 'Bu labirente girmek için önce Kadim Ejderi yenmelisin! Kadim Ejder haritanın kuzeyinde bekliyor.'
+            'Bu zindana girmek için önce Kadim Ejderi yenmelisin! Kadim Ejder haritanın kuzeyinde bekliyor.'
           );
         }
         return;

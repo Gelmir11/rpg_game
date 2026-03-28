@@ -6,7 +6,6 @@ import { DungeonScene } from './scenes/DungeonScene.js';
 import { HomeScene } from './scenes/HomeScene.js';
 import { ShopScene } from './scenes/ShopScene.js';
 import { UIScene } from './scenes/UIScene.js';
-import { LabyrinthScene } from './scenes/LabyrinthScene.js';
 
 // Disable right-click context menu on canvas
 document.addEventListener('contextmenu', e => e.preventDefault());
@@ -26,7 +25,7 @@ const config = {
       debug: false
     }
   },
-  scene: [BootScene, PreloadScene, OverworldScene, DungeonScene, LabyrinthScene, HomeScene, ShopScene, UIScene],
+  scene: [BootScene, PreloadScene, OverworldScene, DungeonScene, HomeScene, ShopScene, UIScene],
   scale: {
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH

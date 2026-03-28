@@ -2,7 +2,7 @@ import { PlayerState } from './PlayerState.js';
 
 /**
  * Paylaşılan savaş yardımcı fonksiyonları
- * OverworldScene, DungeonScene, LabyrinthScene tarafından kullanılır
+ * OverworldScene, DungeonScene tarafından kullanılır
  */
 export class CombatUtils {
   constructor(scene) {
