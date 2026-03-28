@@ -773,6 +773,8 @@ export class BootScene extends Phaser.Scene {
       { key: 'wolf', w: 56, h: 48 },
       { key: 'golem', w: 64, h: 72 },
       { key: 'wraith', w: 52, h: 64 },
+      { key: 'fungoid', w: 56, h: 64 },
+      { key: 'fire_elemental', w: 60, h: 72 },
       { key: 'dragon', w: 128, h: 120 },
       // Ejder yavruları
       { key: 'drake', w: 96, h: 88 },
@@ -787,6 +789,8 @@ export class BootScene extends Phaser.Scene {
       { key: 'alpha_wolf', w: 64, h: 52 },
       { key: 'crystal_golem', w: 72, h: 80 },
       { key: 'wraith_queen', w: 60, h: 72 },
+      { key: 'fungoid_king', w: 64, h: 72 },
+      { key: 'fire_lord', w: 68, h: 80 },
       // Labyrinth monsters
       { key: 'minotaur', w: 72, h: 84 },
       { key: 'shadow_spider', w: 56, h: 48 },
@@ -949,6 +953,47 @@ export class BootScene extends Phaser.Scene {
           // Hands
           g.fillStyle(0x8A7AEE, 0.5);
           g.fillCircle(x + 8, y + 36 + b * 2, 5); g.fillCircle(x + 44, y + 36 - b * 2, 5);
+
+        } else if (m.key === 'fungoid') {
+          // Legs (stubby brown)
+          g.fillStyle(0x5a3a1a); g.fillRect(x + 14 + b, y + 46, 10, 14); g.fillRect(x + 32 - b, y + 46, 10, 14);
+          g.fillStyle(0x4a2a0a); g.fillRect(x + 12 + b, y + 56, 14, 6); g.fillRect(x + 30 - b, y + 56, 14, 6);
+          // Body (mushroom stem)
+          this.grad(g, x + 16, y + 24, 24, 24, 0x8B6914, 0x6B4914);
+          g.fillStyle(0x7a5a14, 0.5); g.fillRect(x + 18, y + 28, 20, 4);
+          // Mushroom cap (big red dome)
+          g.fillStyle(0xCC2200); g.fillEllipse(x + 28, y + 16, 48, 28);
+          g.fillStyle(0xDD3311); g.fillEllipse(x + 28, y + 14, 42, 22);
+          // Spots on cap
+          g.fillStyle(0xFFFFCC, 0.7); g.fillCircle(x + 18, y + 10, 4); g.fillCircle(x + 36, y + 8, 3);
+          g.fillCircle(x + 28, y + 4, 3); g.fillCircle(x + 42, y + 14, 2);
+          // Eyes (small yellow)
+          g.fillStyle(0xFFFF00); g.fillCircle(x + 22, y + 24, 3); g.fillCircle(x + 34, y + 24, 3);
+          g.fillStyle(0x000000); g.fillCircle(x + 23, y + 24, 1); g.fillCircle(x + 35, y + 24, 1);
+          // Arms (small)
+          g.fillStyle(0x6B4914); g.fillRoundedRect(x + 6, y + 28, 10, 12, 3); g.fillRoundedRect(x + 40, y + 28, 10, 12, 3);
+
+        } else if (m.key === 'fire_elemental') {
+          // Legs (flame trails)
+          g.fillStyle(0xCC3300); g.fillRect(x + 16 + b, y + 50, 10, 18); g.fillRect(x + 34 - b, y + 50, 10, 18);
+          g.fillStyle(0xFF4500, 0.5); g.fillRect(x + 14 + b, y + 60, 14, 10); g.fillRect(x + 32 - b, y + 60, 14, 10);
+          // Body (fire core)
+          this.grad(g, x + 12, y + 22, 36, 30, 0xFF4500, 0xCC3300);
+          g.fillStyle(0xFF6600, 0.6); g.fillEllipse(x + 30, y + 36, 30, 26);
+          g.fillStyle(0xFFAA00, 0.4); g.fillEllipse(x + 30, y + 34, 20, 18);
+          // Arms (flame wisps)
+          g.fillStyle(0xFF4500); g.fillRoundedRect(x + 2, y + 24, 12, 20, 4); g.fillRoundedRect(x + 46, y + 24, 12, 20, 4);
+          g.fillStyle(0xFFAA00, 0.5); g.fillCircle(x + 8, y + 22, 5); g.fillCircle(x + 52, y + 22, 5);
+          // Head (flame)
+          g.fillStyle(0xFF6600); g.fillEllipse(x + 30, y + 14, 24, 20);
+          g.fillStyle(0xFFAA00); g.fillEllipse(x + 30, y + 12, 18, 14);
+          g.fillStyle(0xFFDD00, 0.6); g.fillEllipse(x + 30, y + 10, 10, 8);
+          // Crown flames
+          g.fillStyle(0xFF4500); g.fillTriangle(x + 22, y + 4, x + 26, y - 6, x + 30, y + 4);
+          g.fillTriangle(x + 30, y + 2, x + 34, y - 8, x + 38, y + 2);
+          // Eyes (white hot)
+          g.fillStyle(0xFFFFFF); g.fillCircle(x + 24, y + 14, 3); g.fillCircle(x + 36, y + 14, 3);
+          g.fillStyle(0xFF0000); g.fillCircle(x + 25, y + 14, 1); g.fillCircle(x + 37, y + 14, 1);
 
         } else if (m.key === 'dragon') {
           // === EJDER (128x120) - Gerçekçi kırmızı ejderha ===
@@ -1544,6 +1589,53 @@ export class BootScene extends Phaser.Scene {
           g.fillTriangle(x + 26, y + 8, x + 30, y - 2, x + 34, y + 8);
           g.fillTriangle(x + 36, y + 8, x + 40, y, x + 44, y + 8);
           g.fillStyle(0xFF00FF); g.fillCircle(x + 30, y, 2);
+
+        } else if (m.key === 'fungoid_king') {
+          // Legs
+          g.fillStyle(0x5a3a1a); g.fillRect(x + 16 + b, y + 50, 12, 16); g.fillRect(x + 36 - b, y + 50, 12, 16);
+          g.fillStyle(0x4a2a0a); g.fillRect(x + 14 + b, y + 62, 16, 8); g.fillRect(x + 34 - b, y + 62, 16, 8);
+          // Body
+          this.grad(g, x + 14, y + 26, 36, 26, 0x8B6914, 0x6B4914);
+          g.fillStyle(0x7a5a14, 0.5); g.fillRect(x + 16, y + 30, 32, 5);
+          // Giant mushroom cap (purple-red)
+          g.fillStyle(0x8B0040); g.fillEllipse(x + 32, y + 16, 56, 32);
+          g.fillStyle(0xAA1155); g.fillEllipse(x + 32, y + 14, 48, 26);
+          // Royal spots
+          g.fillStyle(0xFFD700, 0.8); g.fillCircle(x + 20, y + 8, 5); g.fillCircle(x + 42, y + 6, 4);
+          g.fillCircle(x + 32, y + 2, 4); g.fillCircle(x + 50, y + 12, 3);
+          // Crown
+          g.fillStyle(0xFFD700); g.fillRect(x + 22, y - 2, 20, 4);
+          g.fillTriangle(x + 24, y - 2, x + 27, y - 10, x + 30, y - 2);
+          g.fillTriangle(x + 32, y - 2, x + 35, y - 12, x + 38, y - 2);
+          // Eyes (red glowing)
+          g.fillStyle(0xFF0000); g.fillCircle(x + 24, y + 24, 4); g.fillCircle(x + 40, y + 24, 4);
+          g.fillStyle(0xFFFF00); g.fillCircle(x + 25, y + 24, 2); g.fillCircle(x + 41, y + 24, 2);
+          // Arms
+          g.fillStyle(0x6B4914); g.fillRoundedRect(x + 4, y + 28, 12, 16, 3); g.fillRoundedRect(x + 48, y + 28, 12, 16, 3);
+
+        } else if (m.key === 'fire_lord') {
+          // Legs (thick flame pillars)
+          g.fillStyle(0xCC3300); g.fillRect(x + 16 + b, y + 54, 14, 20); g.fillRect(x + 38 - b, y + 54, 14, 20);
+          g.fillStyle(0xFF4500, 0.6); g.fillRect(x + 14 + b, y + 66, 18, 12); g.fillRect(x + 36 - b, y + 66, 18, 12);
+          // Body (massive fire core)
+          this.grad(g, x + 10, y + 22, 48, 34, 0xFF4500, 0xCC2200);
+          g.fillStyle(0xFF6600, 0.7); g.fillEllipse(x + 34, y + 38, 42, 30);
+          g.fillStyle(0xFFAA00, 0.5); g.fillEllipse(x + 34, y + 36, 30, 22);
+          // Arms (big flame wisps)
+          g.fillStyle(0xFF4500); g.fillRoundedRect(x + 0, y + 22, 14, 26, 5); g.fillRoundedRect(x + 54, y + 22, 14, 26, 5);
+          g.fillStyle(0xFFAA00, 0.6); g.fillCircle(x + 7, y + 20, 7); g.fillCircle(x + 61, y + 20, 7);
+          // Head (inferno)
+          g.fillStyle(0xFF6600); g.fillEllipse(x + 34, y + 14, 30, 24);
+          g.fillStyle(0xFFAA00); g.fillEllipse(x + 34, y + 12, 24, 18);
+          g.fillStyle(0xFFDD00, 0.7); g.fillEllipse(x + 34, y + 10, 14, 10);
+          // Crown of flames (boss)
+          g.fillStyle(0xFF4500); g.fillTriangle(x + 20, y + 2, x + 24, y - 10, x + 28, y + 2);
+          g.fillTriangle(x + 28, y + 0, x + 34, y - 14, x + 40, y + 0);
+          g.fillTriangle(x + 40, y + 2, x + 44, y - 10, x + 48, y + 2);
+          g.fillStyle(0xFFD700); g.fillTriangle(x + 30, y + 0, x + 34, y - 10, x + 38, y + 0);
+          // Eyes (white-hot, larger)
+          g.fillStyle(0xFFFFFF); g.fillCircle(x + 28, y + 14, 4); g.fillCircle(x + 40, y + 14, 4);
+          g.fillStyle(0xFF0000); g.fillCircle(x + 29, y + 14, 2); g.fillCircle(x + 41, y + 14, 2);
 
         } else if (m.key === 'dungeon_boss_10') {
           // ===== ALACAKARANLIK EFENDİSİ - Kötülüğün Dev Ejderhası =====

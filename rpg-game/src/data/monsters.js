@@ -21,6 +21,13 @@ export const MONSTERS = {
     color: '#808080', bodyColor: '#606060',
     behavior: 'aggressive', aggroRange: 150
   },
+  fungoid: {
+    id: 'fungoid', name: 'Mantar Adam',
+    hp: 180, attack: 18, defense: 10, speed: 30,
+    exp: 40, gold: 16, level: 4,
+    color: '#8B4513', bodyColor: '#6B3410',
+    behavior: 'wander', aggroRange: 100
+  },
   skeleton: {
     id: 'skeleton', name: 'İskelet',
     hp: 250, attack: 22, defense: 12, speed: 40,
@@ -55,6 +62,14 @@ export const MONSTERS = {
     exp: 200, gold: 100, level: 10,
     color: '#8B0000', bodyColor: '#B22222',
     behavior: 'boss', aggroRange: 200
+  },
+
+  fire_elemental: {
+    id: 'fire_elemental', name: 'Ateş Elemental',
+    hp: 900, attack: 45, defense: 15, speed: 50,
+    exp: 110, gold: 55, level: 9,
+    color: '#FF4500', bodyColor: '#CC3300',
+    behavior: 'aggressive', aggroRange: 150
   },
 
   // Zone 8: Ejder Yavrusu Yuvası (sağ alt köşe)
@@ -117,6 +132,20 @@ export const MONSTERS = {
     hp: 500, attack: 40, defense: 12, speed: 90,
     exp: 120, gold: 50, level: 5,
     color: '#505050', bodyColor: '#303030',
+    behavior: 'boss', aggroRange: 200, isZoneBoss: true
+  },
+  fungoid_king: {
+    id: 'fungoid_king', name: 'Mantar Kralı',
+    hp: 1000, attack: 42, defense: 22, speed: 28,
+    exp: 180, gold: 90, level: 7,
+    color: '#A0522D', bodyColor: '#8B4513',
+    behavior: 'boss', aggroRange: 180, isZoneBoss: true
+  },
+  fire_lord: {
+    id: 'fire_lord', name: 'Ateş Lordu',
+    hp: 2200, attack: 78, defense: 28, speed: 48,
+    exp: 380, gold: 190, level: 11,
+    color: '#FF6600', bodyColor: '#CC4400',
     behavior: 'boss', aggroRange: 200, isZoneBoss: true
   },
   crystal_golem: {

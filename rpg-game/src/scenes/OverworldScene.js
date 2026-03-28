@@ -457,24 +457,30 @@ export class OverworldScene extends Phaser.Scene {
       ...this.generateSpawns('goblin', 35, 2000, 2500, 4500, 4500),
       ...this.generateSpawns('goblin', 20, 3000, 1500, 5000, 3500),
 
-      // === 3. Kademe: Orta — İskelet + Ork (orta mesafe) ===
+      // === 3. Kademe: Orta — Mantar + İskelet + Ork (orta mesafe) ===
+      // Mantar Adam — orta-kuzey
+      ...this.generateSpawns('fungoid', 30, 3500, 2500, 6000, 4500),
+      ...this.generateSpawns('fungoid', 20, 2500, 3500, 5000, 5000),
       // İskelet — orta-doğu
-      ...this.generateSpawns('skeleton', 35, 4500, 2000, 7000, 5000),
+      ...this.generateSpawns('skeleton', 30, 4500, 2000, 7000, 5000),
       ...this.generateSpawns('skeleton', 20, 5000, 1000, 6500, 3500),
       // Ork — orta-güney
-      ...this.generateSpawns('orc', 30, 1500, 4500, 5000, 7000),
+      ...this.generateSpawns('orc', 25, 1500, 4500, 5000, 7000),
       ...this.generateSpawns('orc', 20, 2500, 5500, 4500, 6800),
 
-      // === 4. Kademe: Zor — Golem + Hayalet (uzak bölgeler) ===
+      // === 4. Kademe: Zor — Golem + Hayalet + Ateş Elemental (uzak bölgeler) ===
       // Golem — doğu şeridi
       ...this.generateSpawns('golem', 25, 6500, 4000, 9200, 7000),
       ...this.generateSpawns('golem', 15, 7000, 1500, 9000, 4000),
       // Hayalet — güney şeridi
-      ...this.generateSpawns('wraith', 25, 3000, 7000, 6500, 9200),
+      ...this.generateSpawns('wraith', 20, 3000, 7000, 6500, 9200),
       ...this.generateSpawns('wraith', 15, 1000, 7500, 3500, 9000),
+      // Ateş Elemental — güneydoğu
+      ...this.generateSpawns('fire_elemental', 25, 5500, 6000, 8500, 8500),
+      ...this.generateSpawns('fire_elemental', 15, 6500, 5000, 9000, 7500),
 
       // === 5. Kademe: En Zor — Ejder Yavrusu (sağ alt köşe) ===
-      ...this.generateSpawns('drake', 30, 7000, 6500, 9200, 9200),
+      ...this.generateSpawns('drake', 25, 7000, 6500, 9200, 9200),
       ...this.generateSpawns('drake', 15, 6500, 7500, 9000, 9000),
     ];
 
@@ -485,11 +491,13 @@ export class OverworldScene extends Phaser.Scene {
       { type: 'alpha_wolf', x: 3800, y: 1200, label: 'Alfa Kurt' },
       // Orta bosslar — orta mesafe
       { type: 'goblin_chief', x: 3500, y: 3500, label: 'Goblin Şefi' },
+      { type: 'fungoid_king', x: 4800, y: 3800, label: 'Mantar Kralı' },
       { type: 'skeleton_lord', x: 5800, y: 3200, label: 'İskelet Lordu' },
       { type: 'orc_warlord', x: 3000, y: 6000, label: 'Ork Savaş Lordu' },
       // Zor bosslar — uzak
       { type: 'crystal_golem', x: 8000, y: 5000, label: 'Kristal Golem' },
       { type: 'wraith_queen', x: 5000, y: 8200, label: 'Hayalet Kraliçe' },
+      { type: 'fire_lord', x: 7200, y: 7200, label: 'Ateş Lordu' },
       // En zor — sağ alt köşe
       { type: 'drake_mother', x: 8200, y: 8200, label: 'Ejder Anası' },
     ];
@@ -942,10 +950,12 @@ export class OverworldScene extends Phaser.Scene {
     this.add.text(1500, 1500, 'Balçık Ormanı', { ...zoneStyle, color: '#44AA44' }).setOrigin(0.5).setDepth(9999).setAlpha(0.6);
     this.add.text(3500, 1000, 'Kurt Ormanı', { ...zoneStyle, color: '#808080' }).setOrigin(0.5).setDepth(9999).setAlpha(0.6);
     this.add.text(3200, 3200, 'Goblin Kampı', { ...zoneStyle, color: '#3CB371' }).setOrigin(0.5).setDepth(9999).setAlpha(0.6);
+    this.add.text(4800, 3500, 'Mantar Ormanı', { ...zoneStyle, color: '#8B4513' }).setOrigin(0.5).setDepth(9999).setAlpha(0.6);
     this.add.text(5800, 3000, 'İskelet Mezarlığı', { ...zoneStyle, color: '#CCCCAA' }).setOrigin(0.5).setDepth(9999).setAlpha(0.6);
     this.add.text(3000, 5800, 'Ork Kalesi', { ...zoneStyle, color: '#6B8E23' }).setOrigin(0.5).setDepth(9999).setAlpha(0.6);
     this.add.text(7800, 3000, 'Golem Vadisi', { ...zoneStyle, color: '#8B8B83' }).setOrigin(0.5).setDepth(9999).setAlpha(0.6);
     this.add.text(4800, 8000, 'Hayalet Bataklığı', { ...zoneStyle, color: '#9370DB' }).setOrigin(0.5).setDepth(9999).setAlpha(0.6);
+    this.add.text(7000, 6800, 'Ateş Vadisi', { ...zoneStyle, color: '#FF4500' }).setOrigin(0.5).setDepth(9999).setAlpha(0.6);
     this.add.text(8000, 7800, 'Ejder Yavrusu Yuvası', { ...zoneStyle, color: '#CC3300' }).setOrigin(0.5).setDepth(9999).setAlpha(0.6);
   }
 
