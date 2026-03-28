@@ -62,6 +62,9 @@ export class UIScene extends Phaser.Scene {
 
     // Controls hint removed — clean UI
 
+    // Settings button (top-right corner)
+    this.createSettingsButton();
+
     // Skill bar
     this.createSkillBar();
 
@@ -169,6 +172,7 @@ export class UIScene extends Phaser.Scene {
 
   updateMinimap() {
     if (!this.minimapGfx || !this.minimapData) return;
+    if (this.settings && !this.settings.minimap) return;
     const g = this.minimapGfx;
     g.clear();
 
@@ -835,6 +839,125 @@ export class UIScene extends Phaser.Scene {
       delay: 2000,
       duration: 1000
     });
+  }
+
+  // ===== SETTINGS =====
+  createSettingsButton() {
+    // Ayar durumlarını localStorage'dan yükle
+    this.settings = {
+      sound: localStorage.getItem('rpg_sound') !== 'off',
+      minimap: localStorage.getItem('rpg_minimap') !== 'off',
+    };
+    this.settingsPanelOpen = false;
+    this.settingsElements = [];
+
+    // Minimap başlangıç durumu
+    if (!this.settings.minimap) {
+      this.minimapBg.setVisible(false);
+      this.minimapGfx.setVisible(false);
+      this.minimapPlayerDot.setVisible(false);
+    }
+    // Ses başlangıç durumu
+    this.applySoundSetting();
+
+    // ⚙ Butonu
+    this.settingsBtn = this.add.text(780, 8, '⚙', {
+      fontSize: '22px', color: '#aaa'
+    }).setOrigin(0.5, 0).setDepth(210).setInteractive({ useHandCursor: true });
+    this.settingsBtn.on('pointerover', () => this.settingsBtn.setColor('#fff'));
+    this.settingsBtn.on('pointerout', () => this.settingsBtn.setColor('#aaa'));
+    this.settingsBtn.on('pointerdown', () => this.toggleSettingsPanel());
+  }
+
+  toggleSettingsPanel() {
+    if (this.settingsPanelOpen) {
+      this.closeSettingsPanel();
+    } else {
+      this.openSettingsPanel();
+    }
+  }
+
+  openSettingsPanel() {
+    this.settingsPanelOpen = true;
+    this.settingsElements.forEach(e => e?.destroy?.());
+    this.settingsElements = [];
+
+    const px = 710, py = 36;
+    const pw = 160, ph = 90;
+    const font = { fontSize: '13px', fontFamily: 'Nunito, Arial, sans-serif', fontStyle: 'bold' };
+
+    // Panel arka plan
+    const bg = this.add.rectangle(px, py + ph / 2, pw, ph, 0x12122a, 0.95).setDepth(310).setStrokeStyle(1, 0x5555aa);
+    this.settingsElements.push(bg);
+
+    // Başlık
+    const title = this.add.text(px, py + 6, 'Ayarlar', { ...font, fontSize: '14px', color: '#c0a0e0' }).setOrigin(0.5, 0).setDepth(311);
+    this.settingsElements.push(title);
+
+    // --- Ses toggle ---
+    const soundLabel = this.add.text(px - 65, py + 32, 'Ses:', { ...font, color: '#ccc' }).setOrigin(0, 0.5).setDepth(311);
+    this.settingsElements.push(soundLabel);
+    const soundBtn = this.add.text(px + 55, py + 32, this.settings.sound ? '🔊 Açık' : '🔇 Kapalı', {
+      ...font, color: this.settings.sound ? '#44cc44' : '#cc4444',
+      backgroundColor: '#1a1a3a', padding: { x: 6, y: 2 }
+    }).setOrigin(0.5, 0.5).setDepth(311).setInteractive({ useHandCursor: true });
+    soundBtn.on('pointerdown', () => {
+      this.settings.sound = !this.settings.sound;
+      localStorage.setItem('rpg_sound', this.settings.sound ? 'on' : 'off');
+      soundBtn.setText(this.settings.sound ? '🔊 Açık' : '🔇 Kapalı');
+      soundBtn.setColor(this.settings.sound ? '#44cc44' : '#cc4444');
+      this.applySoundSetting();
+    });
+    this.settingsElements.push(soundBtn);
+
+    // --- Minimap toggle ---
+    const mmLabel = this.add.text(px - 65, py + 60, 'Harita:', { ...font, color: '#ccc' }).setOrigin(0, 0.5).setDepth(311);
+    this.settingsElements.push(mmLabel);
+    const mmBtn = this.add.text(px + 55, py + 60, this.settings.minimap ? '🗺 Açık' : '❌ Kapalı', {
+      ...font, color: this.settings.minimap ? '#44cc44' : '#cc4444',
+      backgroundColor: '#1a1a3a', padding: { x: 6, y: 2 }
+    }).setOrigin(0.5, 0.5).setDepth(311).setInteractive({ useHandCursor: true });
+    mmBtn.on('pointerdown', () => {
+      this.settings.minimap = !this.settings.minimap;
+      localStorage.setItem('rpg_minimap', this.settings.minimap ? 'on' : 'off');
+      mmBtn.setText(this.settings.minimap ? '🗺 Açık' : '❌ Kapalı');
+      mmBtn.setColor(this.settings.minimap ? '#44cc44' : '#cc4444');
+      this.minimapBg.setVisible(this.settings.minimap);
+      this.minimapGfx.setVisible(this.settings.minimap);
+      this.minimapPlayerDot.setVisible(this.settings.minimap);
+    });
+    this.settingsElements.push(mmBtn);
+
+    // Panel dışına tıklayınca kapat
+    this.time.delayedCall(100, () => {
+      this._settingsCloseListener = this.input.on('pointerdown', (pointer) => {
+        const bx = px - pw / 2, by2 = py, bx2 = px + pw / 2, by3 = py + ph;
+        if (pointer.x < bx || pointer.x > bx2 || pointer.y < by2 || pointer.y > by3) {
+          this.closeSettingsPanel();
+        }
+      });
+    });
+  }
+
+  closeSettingsPanel() {
+    this.settingsPanelOpen = false;
+    this.settingsElements.forEach(e => e?.destroy?.());
+    this.settingsElements = [];
+    if (this._settingsCloseListener) {
+      this.input.off('pointerdown', this._settingsCloseListener);
+      this._settingsCloseListener = null;
+    }
+  }
+
+  applySoundSetting() {
+    const ow = this.scene.get('OverworldScene');
+    if (ow && ow.audio) {
+      ow.audio.muted = !this.settings.sound;
+      if (ow.audio.masterGain) {
+        ow.audio.masterGain.gain.value = this.settings.sound ? ow.audio.masterVolume : 0;
+      }
+      if (!this.settings.sound) ow.audio.stopMusic();
+    }
   }
 
   // ===== SKILL BAR =====
