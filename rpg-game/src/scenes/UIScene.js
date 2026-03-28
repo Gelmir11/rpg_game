@@ -462,15 +462,21 @@ export class UIScene extends Phaser.Scene {
     }).setOrigin(0.5).setDepth(402));
 
     // ===== RIGHT PANEL: Inventory Grid =====
-    const rightX = 540; // center of right panel
-    this._add(this.add.rectangle(rightX, 310, 400, 480, 0x0a0a1a, 0.5).setDepth(400).setStrokeStyle(1, 0x3a3a5a));
+    const invPanelLeft = 310;
+    const invPanelRight = 780;
+    const invPanelTop = 50;
+    const invPanelBot = 580;
+    const invPanelW = invPanelRight - invPanelLeft;
+    const invPanelH = invPanelBot - invPanelTop;
+    const rightX = invPanelLeft + invPanelW / 2;
+    this._add(this.add.rectangle(rightX, invPanelTop + invPanelH / 2, invPanelW, invPanelH, 0x0a0a1a, 0.5).setDepth(400).setStrokeStyle(1, 0x3a3a5a));
 
     // Bottom info area split into two panels
-    const tipY = 515;
     const tipH = 100;
-    const halfW = 186;
-    const tipLeftX = rightX - halfW / 2 - 2;  // left panel center
-    const tipRightX = rightX + halfW / 2 + 2;  // right panel center
+    const tipY = invPanelBot - tipH / 2 - 4;
+    const halfW = (invPanelW - 12) / 2;
+    const tipLeftX = invPanelLeft + halfW / 2 + 3;
+    const tipRightX = invPanelRight - halfW / 2 - 3;
 
     // Left: Equipment info (hover tooltip for equipped items)
     this._add(this.add.rectangle(tipLeftX, tipY, halfW, tipH, 0x15153a, 0.9).setDepth(401).setStrokeStyle(1, 0x3a3a5a));
@@ -486,17 +492,16 @@ export class UIScene extends Phaser.Scene {
       align: 'left', wordWrap: { width: halfW - 12 }, lineSpacing: 1
     }).setOrigin(0, 0).setDepth(402));
 
-    // Inventory grid - 10x10 = 100 slots, ortalı
+    // Inventory grid - 10x10 = 100 slots
     const cellSize = 36;
     const cols = 10;
     const maxRows = 10;
     const gridW = cols * cellSize;   // 360
     const gridH = maxRows * cellSize; // 360
-    // Dış panel: rightX=540, y=310, w=400, h=480 → üst=70, alt=550, tooltip=470-550
-    const panelLeft = rightX - 200;  // 340
-    const panelTop = 70;
-    const panelUsableH = 400; // 70 → 470 (tooltip üstü)
-    const gridStartX = panelLeft + (400 - gridW) / 2; // yatay ortala
+    const panelLeft = invPanelLeft;
+    const panelTop = invPanelTop;
+    const panelUsableH = invPanelH - tipH - 12; // tooltip üstü
+    const gridStartX = panelLeft + (invPanelW - gridW) / 2; // yatay ortala
     const titleH = 24;
     const gridStartY = panelTop + (panelUsableH - gridH - titleH) / 2 + titleH; // dikey ortala
 
