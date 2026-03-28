@@ -441,50 +441,56 @@ export class OverworldScene extends Phaser.Scene {
   createMonsters() {
     this.monsterObjects = [];
 
-    // Spawn monsters in different zones
+    // Spawn monsters in zones — haritaya eşit dağılım (3x3 grid + köy çevresi)
+    // Harita: 9600x9600px. Köy sol üstte (~500,400). Nehir x≈3500 dikey.
+    // Güçlülük: merkeze yakın kolay → kenarlara doğru zor
     const spawns = [
-      // Zone 1: Slime Ormanı (köy çevresi, 800-3000px)
-      ...this.generateSpawns('slime', 60, 800, 200, 3000, 3000),
-      ...this.generateSpawns('slime', 40, 200, 800, 2500, 2500),
+      // === İç Halka: Köy çevresi (kolay) ===
+      // Slime — köy etrafı (sol üst bölge)
+      ...this.generateSpawns('slime', 40, 800, 800, 2800, 2800),
+      ...this.generateSpawns('slime', 30, 200, 1200, 1800, 3200),
 
-      // Zone 2: Goblin Kampı (güneydoğu, 2500-5500px)
-      ...this.generateSpawns('goblin', 50, 2500, 2500, 5500, 5500),
-      ...this.generateSpawns('goblin', 30, 3000, 1500, 5000, 4000),
+      // Kurt — kuzey-orta
+      ...this.generateSpawns('wolf', 35, 2000, 200, 4500, 2000),
+      ...this.generateSpawns('wolf', 25, 800, 2800, 3200, 4200),
 
-      // Zone 3: İskelet Mezarlığı (kuzeydoğu, 4500-7500px)
-      ...this.generateSpawns('skeleton', 40, 4500, 500, 7500, 4000),
-      ...this.generateSpawns('skeleton', 25, 5000, 1000, 7000, 3500),
+      // === Orta Halka (orta zorluk) ===
+      // Goblin — güney-orta
+      ...this.generateSpawns('goblin', 35, 1000, 4200, 4200, 6500),
+      ...this.generateSpawns('goblin', 25, 2500, 3500, 5000, 5500),
 
-      // Zone 4: Ork Kalesi (güneybatı, 5000-8000px)
-      ...this.generateSpawns('orc', 35, 1000, 5000, 4500, 8500),
-      ...this.generateSpawns('orc', 25, 2000, 5500, 5000, 8000),
+      // İskelet — doğu-orta
+      ...this.generateSpawns('skeleton', 35, 4500, 1500, 7000, 4500),
+      ...this.generateSpawns('skeleton', 25, 5000, 2500, 6800, 4000),
 
-      // Zone 5: Kurt Ormanı (kuzey, köy yakını)
-      ...this.generateSpawns('wolf', 40, 200, 1500, 3000, 4000),
-      ...this.generateSpawns('wolf', 30, 1500, 200, 4000, 2000),
+      // Ork — batı-güney
+      ...this.generateSpawns('orc', 30, 200, 5500, 3000, 8000),
+      ...this.generateSpawns('orc', 20, 500, 6500, 2500, 7500),
 
-      // Zone 6: Golem Vadisi (doğu, 6000-9000px)
-      ...this.generateSpawns('golem', 25, 6000, 2000, 9000, 6000),
-      ...this.generateSpawns('golem', 15, 7000, 1000, 9000, 5000),
+      // === Dış Halka (zor) ===
+      // Golem — kuzeydoğu köşe
+      ...this.generateSpawns('golem', 25, 6500, 200, 9200, 3200),
+      ...this.generateSpawns('golem', 15, 7000, 500, 9000, 2800),
 
-      // Zone 7: Hayalet Bataklığı (kuzeybatı, 500-4000px)
-      ...this.generateSpawns('wraith', 20, 500, 6000, 3000, 9000),
-      ...this.generateSpawns('wraith', 15, 1000, 7000, 4000, 9000),
+      // Hayalet — güneydoğu
+      ...this.generateSpawns('wraith', 25, 5500, 5500, 8500, 8000),
+      ...this.generateSpawns('wraith', 15, 6000, 6000, 8000, 7500),
 
-      // Zone 8: Ejder Yavrusu Yuvası (sağ alt köşe, 7000-9200px)
-      ...this.generateSpawns('drake', 30, 7000, 7000, 9200, 9200),
-      ...this.generateSpawns('drake', 20, 7500, 7500, 9000, 9000),
+      // Ejder Yavrusu — güney + güneybatı geniş alan
+      ...this.generateSpawns('drake', 20, 3500, 7500, 6500, 9200),
+      ...this.generateSpawns('drake', 20, 7000, 7000, 9200, 9200),
+      ...this.generateSpawns('drake', 10, 7500, 3500, 9200, 6000),
     ];
 
-    // ===== BÖLGE BOSSLARI =====
+    // ===== BÖLGE BOSSLARI (haritaya eşit dağılmış) =====
     const zoneBosses = [
-      { type: 'slime_king', x: 1500, y: 2100, label: 'Balçık Kralı' },
-      { type: 'goblin_chief', x: 3700, y: 4100, label: 'Goblin Şefi' },
-      { type: 'skeleton_lord', x: 5700, y: 2500, label: 'İskelet Lordu' },
-      { type: 'orc_warlord', x: 2700, y: 7100, label: 'Ork Savaş Lordu' },
-      { type: 'alpha_wolf', x: 2500, y: 3200, label: 'Alfa Kurt' },
-      { type: 'crystal_golem', x: 7200, y: 4200, label: 'Kristal Golem' },
-      { type: 'wraith_queen', x: 1700, y: 8100, label: 'Hayalet Kraliçe' },
+      { type: 'slime_king', x: 1800, y: 1800, label: 'Balçık Kralı' },
+      { type: 'alpha_wolf', x: 3500, y: 1200, label: 'Alfa Kurt' },
+      { type: 'goblin_chief', x: 3000, y: 5200, label: 'Goblin Şefi' },
+      { type: 'skeleton_lord', x: 5800, y: 3000, label: 'İskelet Lordu' },
+      { type: 'orc_warlord', x: 1500, y: 7000, label: 'Ork Savaş Lordu' },
+      { type: 'crystal_golem', x: 8000, y: 1800, label: 'Kristal Golem' },
+      { type: 'wraith_queen', x: 7000, y: 6500, label: 'Hayalet Kraliçe' },
       { type: 'drake_mother', x: 8200, y: 8200, label: 'Ejder Anası' },
     ];
     this._zoneBossLabels = {};
