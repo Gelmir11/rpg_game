@@ -1,9 +1,9 @@
 export const ITEMS = {
   // Silahlar — gridW:1, gridH:2 (dikey 2 kutu)
-  wooden_sword: { id: 'wooden_sword', name: 'Tahta Kılıç', desc: 'Basit tahta kılıç. Can Yen. +1/sn.', type: 'weapon', attack: 3, hpRegen: 1, weaponType: 'sword', value: 10, level: 1, color: '#8B4513', gridW: 1, gridH: 2 },
-  iron_sword: { id: 'iron_sword', name: 'Demir Kılıç', desc: 'Sağlam demir kılıç. Can Yen. +1/sn.', type: 'weapon', attack: 8, hpRegen: 1, weaponType: 'sword', value: 50, level: 3, color: '#A0A0A0', gridW: 1, gridH: 2 },
-  steel_sword: { id: 'steel_sword', name: 'Çelik Kılıç', desc: 'Keskin çelik kılıç. Can Yen. +2/sn.', type: 'weapon', attack: 15, hpRegen: 2, weaponType: 'sword', value: 150, level: 5, color: '#C0C0C0', gridW: 1, gridH: 2 },
-  fire_sword: { id: 'fire_sword', name: 'Ateş Kılıcı', desc: 'Alevlerle kaplı kılıç. Can Yen. +3/sn.', type: 'weapon', attack: 25, hpRegen: 3, weaponType: 'sword', value: 500, level: 8, color: '#FF4500', gridW: 1, gridH: 2 },
+  wooden_sword: { id: 'wooden_sword', name: 'Tahta Kılıç', desc: 'Basit bir tahta kılıç. Yeni başlayanlar için.', type: 'weapon', attack: 3, hpRegen: 1, weaponType: 'sword', value: 10, level: 1, color: '#8B4513', gridW: 1, gridH: 2 },
+  iron_sword: { id: 'iron_sword', name: 'Demir Kılıç', desc: 'Sağlam demir kılıç. Güvenilir bir silah.', type: 'weapon', attack: 8, hpRegen: 1, weaponType: 'sword', value: 50, level: 3, color: '#A0A0A0', gridW: 1, gridH: 2 },
+  steel_sword: { id: 'steel_sword', name: 'Çelik Kılıç', desc: 'Keskin çelik kılıç. Deneyimli savaşçılar için.', type: 'weapon', attack: 15, hpRegen: 2, weaponType: 'sword', value: 150, level: 5, color: '#C0C0C0', gridW: 1, gridH: 2 },
+  fire_sword: { id: 'fire_sword', name: 'Ateş Kılıcı', desc: 'Alevlerle kaplı efsanevi kılıç.', type: 'weapon', attack: 25, hpRegen: 3, weaponType: 'sword', value: 500, level: 8, color: '#FF4500', gridW: 1, gridH: 2 },
 
   // Zırhlar — gridW:2, gridH:2 (4 kutu kare)
   leather_armor: { id: 'leather_armor', name: 'Deri Zırh', desc: 'Hafif deri zırh. Temel koruma sağlar.', type: 'armor', defense: 2, value: 15, level: 1, color: '#8B6914', gridW: 2, gridH: 2 },
@@ -20,14 +20,14 @@ export const ITEMS = {
   big_mana_potion: { id: 'big_mana_potion', name: 'Büyük Mana İksiri', desc: 'Büyük mana iksiri. 60 MP yeniler.', type: 'consumable', mana: 60, value: 25, level: 3, color: '#4a3aad', gridW: 1, gridH: 1 },
 
   // Asalar — gridW:1, gridH:2 (dikey 2 kutu)
-  wooden_staff: { id: 'wooden_staff', name: 'Tahta Asa', desc: 'Basit tahta asa. Can Yen. +1/sn, Mana Yen. +1/sn. Mana: 5/atış', type: 'weapon', attack: 8, hpRegen: 1, manaRegen: 1, manaCost: 5, weaponType: 'staff', value: 15, level: 1, color: '#8B4513', gridW: 1, gridH: 2 },
-  crystal_staff: { id: 'crystal_staff', name: 'Kristal Asa', desc: 'Kristal asa. Can Yen. +1/sn, Mana Yen. +2/sn. Mana: 8/atış', type: 'weapon', attack: 20, hpRegen: 1, manaRegen: 2, manaCost: 8, weaponType: 'staff', value: 120, level: 4, color: '#00BFFF', gridW: 1, gridH: 2 },
-  shadow_staff: { id: 'shadow_staff', name: 'Gölge Asası', desc: 'Gölge asası. Can Yen. +2/sn, Mana Yen. +3/sn. Mana: 12/atış', type: 'weapon', attack: 35, hpRegen: 2, manaRegen: 3, manaCost: 12, weaponType: 'staff', value: 350, level: 7, color: '#6a0dad', gridW: 1, gridH: 2 },
+  wooden_staff: { id: 'wooden_staff', name: 'Tahta Asa', desc: 'Basit tahta asa. Büyü yapmak için.', type: 'weapon', attack: 8, hpRegen: 1, manaRegen: 1, manaCost: 5, weaponType: 'staff', value: 15, level: 1, color: '#8B4513', gridW: 1, gridH: 2 },
+  crystal_staff: { id: 'crystal_staff', name: 'Kristal Asa', desc: 'Kristalle güçlendirilmiş asa.', type: 'weapon', attack: 20, hpRegen: 1, manaRegen: 2, manaCost: 8, weaponType: 'staff', value: 120, level: 4, color: '#00BFFF', gridW: 1, gridH: 2 },
+  shadow_staff: { id: 'shadow_staff', name: 'Gölge Asası', desc: 'Karanlık güçle dolu asa.', type: 'weapon', attack: 35, hpRegen: 2, manaRegen: 3, manaCost: 12, weaponType: 'staff', value: 350, level: 7, color: '#6a0dad', gridW: 1, gridH: 2 },
 
   // Yaylar — gridW:1, gridH:2 (dikey 2 kutu)
-  wooden_bow: { id: 'wooden_bow', name: 'Tahta Yay', desc: 'Basit tahta yay. Can Yen. +1/sn, Mana Yen. +1/sn.', type: 'weapon', attack: 3, hpRegen: 1, manaRegen: 1, weaponType: 'bow', value: 12, level: 1, color: '#8B6914', gridW: 1, gridH: 2 },
-  hunter_bow: { id: 'hunter_bow', name: 'Avcı Yayı', desc: 'Güçlü avcı yayı. Can Yen. +1/sn, Mana Yen. +1/sn.', type: 'weapon', attack: 10, hpRegen: 1, manaRegen: 1, weaponType: 'bow', value: 100, level: 4, color: '#654321', gridW: 1, gridH: 2 },
-  shadow_bow: { id: 'shadow_bow', name: 'Gölge Yayı', desc: 'Gölge yayı. Can Yen. +2/sn, Mana Yen. +2/sn.', type: 'weapon', attack: 18, hpRegen: 2, manaRegen: 2, weaponType: 'bow', value: 280, level: 7, color: '#2a0a3a', gridW: 1, gridH: 2 },
+  wooden_bow: { id: 'wooden_bow', name: 'Tahta Yay', desc: 'Basit tahta yay. Uzak mesafe saldırı.', type: 'weapon', attack: 3, hpRegen: 1, manaRegen: 1, weaponType: 'bow', value: 12, level: 1, color: '#8B6914', gridW: 1, gridH: 2 },
+  hunter_bow: { id: 'hunter_bow', name: 'Avcı Yayı', desc: 'Güçlü avcı yayı.', type: 'weapon', attack: 10, hpRegen: 1, manaRegen: 1, weaponType: 'bow', value: 100, level: 4, color: '#654321', gridW: 1, gridH: 2 },
+  shadow_bow: { id: 'shadow_bow', name: 'Gölge Yayı', desc: 'Gölgelerden güç alan yay.', type: 'weapon', attack: 18, hpRegen: 2, manaRegen: 2, weaponType: 'bow', value: 280, level: 7, color: '#2a0a3a', gridW: 1, gridH: 2 },
 
   // Kaynak malzemeleri — gridW:1, gridH:1
   wood: { id: 'wood', name: 'Odun', desc: 'Ağaçtan kesilmiş odun. Crafting malzemesi.', type: 'material', value: 2, level: 1, color: '#654321', gridW: 1, gridH: 1 },
@@ -62,23 +62,23 @@ export const ITEMS = {
   dragon_belt: { id: 'dragon_belt', name: 'Ejder Kemeri', desc: 'Ejder pullu kemer. Max HP +35.', type: 'accessory', maxHp: 35, equipSlot: 'belt', value: 440, level: 8, color: '#8B0000', gridW: 2, gridH: 1 },
 
   // Küpeler — gridW:1, gridH:1 (1 kutu)
-  ring_strength: { id: 'ring_strength', name: 'Güç Küpesi', desc: 'Saldırı +3, Mana Yen. +1/sn.', type: 'accessory', attack: 3, manaRegen: 1, value: 75, level: 3, color: '#FFD700', gridW: 1, gridH: 1 },
-  ring_defense: { id: 'ring_defense', name: 'Koruma Küpesi', desc: 'Savunma +3, Can Yen. +1/sn.', type: 'accessory', defense: 3, hpRegen: 1, value: 75, level: 3, color: '#4682B4', gridW: 1, gridH: 1 },
+  ring_strength: { id: 'ring_strength', name: 'Güç Küpesi', desc: 'Saldırı gücünü artıran küpe.', type: 'accessory', attack: 3, manaRegen: 1, value: 75, level: 3, color: '#FFD700', gridW: 1, gridH: 1 },
+  ring_defense: { id: 'ring_defense', name: 'Koruma Küpesi', desc: 'Savunmayı artıran küpe.', type: 'accessory', defense: 3, hpRegen: 1, value: 75, level: 3, color: '#4682B4', gridW: 1, gridH: 1 },
   // Yüzükler — gridW:1, gridH:1 (1 kutu)
-  yuzuk_hp: { id: 'yuzuk_hp', name: 'Can Yüzüğü', desc: 'HP+10, Mana+5, Can Yen. +1/sn.', type: 'accessory', maxHp: 10, maxMana: 5, hpRegen: 1, value: 80, level: 3, color: '#DC143C', gridW: 1, gridH: 1 },
-  yuzuk_iron: { id: 'yuzuk_iron', name: 'Demir Yüzük', desc: 'HP+15, Mana+8, Mana Yen. +1/sn.', type: 'accessory', maxHp: 15, maxMana: 8, manaRegen: 1, value: 60, level: 3, color: '#808080', gridW: 1, gridH: 1 },
-  yuzuk_steel: { id: 'yuzuk_steel', name: 'Çelik Yüzük', desc: 'HP+25, Mana+12, Can Yen. +1/sn.', type: 'accessory', maxHp: 25, maxMana: 12, hpRegen: 1, value: 170, level: 5, color: '#C0C0C0', gridW: 1, gridH: 1 },
-  yuzuk_dragon: { id: 'yuzuk_dragon', name: 'Ejder Yüzüğü', desc: 'HP+40, Mana+20, Can Yen. +2/sn, Mana Yen. +1/sn.', type: 'accessory', maxHp: 40, maxMana: 20, hpRegen: 2, manaRegen: 1, value: 500, level: 8, color: '#8B0000', gridW: 1, gridH: 1 },
+  yuzuk_hp: { id: 'yuzuk_hp', name: 'Can Yüzüğü', desc: 'Can gücünü artıran yüzük.', type: 'accessory', maxHp: 10, maxMana: 5, hpRegen: 1, value: 80, level: 3, color: '#DC143C', gridW: 1, gridH: 1 },
+  yuzuk_iron: { id: 'yuzuk_iron', name: 'Demir Yüzük', desc: 'Sağlam demir yüzük.', type: 'accessory', maxHp: 15, maxMana: 8, manaRegen: 1, value: 60, level: 3, color: '#808080', gridW: 1, gridH: 1 },
+  yuzuk_steel: { id: 'yuzuk_steel', name: 'Çelik Yüzük', desc: 'Dayanıklı çelik yüzük.', type: 'accessory', maxHp: 25, maxMana: 12, hpRegen: 1, value: 170, level: 5, color: '#C0C0C0', gridW: 1, gridH: 1 },
+  yuzuk_dragon: { id: 'yuzuk_dragon', name: 'Ejder Yüzüğü', desc: 'Ejder pullu güçlü yüzük.', type: 'accessory', maxHp: 40, maxMana: 20, hpRegen: 2, manaRegen: 1, value: 500, level: 8, color: '#8B0000', gridW: 1, gridH: 1 },
   // Kolye — gridW:2, gridH:2 (4 kutu)
-  amulet_hp: { id: 'amulet_hp', name: 'Can Kolyesi', desc: 'HP+20, Can Yen. +1/sn.', type: 'accessory', maxHp: 20, hpRegen: 1, value: 100, level: 4, color: '#DC143C', gridW: 2, gridH: 2 },
+  amulet_hp: { id: 'amulet_hp', name: 'Can Kolyesi', desc: 'Can gücünü artıran kolye.', type: 'accessory', maxHp: 20, hpRegen: 1, value: 100, level: 4, color: '#DC143C', gridW: 2, gridH: 2 },
 
   // ============================================================
   // TIER 5: MİTHRİL (Labirent Lv.40-60)
   // ============================================================
   // Silahlar
-  mythril_sword: { id: 'mythril_sword', name: 'Mithril Kılıç', desc: 'Mithril kılıç. Can Yen. +4/sn.', type: 'weapon', attack: 80, hpRegen: 4, weaponType: 'sword', value: 3000, level: 40, color: '#7EC8E3', gridW: 1, gridH: 2 },
-  mythril_staff: { id: 'mythril_staff', name: 'Mithril Asa', desc: 'Mithril asa. Can Yen. +3/sn, Mana Yen. +4/sn. Mana: 18/atış', type: 'weapon', attack: 65, hpRegen: 3, manaRegen: 4, manaCost: 18, weaponType: 'staff', value: 3500, level: 42, color: '#7EC8E3', gridW: 1, gridH: 2 },
-  mythril_bow: { id: 'mythril_bow', name: 'Mithril Yay', desc: 'Mithril yay. Can Yen. +3/sn, Mana Yen. +3/sn.', type: 'weapon', attack: 55, hpRegen: 3, manaRegen: 3, weaponType: 'bow', value: 3200, level: 41, color: '#7EC8E3', gridW: 1, gridH: 2 },
+  mythril_sword: { id: 'mythril_sword', name: 'Mithril Kılıç', desc: 'Saf mithrilden dövülmüş kılıç. Son derece keskin.', type: 'weapon', attack: 80, hpRegen: 4, weaponType: 'sword', value: 3000, level: 40, color: '#7EC8E3', gridW: 1, gridH: 2 },
+  mythril_staff: { id: 'mythril_staff', name: 'Mithril Asa', desc: 'Mithril çekirdekli büyü asası.', type: 'weapon', attack: 65, hpRegen: 3, manaRegen: 4, manaCost: 18, weaponType: 'staff', value: 3500, level: 42, color: '#7EC8E3', gridW: 1, gridH: 2 },
+  mythril_bow: { id: 'mythril_bow', name: 'Mithril Yay', desc: 'Mithril kaplı yay. İnanılmaz menzil.', type: 'weapon', attack: 55, hpRegen: 3, manaRegen: 3, weaponType: 'bow', value: 3200, level: 41, color: '#7EC8E3', gridW: 1, gridH: 2 },
   // Zırh
   mythril_armor: { id: 'mythril_armor', name: 'Mithril Zırh', desc: 'Hafif ama güçlü mithril zırh.', type: 'armor', defense: 50, value: 4000, level: 40, color: '#7EC8E3', gridW: 2, gridH: 2 },
   // Aksesuarlar
@@ -86,9 +86,9 @@ export const ITEMS = {
   mythril_pants: { id: 'mythril_pants', name: 'Mithril Pantolon', desc: 'Mithril zırh pantolon. Savunma +25.', type: 'accessory', defense: 25, equipSlot: 'legs', value: 2400, level: 40, color: '#7EC8E3', gridW: 2, gridH: 2 },
   mythril_gloves: { id: 'mythril_gloves', name: 'Mithril Eldiven', desc: 'Mithril eldiven. Saldırı +15.', type: 'accessory', attack: 15, equipSlot: 'arms', value: 2300, level: 40, color: '#7EC8E3', gridW: 2, gridH: 2 },
   mythril_belt: { id: 'mythril_belt', name: 'Mithril Kemer', desc: 'Mithril kemer. Max HP +80.', type: 'accessory', maxHp: 80, equipSlot: 'belt', value: 2000, level: 40, color: '#7EC8E3', gridW: 2, gridH: 1 },
-  maze_ring: { id: 'maze_ring', name: 'Labirent Küpesi', desc: 'ATK+10 DEF+10, Mana Yen. +2/sn.', type: 'accessory', attack: 10, defense: 10, manaRegen: 2, value: 2800, level: 45, color: '#9370DB', gridW: 1, gridH: 1 },
-  yuzuk_mythril: { id: 'yuzuk_mythril', name: 'Mithril Yüzük', desc: 'HP+50 Mana+25, Can Yen. +3/sn, Mana Yen. +2/sn.', type: 'accessory', maxHp: 50, maxMana: 25, hpRegen: 3, manaRegen: 2, value: 2600, level: 45, color: '#7EC8E3', gridW: 1, gridH: 1 },
-  maze_amulet: { id: 'maze_amulet', name: 'Labirent Kolyesi', desc: 'HP+60 Mana+30, Can Yen. +2/sn, Mana Yen. +1/sn.', type: 'accessory', maxHp: 60, maxMana: 30, hpRegen: 2, manaRegen: 1, value: 3200, level: 45, color: '#9370DB', gridW: 2, gridH: 2 },
+  maze_ring: { id: 'maze_ring', name: 'Labirent Küpesi', desc: 'Labirentin gücünü taşıyan küpe.', type: 'accessory', attack: 10, defense: 10, manaRegen: 2, value: 2800, level: 45, color: '#9370DB', gridW: 1, gridH: 1 },
+  yuzuk_mythril: { id: 'yuzuk_mythril', name: 'Mithril Yüzük', desc: 'Saf mithrilden yüzük.', type: 'accessory', maxHp: 50, maxMana: 25, hpRegen: 3, manaRegen: 2, value: 2600, level: 45, color: '#7EC8E3', gridW: 1, gridH: 1 },
+  maze_amulet: { id: 'maze_amulet', name: 'Labirent Kolyesi', desc: 'Kadim labirent kolyesi.', type: 'accessory', maxHp: 60, maxMana: 30, hpRegen: 2, manaRegen: 1, value: 3200, level: 45, color: '#9370DB', gridW: 2, gridH: 2 },
   // İksirler (Labirent tier)
   mega_health_potion: { id: 'mega_health_potion', name: 'Dev Can İksiri', desc: 'Çok güçlü can iksiri. 300 HP yeniler.', type: 'consumable', heal: 300, value: 80, level: 40, color: '#FF0066', gridW: 1, gridH: 1 },
   mega_mana_potion: { id: 'mega_mana_potion', name: 'Dev Mana İksiri', desc: 'Çok güçlü mana iksiri. 200 MP yeniler.', type: 'consumable', mana: 200, value: 80, level: 40, color: '#4400CC', gridW: 1, gridH: 1 },
@@ -99,9 +99,9 @@ export const ITEMS = {
   // TIER 6: ABYSSAL (Zindan Lv.60-70)
   // ============================================================
   // Silahlar
-  abyssal_sword: { id: 'abyssal_sword', name: 'Uçurum Kılıcı', desc: 'Uçurum kılıcı. Can Yen. +6/sn.', type: 'weapon', attack: 150, hpRegen: 6, weaponType: 'sword', value: 8000, level: 60, color: '#4A0028', gridW: 1, gridH: 2 },
-  abyssal_staff: { id: 'abyssal_staff', name: 'Uçurum Asası', desc: 'Uçurum asası. Can Yen. +4/sn, Mana Yen. +6/sn. Mana: 22/atış', type: 'weapon', attack: 120, hpRegen: 4, manaRegen: 6, manaCost: 22, weaponType: 'staff', value: 9000, level: 62, color: '#4A0028', gridW: 1, gridH: 2 },
-  abyssal_bow: { id: 'abyssal_bow', name: 'Uçurum Yayı', desc: 'Uçurum yayı. Can Yen. +4/sn, Mana Yen. +4/sn.', type: 'weapon', attack: 110, hpRegen: 4, manaRegen: 4, weaponType: 'bow', value: 8500, level: 61, color: '#4A0028', gridW: 1, gridH: 2 },
+  abyssal_sword: { id: 'abyssal_sword', name: 'Uçurum Kılıcı', desc: 'Derinliklerin karanlığından doğan kılıç.', type: 'weapon', attack: 150, hpRegen: 6, weaponType: 'sword', value: 8000, level: 60, color: '#4A0028', gridW: 1, gridH: 2 },
+  abyssal_staff: { id: 'abyssal_staff', name: 'Uçurum Asası', desc: 'Karanlık büyü asası.', type: 'weapon', attack: 120, hpRegen: 4, manaRegen: 6, manaCost: 22, weaponType: 'staff', value: 9000, level: 62, color: '#4A0028', gridW: 1, gridH: 2 },
+  abyssal_bow: { id: 'abyssal_bow', name: 'Uçurum Yayı', desc: 'Gölgelerden fırlayan oklar atar.', type: 'weapon', attack: 110, hpRegen: 4, manaRegen: 4, weaponType: 'bow', value: 8500, level: 61, color: '#4A0028', gridW: 1, gridH: 2 },
   // Zırh
   abyssal_armor: { id: 'abyssal_armor', name: 'Uçurum Zırhı', desc: 'Derinliklerin taşından yapılmış zırh.', type: 'armor', defense: 100, value: 10000, level: 60, color: '#4A0028', gridW: 2, gridH: 2 },
   // Aksesuarlar
@@ -109,9 +109,9 @@ export const ITEMS = {
   abyssal_pants: { id: 'abyssal_pants', name: 'Uçurum Pantolonu', desc: 'Uçurum zırh pantolon. Savunma +50.', type: 'accessory', defense: 50, equipSlot: 'legs', value: 5800, level: 60, color: '#4A0028', gridW: 2, gridH: 2 },
   abyssal_gloves: { id: 'abyssal_gloves', name: 'Uçurum Eldiveni', desc: 'Uçurum eldiven. Saldırı +30.', type: 'accessory', attack: 30, equipSlot: 'arms', value: 5500, level: 60, color: '#4A0028', gridW: 2, gridH: 2 },
   abyssal_belt: { id: 'abyssal_belt', name: 'Uçurum Kemeri', desc: 'Uçurum kemeri. Max HP +150.', type: 'accessory', maxHp: 150, equipSlot: 'belt', value: 5000, level: 60, color: '#4A0028', gridW: 2, gridH: 1 },
-  dark_ring: { id: 'dark_ring', name: 'Karanlık Küpe', desc: 'ATK+20 DEF+20, Mana Yen. +3/sn.', type: 'accessory', attack: 20, defense: 20, manaRegen: 3, value: 7000, level: 65, color: '#2A0A3A', gridW: 1, gridH: 1 },
-  yuzuk_abyssal: { id: 'yuzuk_abyssal', name: 'Uçurum Yüzüğü', desc: 'HP+100 Mana+50, Can Yen. +5/sn, Mana Yen. +3/sn.', type: 'accessory', maxHp: 100, maxMana: 50, hpRegen: 5, manaRegen: 3, value: 6500, level: 65, color: '#4A0028', gridW: 1, gridH: 1 },
-  dark_amulet: { id: 'dark_amulet', name: 'Karanlık Kolye', desc: 'HP+120 Mana+60, Can Yen. +4/sn, Mana Yen. +2/sn.', type: 'accessory', maxHp: 120, maxMana: 60, hpRegen: 4, manaRegen: 2, value: 8000, level: 65, color: '#2A0A3A', gridW: 2, gridH: 2 },
+  dark_ring: { id: 'dark_ring', name: 'Karanlık Küpe', desc: 'Karanlık güçle dolu küpe.', type: 'accessory', attack: 20, defense: 20, manaRegen: 3, value: 7000, level: 65, color: '#2A0A3A', gridW: 1, gridH: 1 },
+  yuzuk_abyssal: { id: 'yuzuk_abyssal', name: 'Uçurum Yüzüğü', desc: 'Derinliklerin gücünü taşıyan yüzük.', type: 'accessory', maxHp: 100, maxMana: 50, hpRegen: 5, manaRegen: 3, value: 6500, level: 65, color: '#4A0028', gridW: 1, gridH: 1 },
+  dark_amulet: { id: 'dark_amulet', name: 'Karanlık Kolye', desc: 'Derin karanlık kolyesi.', type: 'accessory', maxHp: 120, maxMana: 60, hpRegen: 4, manaRegen: 2, value: 8000, level: 65, color: '#2A0A3A', gridW: 2, gridH: 2 },
   // Malzeme
   abyssal_shard: { id: 'abyssal_shard', name: 'Uçurum Parçası', desc: 'Derinliklerden gelen karanlık parça.', type: 'material', value: 500, level: 60, color: '#4A0028', gridW: 1, gridH: 1 },
 
@@ -119,9 +119,9 @@ export const ITEMS = {
   // TIER 7: DUSKHOLLOW - EFSANEVİ (Zindan Son Katlar Lv.75-80)
   // ============================================================
   // Silahlar
-  duskhollow_blade: { id: 'duskhollow_blade', name: 'Alacakaranlık Kılıcı', desc: 'Efsanevi kılıç. Can Yen. +8/sn.', type: 'weapon', attack: 250, hpRegen: 8, weaponType: 'sword', value: 25000, level: 75, color: '#6A0DAD', gridW: 1, gridH: 2 },
-  duskhollow_staff: { id: 'duskhollow_staff', name: 'Alacakaranlık Asası', desc: 'Efsanevi asa. Can Yen. +5/sn, Mana Yen. +8/sn. Mana: 28/atış', type: 'weapon', attack: 200, hpRegen: 5, manaRegen: 8, manaCost: 28, weaponType: 'staff', value: 28000, level: 76, color: '#6A0DAD', gridW: 1, gridH: 2 },
-  duskhollow_bow: { id: 'duskhollow_bow', name: 'Alacakaranlık Yayı', desc: 'Efsanevi yay. Can Yen. +5/sn, Mana Yen. +5/sn.', type: 'weapon', attack: 180, hpRegen: 5, manaRegen: 5, weaponType: 'bow', value: 26000, level: 75, color: '#6A0DAD', gridW: 1, gridH: 2 },
+  duskhollow_blade: { id: 'duskhollow_blade', name: 'Alacakaranlık Kılıcı', desc: 'Alacakaranlığın özünden dövülmüş efsanevi kılıç.', type: 'weapon', attack: 250, hpRegen: 8, weaponType: 'sword', value: 25000, level: 75, color: '#6A0DAD', gridW: 1, gridH: 2 },
+  duskhollow_staff: { id: 'duskhollow_staff', name: 'Alacakaranlık Asası', desc: 'Boyutları büken efsanevi asa.', type: 'weapon', attack: 200, hpRegen: 5, manaRegen: 8, manaCost: 28, weaponType: 'staff', value: 28000, level: 76, color: '#6A0DAD', gridW: 1, gridH: 2 },
+  duskhollow_bow: { id: 'duskhollow_bow', name: 'Alacakaranlık Yayı', desc: 'Işık ve karanlık arası ok fırlatır.', type: 'weapon', attack: 180, hpRegen: 5, manaRegen: 5, weaponType: 'bow', value: 26000, level: 75, color: '#6A0DAD', gridW: 1, gridH: 2 },
   // Zırh
   duskhollow_armor: { id: 'duskhollow_armor', name: 'Alacakaranlık Zırhı', desc: 'Efsanevi zırh. Gölge ve ışığın birleşimi.', type: 'armor', defense: 180, value: 30000, level: 75, color: '#6A0DAD', gridW: 2, gridH: 2 },
   // Aksesuarlar
@@ -129,9 +129,9 @@ export const ITEMS = {
   duskhollow_pants: { id: 'duskhollow_pants', name: 'Alacakaranlık Pantolonu', desc: 'Efsanevi pantolon. Savunma +90.', type: 'accessory', defense: 90, equipSlot: 'legs', value: 17000, level: 75, color: '#6A0DAD', gridW: 2, gridH: 2 },
   duskhollow_gloves: { id: 'duskhollow_gloves', name: 'Alacakaranlık Eldiveni', desc: 'Efsanevi eldiven. Saldırı +50.', type: 'accessory', attack: 50, equipSlot: 'arms', value: 16000, level: 75, color: '#6A0DAD', gridW: 2, gridH: 2 },
   duskhollow_belt: { id: 'duskhollow_belt', name: 'Alacakaranlık Kemeri', desc: 'Efsanevi kemer. Max HP +250.', type: 'accessory', maxHp: 250, equipSlot: 'belt', value: 15000, level: 75, color: '#6A0DAD', gridW: 2, gridH: 1 },
-  duskhollow_ring: { id: 'duskhollow_ring', name: 'Alacakaranlık Küpesi', desc: 'ATK+35 DEF+35, Mana Yen. +5/sn, Can Yen. +3/sn.', type: 'accessory', attack: 35, defense: 35, manaRegen: 5, hpRegen: 3, value: 20000, level: 78, color: '#6A0DAD', gridW: 1, gridH: 1 },
-  yuzuk_duskhollow: { id: 'yuzuk_duskhollow', name: 'Alacakaranlık Yüzüğü', desc: 'HP+160 Mana+80, Can Yen. +8/sn, Mana Yen. +5/sn.', type: 'accessory', maxHp: 160, maxMana: 80, hpRegen: 8, manaRegen: 5, value: 19000, level: 78, color: '#6A0DAD', gridW: 1, gridH: 1 },
-  duskhollow_amulet: { id: 'duskhollow_amulet', name: 'Alacakaranlık Kolyesi', desc: 'HP+200 Mana+100, Can Yen. +6/sn, Mana Yen. +4/sn.', type: 'accessory', maxHp: 200, maxMana: 100, hpRegen: 6, manaRegen: 4, value: 22000, level: 78, color: '#6A0DAD', gridW: 2, gridH: 2 },
+  duskhollow_ring: { id: 'duskhollow_ring', name: 'Alacakaranlık Küpesi', desc: 'Alacakaranlığın gücünü taşıyan efsanevi küpe.', type: 'accessory', attack: 35, defense: 35, manaRegen: 5, hpRegen: 3, value: 20000, level: 78, color: '#6A0DAD', gridW: 1, gridH: 1 },
+  yuzuk_duskhollow: { id: 'yuzuk_duskhollow', name: 'Alacakaranlık Yüzüğü', desc: 'Alacakaranlığın gücünü taşıyan efsanevi yüzük.', type: 'accessory', maxHp: 160, maxMana: 80, hpRegen: 8, manaRegen: 5, value: 19000, level: 78, color: '#6A0DAD', gridW: 1, gridH: 1 },
+  duskhollow_amulet: { id: 'duskhollow_amulet', name: 'Alacakaranlık Kolyesi', desc: 'Alacakaranlığın gücünü taşıyan efsanevi kolye.', type: 'accessory', maxHp: 200, maxMana: 100, hpRegen: 6, manaRegen: 4, value: 22000, level: 78, color: '#6A0DAD', gridW: 2, gridH: 2 },
   // Malzeme
   duskhollow_essence: { id: 'duskhollow_essence', name: 'Alacakaranlık Özü', desc: 'Alacakaranlığın saf özü. Efsanevi malzeme.', type: 'material', value: 2000, level: 75, color: '#6A0DAD', gridW: 1, gridH: 1 },
 };
