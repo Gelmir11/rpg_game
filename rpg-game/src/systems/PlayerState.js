@@ -184,6 +184,48 @@ export class PlayerState {
   }
 
   // Toplam saldırı (baz + ekipman + ekipman bonusu + buff + sınıf pasif)
+  // Set bonus sistemi: aynı setten 3/4/5 parça giyince ATK+DEF bonusu
+  static SET_PREFIXES = ['leather', 'iron', 'steel', 'dragon', 'mythril', 'abyssal', 'duskhollow'];
+  static SET_SLOTS = ['head', 'chest', 'legs', 'arms', 'belt'];
+  static SET_BONUSES = {
+    leather:    { 3: { attack: 2, defense: 2 },   4: { attack: 4, defense: 4 },   5: { attack: 6, defense: 6 } },
+    iron:       { 3: { attack: 4, defense: 4 },   4: { attack: 8, defense: 8 },   5: { attack: 12, defense: 12 } },
+    steel:      { 3: { attack: 6, defense: 6 },   4: { attack: 12, defense: 12 }, 5: { attack: 20, defense: 20 } },
+    dragon:     { 3: { attack: 10, defense: 10 }, 4: { attack: 20, defense: 20 }, 5: { attack: 35, defense: 35 } },
+    mythril:    { 3: { attack: 15, defense: 15 }, 4: { attack: 30, defense: 30 }, 5: { attack: 50, defense: 50 } },
+    abyssal:    { 3: { attack: 25, defense: 25 }, 4: { attack: 50, defense: 50 }, 5: { attack: 80, defense: 80 } },
+    duskhollow: { 3: { attack: 40, defense: 40 }, 4: { attack: 75, defense: 75 }, 5: { attack: 120, defense: 120 } },
+  };
+
+  getSetBonus() {
+    const counts = {};
+    PlayerState.SET_SLOTS.forEach(slot => {
+      const eq = this.equipped[slot];
+      if (!eq || !eq.id) return;
+      for (const prefix of PlayerState.SET_PREFIXES) {
+        if (eq.id.startsWith(prefix + '_')) {
+          counts[prefix] = (counts[prefix] || 0) + 1;
+          break;
+        }
+      }
+    });
+    let totalAtk = 0, totalDef = 0;
+    let activeSet = null, activeCount = 0;
+    for (const [prefix, count] of Object.entries(counts)) {
+      const bonuses = PlayerState.SET_BONUSES[prefix];
+      if (bonuses) {
+        // En yüksek eşiği bul (5, 4 veya 3)
+        const threshold = count >= 5 ? 5 : count >= 4 ? 4 : count >= 3 ? 3 : 0;
+        if (threshold > 0 && bonuses[threshold]) {
+          totalAtk += bonuses[threshold].attack;
+          totalDef += bonuses[threshold].defense;
+          if (count > activeCount) { activeSet = prefix; activeCount = count; }
+        }
+      }
+    }
+    return { attack: totalAtk, defense: totalDef, set: activeSet, count: activeCount };
+  }
+
   getAttack() {
     let atk = this.baseAttack;
     Object.values(this.equipped).forEach(eq => {
@@ -193,11 +235,13 @@ export class PlayerState {
       }
     });
     this.buffs.forEach(b => { if (b.attack) atk += b.attack; });
-    // Sınıf pasif bonusu (Savaşçı: seviye başına +0.5 ATK)
+    // Sınıf pasif bonusu
     const classDef = CLASS_DEFINITIONS[this.playerClass];
     if (classDef && classDef.passiveBonus && classDef.passiveBonus.attackPerLevel) {
       atk += Math.floor(classDef.passiveBonus.attackPerLevel * (this.level - 1));
     }
+    // Set bonusu
+    atk += this.getSetBonus().attack;
     return atk;
   }
 
@@ -210,11 +254,13 @@ export class PlayerState {
       }
     });
     this.buffs.forEach(b => { if (b.defense) def += b.defense; });
-    // Sınıf pasif bonusu (Savaşçı: seviye başına +0.3 DEF)
+    // Sınıf pasif bonusu
     const classDef = CLASS_DEFINITIONS[this.playerClass];
     if (classDef && classDef.passiveBonus && classDef.passiveBonus.defensePerLevel) {
       def += Math.floor(classDef.passiveBonus.defensePerLevel * (this.level - 1));
     }
+    // Set bonusu
+    def += this.getSetBonus().defense;
     return def;
   }
 

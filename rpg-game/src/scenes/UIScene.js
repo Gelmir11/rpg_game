@@ -438,27 +438,38 @@ export class UIScene extends Phaser.Scene {
     this._add(this.add.rectangle(charX - barW/2 + barW * expProg / 2, barY + 68, barW * expProg, 6, 0x4169E1).setDepth(402));
     // Stats line
     const statFont = { fontSize: '12px', fontFamily: 'Nunito, Arial, sans-serif', fontStyle: 'bold' };
-    this._add(this.add.text(charX, barY + 80, `ATK: ${ps.getAttack()}   DEF: ${ps.getDefense()}`, {
+    let statY = barY + 80;
+    this._add(this.add.text(charX, statY, `ATK: ${ps.getAttack()}   DEF: ${ps.getDefense()}`, {
       ...statFont, color: '#ccc'
     }).setOrigin(0.5).setDepth(402));
+    statY += 16;
+    // Set bonus info
+    const setInfo = ps.getSetBonus();
+    if (setInfo.set && setInfo.count >= 3) {
+      const setNames = { leather: 'Deri', iron: 'Demir', steel: 'Çelik', dragon: 'Ejder', mythril: 'Mithril', abyssal: 'Uçurum', duskhollow: 'Alacakaranlık' };
+      const sName = setNames[setInfo.set] || setInfo.set;
+      this._add(this.add.text(charX, statY, `⚔ ${sName} Seti (${setInfo.count}/5): ATK+${setInfo.attack} DEF+${setInfo.defense}`, {
+        fontSize: '10px', fontFamily: 'Nunito, Arial, sans-serif', fontStyle: 'bold', color: '#FFaa33'
+      }).setOrigin(0.5).setDepth(402));
+      statY += 14;
+    }
     // Regen stats
     const hpR = ps.getHpRegen(), manaR = ps.getManaRegen();
-    const regenX = charX;
     if (hpR > 0 || manaR > 0) {
-      const regenY = barY + 96;
       if (hpR > 0) {
-        this._add(this.add.text(regenX - 40, regenY, `HP+${hpR}/sn`, {
+        this._add(this.add.text(charX - 40, statY, `HP+${hpR}/sn`, {
           ...statFont, color: '#FF6666'
         }).setOrigin(0.5).setDepth(402));
       }
       if (manaR > 0) {
-        this._add(this.add.text(regenX + 40, regenY, `MP+${manaR}/sn`, {
+        this._add(this.add.text(charX + 40, statY, `MP+${manaR}/sn`, {
           ...statFont, color: '#6688FF'
         }).setOrigin(0.5).setDepth(402));
       }
+      statY += 16;
     }
     // Gold
-    this._add(this.add.text(charX, barY + 112, `Altın: ${formatGold(ps.gold)}`, {
+    this._add(this.add.text(charX, statY, `Altın: ${formatGold(ps.gold)}`, {
       ...statFont, color: '#FFD700'
     }).setOrigin(0.5).setDepth(402));
 
