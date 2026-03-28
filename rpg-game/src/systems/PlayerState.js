@@ -13,6 +13,8 @@ export const CLASS_DEFINITIONS = {
     description: 'Güçlü yakın dövüş savaşçısı. Yüksek HP ve saldırı gücü.',
     baseStats: { maxHp: 120, maxMana: 20, baseAttack: 12, baseDefense: 8, speed: 140 },
     growth: { maxHp: 10, maxMana: 2, baseAttack: 2, baseDefense: 1 },
+    // Savaşçı pasif: seviye başına +0.5 ATK, +0.3 DEF ekstra
+    passiveBonus: { attackPerLevel: 0.5, defensePerLevel: 0.3 },
     startWeapon: 'wooden_sword',
     color: '#e74c3c'
   },
@@ -22,6 +24,7 @@ export const CLASS_DEFINITIONS = {
     description: 'Çevik menzilli savaşçı. Dengeli saldırı ve savunma.',
     baseStats: { maxHp: 100, maxMana: 30, baseAttack: 10, baseDefense: 6, speed: 160 },
     growth: { maxHp: 7, maxMana: 3, baseAttack: 1.5, baseDefense: 1.5 },
+    passiveBonus: {},
     startWeapon: 'wooden_bow',
     color: '#27ae60'
   },
@@ -31,6 +34,8 @@ export const CLASS_DEFINITIONS = {
     description: 'Güçlü büyü ustası. Yüksek mana ve büyü hasarı.',
     baseStats: { maxHp: 80, maxMana: 60, baseAttack: 8, baseDefense: 5, speed: 130 },
     growth: { maxHp: 5, maxMana: 6, baseAttack: 1, baseDefense: 1 },
+    // Büyücü pasif: ekstra mana regen +2/sn
+    passiveBonus: { manaRegen: 2 },
     startWeapon: 'wooden_staff',
     color: '#8e44ad'
   }
@@ -178,7 +183,7 @@ export class PlayerState {
     return leveledUp;
   }
 
-  // Toplam saldırı (baz + ekipman + ekipman bonusu + buff)
+  // Toplam saldırı (baz + ekipman + ekipman bonusu + buff + sınıf pasif)
   getAttack() {
     let atk = this.baseAttack;
     Object.values(this.equipped).forEach(eq => {
@@ -188,6 +193,11 @@ export class PlayerState {
       }
     });
     this.buffs.forEach(b => { if (b.attack) atk += b.attack; });
+    // Sınıf pasif bonusu (Savaşçı: seviye başına +0.5 ATK)
+    const classDef = CLASS_DEFINITIONS[this.playerClass];
+    if (classDef && classDef.passiveBonus && classDef.passiveBonus.attackPerLevel) {
+      atk += Math.floor(classDef.passiveBonus.attackPerLevel * (this.level - 1));
+    }
     return atk;
   }
 
@@ -200,6 +210,11 @@ export class PlayerState {
       }
     });
     this.buffs.forEach(b => { if (b.defense) def += b.defense; });
+    // Sınıf pasif bonusu (Savaşçı: seviye başına +0.3 DEF)
+    const classDef = CLASS_DEFINITIONS[this.playerClass];
+    if (classDef && classDef.passiveBonus && classDef.passiveBonus.defensePerLevel) {
+      def += Math.floor(classDef.passiveBonus.defensePerLevel * (this.level - 1));
+    }
     return def;
   }
 
@@ -250,6 +265,11 @@ export class PlayerState {
         if (eq._bonuses && eq._bonuses.manaRegen) regen += eq._bonuses.manaRegen;
       }
     });
+    // Sınıf pasif bonusu (Büyücü: +2 mana regen)
+    const classDef = CLASS_DEFINITIONS[this.playerClass];
+    if (classDef && classDef.passiveBonus && classDef.passiveBonus.manaRegen) {
+      regen += classDef.passiveBonus.manaRegen;
+    }
     return regen;
   }
 
