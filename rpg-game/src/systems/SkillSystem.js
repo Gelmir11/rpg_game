@@ -1,29 +1,34 @@
 import { PlayerState } from './PlayerState.js';
 
 // Sınıf bazlı yetenek tanımları
+// Sınıf-silah eşleşmesi: savaş skilleri sadece doğru silahla kullanılabilir
+// buff tipi skiller herhangi silahla kullanılabilir (requiredWeapon yok)
 export const SKILL_DEFINITIONS = {
   warrior: [
     {
       id: 'power_strike', name: 'Güçlü Vuruş', level: 1,
       type: 'melee_attack', manaCost: 8, cooldown: 3000,
       damageMultiplier: 1.8, range: 90, aoe: false,
+      requiredWeapon: 'sword',
       icon: 'skill_power_strike', color: '#e74c3c',
-      description: 'Güçlü bir kılıç darbesi (1.8x hasar)'
+      description: 'Güçlü bir kılıç darbesi (1.8x hasar) [Kılıç gerekli]'
     },
     {
       id: 'shield_bash', name: 'Kalkan Çarpması', level: 5,
       type: 'melee_attack', manaCost: 12, cooldown: 5000,
       damageMultiplier: 1.2, range: 70, aoe: false,
       effect: { stun: 1500 },
+      requiredWeapon: 'sword',
       icon: 'skill_shield_bash', color: '#f39c12',
-      description: 'Düşmanı 1.5s sersemletir'
+      description: 'Düşmanı 1.5s sersemletir [Kılıç gerekli]'
     },
     {
       id: 'whirlwind', name: 'Kasırga', level: 10,
       type: 'melee_aoe', manaCost: 20, cooldown: 8000,
       damageMultiplier: 1.5, range: 100, aoe: true, aoeRadius: 100,
+      requiredWeapon: 'sword',
       icon: 'skill_whirlwind', color: '#e67e22',
-      description: 'Etraftaki tüm düşmanlara 1.5x hasar'
+      description: 'Etraftaki tüm düşmanlara 1.5x hasar [Kılıç gerekli]'
     },
     {
       id: 'war_cry', name: 'Savaş Çığlığı', level: 15,
@@ -39,16 +44,18 @@ export const SKILL_DEFINITIONS = {
       type: 'projectile', manaCost: 5, cooldown: 2000,
       damageMultiplier: 1.5, range: 300,
       projectileSpeed: 400, projectileKey: 'projectile_arrow',
+      requiredWeapon: 'bow',
       icon: 'skill_quick_shot', color: '#27ae60',
-      description: 'Hızlı bir ok fırlatır (1.5x hasar)'
+      description: 'Hızlı bir ok fırlatır (1.5x hasar) [Yay gerekli]'
     },
     {
       id: 'multi_arrow', name: 'Çoklu Ok', level: 5,
       type: 'projectile_multi', manaCost: 15, cooldown: 6000,
       damageMultiplier: 1.0, range: 280, count: 3, spreadAngle: 15,
       projectileSpeed: 350, projectileKey: 'projectile_arrow',
+      requiredWeapon: 'bow',
       icon: 'skill_multi_arrow', color: '#2ecc71',
-      description: '3 ok aynı anda fırlatır'
+      description: '3 ok aynı anda fırlatır [Yay gerekli]'
     },
     {
       id: 'poison_arrow', name: 'Zehirli Ok', level: 10,
@@ -56,8 +63,9 @@ export const SKILL_DEFINITIONS = {
       damageMultiplier: 1.2, range: 280,
       projectileSpeed: 300, projectileKey: 'projectile_arrow',
       dot: { damage: 3, interval: 1000, duration: 5000 },
+      requiredWeapon: 'bow',
       icon: 'skill_poison_arrow', color: '#1abc9c',
-      description: 'Zehirli ok, 5s boyunca hasar verir'
+      description: 'Zehirli ok, 5s boyunca hasar verir [Yay gerekli]'
     },
     {
       id: 'eagle_eye', name: 'Kartal Gözü', level: 15,
@@ -74,8 +82,9 @@ export const SKILL_DEFINITIONS = {
       damageMultiplier: 2.0, range: 220,
       projectileSpeed: 250, projectileKey: 'projectile_magic',
       aoe: true, aoeRadius: 50,
+      requiredWeapon: 'staff',
       icon: 'skill_fireball', color: '#e74c3c',
-      description: 'Ateş topu, alan hasarı (2x hasar)'
+      description: 'Ateş topu, alan hasarı (2x hasar) [Asa gerekli]'
     },
     {
       id: 'ice_bolt', name: 'Buz Oku', level: 5,
@@ -83,16 +92,18 @@ export const SKILL_DEFINITIONS = {
       damageMultiplier: 1.6, range: 240,
       projectileSpeed: 300, projectileKey: 'projectile_magic',
       effect: { slow: 0.5, duration: 3000 },
+      requiredWeapon: 'staff',
       icon: 'skill_ice_bolt', color: '#3498db',
-      description: 'Düşmanı 3s yavaşlatır (1.6x hasar)'
+      description: 'Düşmanı 3s yavaşlatır (1.6x hasar) [Asa gerekli]'
     },
     {
       id: 'chain_lightning', name: 'Zincir Yıldırım', level: 10,
       type: 'chain', manaCost: 25, cooldown: 8000,
       damageMultiplier: 1.8, range: 200,
       chainCount: 3, chainRange: 120,
+      requiredWeapon: 'staff',
       icon: 'skill_chain_lightning', color: '#f1c40f',
-      description: 'Yıldırım 3 düşmana sıçrar'
+      description: 'Yıldırım 3 düşmana sıçrar [Asa gerekli]'
     },
     {
       id: 'arcane_shield', name: 'Büyü Kalkanı', level: 15,
@@ -126,6 +137,13 @@ export class SkillSystem {
     const skill = this.getSkillById(skillId);
     if (!skill) return { can: false, reason: 'Yetenek bulunamadı' };
     if (this.ps.level < skill.level) return { can: false, reason: `Lv.${skill.level} gerekli` };
+    // Silah türü kontrolü
+    if (skill.requiredWeapon) {
+      const wType = this.ps.equipped.weapon?.weaponType;
+      const weaponNames = { sword: 'Kılıç', bow: 'Yay', staff: 'Asa' };
+      if (!wType) return { can: false, reason: `${weaponNames[skill.requiredWeapon]} gerekli` };
+      if (wType !== skill.requiredWeapon) return { can: false, reason: `${weaponNames[skill.requiredWeapon]} gerekli` };
+    }
     if (this.ps.mana < skill.manaCost) return { can: false, reason: 'Yetersiz mana' };
     const now = Date.now();
     const lastUse = this.cooldowns[skillId] || 0;
