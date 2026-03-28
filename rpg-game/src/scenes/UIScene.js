@@ -466,23 +466,24 @@ export class UIScene extends Phaser.Scene {
     this._add(this.add.rectangle(rightX, 310, 400, 480, 0x0a0a1a, 0.5).setDepth(400).setStrokeStyle(1, 0x3a3a5a));
 
     // Bottom info area split into two panels
-    const tipY = 510;
+    const tipY = 515;
+    const tipH = 100;
     const halfW = 186;
     const tipLeftX = rightX - halfW / 2 - 2;  // left panel center
     const tipRightX = rightX + halfW / 2 + 2;  // right panel center
 
     // Left: Equipment info (hover tooltip for equipped items)
-    this._add(this.add.rectangle(tipLeftX, tipY, halfW, 80, 0x15153a, 0.9).setDepth(401).setStrokeStyle(1, 0x3a3a5a));
-    const equipTooltipText = this._add(this.add.text(tipLeftX - halfW / 2 + 8, tipY - 32, '', {
-      fontSize: '11px', fontFamily: 'Nunito, Arial, sans-serif', color: '#777',
-      align: 'left', wordWrap: { width: halfW - 16 }
+    this._add(this.add.rectangle(tipLeftX, tipY, halfW, tipH, 0x15153a, 0.9).setDepth(401).setStrokeStyle(1, 0x3a3a5a));
+    const equipTooltipText = this._add(this.add.text(tipLeftX - halfW / 2 + 6, tipY - tipH / 2 + 4, '', {
+      fontSize: '10px', fontFamily: 'Nunito, Arial, sans-serif', color: '#777',
+      align: 'left', wordWrap: { width: halfW - 12 }, lineSpacing: 1
     }).setOrigin(0, 0).setDepth(402));
 
     // Right: Item info (hover tooltip for inventory items)
-    this._add(this.add.rectangle(tipRightX, tipY, halfW, 80, 0x15153a, 0.9).setDepth(401).setStrokeStyle(1, 0x3a3a5a));
-    const tooltipText = this._add(this.add.text(tipRightX - halfW / 2 + 8, tipY - 32, '', {
-      fontSize: '11px', fontFamily: 'Nunito, Arial, sans-serif', color: '#777',
-      align: 'left', wordWrap: { width: halfW - 16 }
+    this._add(this.add.rectangle(tipRightX, tipY, halfW, tipH, 0x15153a, 0.9).setDepth(401).setStrokeStyle(1, 0x3a3a5a));
+    const tooltipText = this._add(this.add.text(tipRightX - halfW / 2 + 6, tipY - tipH / 2 + 4, '', {
+      fontSize: '10px', fontFamily: 'Nunito, Arial, sans-serif', color: '#777',
+      align: 'left', wordWrap: { width: halfW - 12 }, lineSpacing: 1
     }).setOrigin(0, 0).setDepth(402));
 
     // Inventory grid - 10x10 = 100 slots, ortalı
