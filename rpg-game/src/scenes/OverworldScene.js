@@ -1405,21 +1405,21 @@ export class OverworldScene extends Phaser.Scene {
         lootSprite.itemId = enhancedEntry;
         lootSprite.setInteractive({ useHandCursor: true });
 
-        // Enhanced parıltı efekti
+        // Enhanced parıltı efekti (küçük, hafif)
         let sparkleGfx = null;
         if (isEnhanced) {
           sparkleGfx = this.add.graphics().setDepth(7);
           this.time.addEvent({
-            delay: 400, loop: true,
+            delay: 600, loop: true,
             callback: () => {
               if (!lootSprite.active) { sparkleGfx.destroy(); return; }
               sparkleGfx.clear();
-              sparkleGfx.fillStyle(0xFFD700, 0.3 + Math.sin(Date.now() * 0.005) * 0.2);
-              sparkleGfx.fillCircle(lootSprite.x, lootSprite.y, 18);
-              sparkleGfx.fillStyle(0xFFFFFF, 0.5);
+              const alpha = 0.15 + Math.sin(Date.now() * 0.004) * 0.1;
+              sparkleGfx.fillStyle(0xFFD700, alpha);
+              sparkleGfx.fillCircle(lootSprite.x, lootSprite.y, 8);
+              sparkleGfx.fillStyle(0xFFFFFF, 0.4);
               const angle = Date.now() * 0.003;
-              sparkleGfx.fillCircle(lootSprite.x + Math.cos(angle) * 10, lootSprite.y + Math.sin(angle) * 10, 2);
-              sparkleGfx.fillCircle(lootSprite.x + Math.cos(angle + 2) * 10, lootSprite.y + Math.sin(angle + 2) * 10, 2);
+              sparkleGfx.fillCircle(lootSprite.x + Math.cos(angle) * 6, lootSprite.y + Math.sin(angle) * 6, 1);
             }
           });
         }
