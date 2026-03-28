@@ -744,6 +744,22 @@ export class PlayerState {
     // Geriye uyumluluk: eski kayıtlarda sınıf yoksa warrior
     if (!this.playerClass) this.playerClass = 'warrior';
     if (this.equipped && !this.equipped.ring) this.equipped.ring = null;
+    // Equipped item'ları ITEMS tanımlarından güncelle (yeni eklenen statlar için)
+    const itemDefs = typeof window !== 'undefined' && window.__ITEMS_REF;
+    if (this.equipped && itemDefs) {
+      Object.keys(this.equipped).forEach(slot => {
+        const eq = this.equipped[slot];
+        if (eq && eq.id && itemDefs[eq.id]) {
+          const fresh = itemDefs[eq.id];
+          // Yeni statları kopyala ama mevcut bonusları koru
+          const bonuses = eq._bonuses;
+          const uid = eq._uid;
+          Object.assign(eq, fresh);
+          if (bonuses) eq._bonuses = bonuses;
+          if (uid) eq._uid = uid;
+        }
+      });
+    }
     this.saveSlot = slot;
     return true;
   }
