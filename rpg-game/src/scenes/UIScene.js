@@ -81,7 +81,7 @@ export class UIScene extends Phaser.Scene {
       fontSize: '18px', fontFamily: 'Nunito, Arial, sans-serif', color: '#ddd',
       wordWrap: { width: 660 }, lineSpacing: 6
     }).setDepth(301).setVisible(false);
-    this.dialogueHint = this.add.text(720, 570, '[E] Kapat', {
+    this.dialogueHint = this.add.text(720, 570, 'Kapat', {
       fontSize: '18px', fontFamily: 'Nunito, Arial, sans-serif', color: '#666'
     }).setOrigin(1, 0.5).setDepth(301).setVisible(false);
 
@@ -981,11 +981,7 @@ export class UIScene extends Phaser.Scene {
       const bg = this.add.rectangle(x, barY, slotSize, slotSize, unlocked ? 0x1a1a3a : 0x0a0a1a, 0.85)
         .setDepth(200).setStrokeStyle(1.5, unlocked ? 0x6a5aaa : 0x2a2a4a);
 
-      // Key number (top-left corner)
-      this.add.text(x - slotSize / 2 + 3, barY - slotSize / 2 + 1, `${i + 1}`, {
-        fontSize: '10px', fontFamily: 'Nunito, Arial, sans-serif', color: '#888',
-        stroke: '#000', strokeThickness: 2
-      }).setDepth(203);
+      // Key number removed — clean UI
 
       // Skill icon (center)
       if (skill && this.textures.exists(skill.icon)) {

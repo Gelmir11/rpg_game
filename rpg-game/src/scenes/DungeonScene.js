@@ -342,12 +342,12 @@ export class DungeonScene extends Phaser.Scene {
     const ey = startRoom.y * 64;
 
     if (this.currentFloor === 1) {
-      this.add.text(ex, ey - 12, 'Çıkış [E]', {
+      this.add.text(ex, ey - 12, 'Çıkış', {
         fontSize: '14px', fontFamily: 'Nunito, Arial, sans-serif', color: '#aa6aee',
         stroke: '#000', strokeThickness: 2
       }).setDepth(20);
     } else {
-      this.add.text(ex, ey - 12, `Yukarı Kat ${this.currentFloor - 1} [E]`, {
+      this.add.text(ex, ey - 12, `Yukarı Kat ${this.currentFloor - 1}`, {
         fontSize: '14px', fontFamily: 'Nunito, Arial, sans-serif', color: '#66AAFF',
         stroke: '#000', strokeThickness: 2
       }).setDepth(20);
@@ -365,7 +365,7 @@ export class DungeonScene extends Phaser.Scene {
       const dx = (lastRoom.x + lastRoom.w - 1) * 64;
       const dy = (lastRoom.y + lastRoom.h - 1) * 64;
 
-      this.downText = this.add.text(dx, dy - 12, `Kat ${this.currentFloor + 1} ↓ [E]`, {
+      this.downText = this.add.text(dx, dy - 12, `Kat ${this.currentFloor + 1} ↓`, {
         fontSize: '14px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FF6600',
         stroke: '#000', strokeThickness: 2
       }).setDepth(20).setVisible(false);

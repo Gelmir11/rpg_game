@@ -173,7 +173,7 @@ export class LabyrinthScene extends Phaser.Scene {
   }
 
   createExitPortal() {
-    this.add.text(96, 50, 'Çıkış [E]', {
+    this.add.text(96, 50, 'Çıkış', {
       fontSize: '20px', fontFamily: 'Nunito, Arial, sans-serif', color: '#aa6aee',
       fontStyle: 'bold', stroke: '#000', strokeThickness: 4
     }).setOrigin(0.5).setDepth(9999);

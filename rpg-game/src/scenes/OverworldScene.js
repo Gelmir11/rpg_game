@@ -1674,11 +1674,16 @@ export class OverworldScene extends Phaser.Scene {
   }
 
   handleInteraction() {
-    if (!Phaser.Input.Keyboard.JustDown(this.interactKey)) return;
+    // Otomatik etkileşim: yakınlık bazlı, cooldown ile
+    const now = this.time.now;
+    if (now < (this._lastAutoInteract || 0) + 800) return; // 800ms cooldown
+
+    // E tuşu ile de tetiklenebilir
+    const ePressed = Phaser.Input.Keyboard.JustDown(this.interactKey);
 
     // Check for nearby NPC
     let closestNPC = null;
-    let closestDist = 60;
+    let closestDist = 55;
 
     this.npcObjects.forEach(npc => {
       const dist = Phaser.Math.Distance.Between(this.player.x, this.player.y, npc.x, npc.y);
@@ -1688,12 +1693,13 @@ export class OverworldScene extends Phaser.Scene {
       }
     });
 
-    if (closestNPC) {
+    if (closestNPC && (ePressed || closestDist < 45)) {
+      this._lastAutoInteract = now;
       this.interactWithNPC(closestNPC);
       return;
     }
 
-    // Check for portal
+    // Check for portal (sadece çok yakınken otomatik)
     let closestPortal = null;
     closestDist = 40;
     this.portalGroup.children.entries.forEach(portal => {
@@ -1704,7 +1710,8 @@ export class OverworldScene extends Phaser.Scene {
       }
     });
 
-    if (closestPortal) {
+    if (closestPortal && (ePressed || closestDist < 30)) {
+      this._lastAutoInteract = now;
       this.enterPortal(closestPortal);
     }
   }
