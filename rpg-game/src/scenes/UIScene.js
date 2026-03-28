@@ -405,14 +405,29 @@ export class UIScene extends Phaser.Scene {
     const barW = 140;
     // HP
     this._add(this.add.text(charX - barW/2, barY, `HP`, { fontSize: '11px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FF6666', fontStyle: 'bold' }).setDepth(402));
-    this._add(this.add.text(charX + barW/2, barY, `${ps.hp}/${ps.getMaxHp()}`, { fontSize: '11px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FF8888' }).setOrigin(1, 0).setDepth(402));
+    const hpValText = this._add(this.add.text(charX + barW/2, barY, `${ps.hp}/${ps.getMaxHp()}`, { fontSize: '11px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FF8888' }).setOrigin(1, 0).setDepth(402));
     this._add(this.add.rectangle(charX, barY + 16, barW, 8, 0x111).setDepth(401));
-    this._add(this.add.rectangle(charX - barW/2 + barW * (ps.hp / ps.getMaxHp()) / 2, barY + 16, barW * (ps.hp / ps.getMaxHp()), 6, 0xCC0000).setDepth(402));
+    const hpFillBar = this._add(this.add.rectangle(charX - barW/2 + barW * (ps.hp / ps.getMaxHp()) / 2, barY + 16, barW * (ps.hp / ps.getMaxHp()), 6, 0xCC0000).setDepth(402));
     // MP
     this._add(this.add.text(charX - barW/2, barY + 26, `MP`, { fontSize: '11px', fontFamily: 'Nunito, Arial, sans-serif', color: '#9966FF', fontStyle: 'bold' }).setDepth(402));
-    this._add(this.add.text(charX + barW/2, barY + 26, `${ps.mana}/${ps.getMaxMana()}`, { fontSize: '11px', fontFamily: 'Nunito, Arial, sans-serif', color: '#aa88ff' }).setOrigin(1, 0).setDepth(402));
+    const mpValText = this._add(this.add.text(charX + barW/2, barY + 26, `${ps.mana}/${ps.getMaxMana()}`, { fontSize: '11px', fontFamily: 'Nunito, Arial, sans-serif', color: '#aa88ff' }).setOrigin(1, 0).setDepth(402));
     this._add(this.add.rectangle(charX, barY + 42, barW, 8, 0x111).setDepth(401));
-    this._add(this.add.rectangle(charX - barW/2 + barW * (ps.mana / ps.getMaxMana()) / 2, barY + 42, barW * (ps.mana / ps.getMaxMana()), 6, 0x6a5acd).setDepth(402));
+    const mpFillBar = this._add(this.add.rectangle(charX - barW/2 + barW * (ps.mana / ps.getMaxMana()) / 2, barY + 42, barW * (ps.mana / ps.getMaxMana()), 6, 0x6a5acd).setDepth(402));
+    // Live update HP/MP bars every 500ms while inventory is open
+    this._invStatTimer = this.time.addEvent({
+      delay: 500, loop: true,
+      callback: () => {
+        if (!this.inventoryOpen) return;
+        const hpR2 = ps.hp / ps.getMaxHp();
+        hpValText.setText(`${ps.hp}/${ps.getMaxHp()}`);
+        hpFillBar.setPosition(charX - barW/2 + barW * hpR2 / 2, barY + 16);
+        hpFillBar.setSize(Math.max(1, barW * hpR2), 6);
+        const mpR2 = ps.mana / ps.getMaxMana();
+        mpValText.setText(`${ps.mana}/${ps.getMaxMana()}`);
+        mpFillBar.setPosition(charX - barW/2 + barW * mpR2 / 2, barY + 42);
+        mpFillBar.setSize(Math.max(1, barW * mpR2), 6);
+      }
+    });
     // EXP
     const expCur = ps.getExpForLevel(ps.level);
     const expNext = ps.getExpForLevel(ps.level + 1);
@@ -771,6 +786,7 @@ export class UIScene extends Phaser.Scene {
 
   closeInventory() {
     this.inventoryOpen = false;
+    if (this._invStatTimer) { this._invStatTimer.destroy(); this._invStatTimer = null; }
     if (this.invElements) {
       this.invElements.forEach(e => { if (e?.destroy) e.destroy(); });
       this.invElements = null;
