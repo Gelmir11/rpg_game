@@ -441,56 +441,56 @@ export class OverworldScene extends Phaser.Scene {
   createMonsters() {
     this.monsterObjects = [];
 
-    // Spawn monsters in zones — haritaya eşit dağılım (3x3 grid + köy çevresi)
+    // Spawn monsters — köyden (sol üst) uzaklaştıkça zorluk artar
     // Harita: 9600x9600px. Köy sol üstte (~500,400). Nehir x≈3500 dikey.
-    // Güçlülük: merkeze yakın kolay → kenarlara doğru zor
+    // Zorluk: sol üst (kolay) → sağ alt (en zor)
     const spawns = [
-      // === İç Halka: Köy çevresi (kolay) ===
-      // Slime — köy etrafı (sol üst bölge)
-      ...this.generateSpawns('slime', 40, 800, 800, 2800, 2800),
-      ...this.generateSpawns('slime', 30, 200, 1200, 1800, 3200),
+      // === 1. Kademe: En Kolay — Slime (köy çevresi) ===
+      ...this.generateSpawns('slime', 45, 700, 700, 3000, 3000),
+      ...this.generateSpawns('slime', 25, 200, 1000, 2200, 2500),
 
-      // Kurt — kuzey-orta
-      ...this.generateSpawns('wolf', 35, 2000, 200, 4500, 2000),
-      ...this.generateSpawns('wolf', 25, 800, 2800, 3200, 4200),
+      // === 2. Kademe: Kolay — Kurt + Goblin (köyden biraz uzak) ===
+      // Kurt — kuzey şeridi
+      ...this.generateSpawns('wolf', 35, 2500, 200, 5000, 2200),
+      ...this.generateSpawns('wolf', 20, 1000, 2500, 3500, 4000),
+      // Goblin — güney ve doğuya doğru
+      ...this.generateSpawns('goblin', 35, 2000, 2500, 4500, 4500),
+      ...this.generateSpawns('goblin', 20, 3000, 1500, 5000, 3500),
 
-      // === Orta Halka (orta zorluk) ===
-      // Goblin — güney-orta
-      ...this.generateSpawns('goblin', 35, 1000, 4200, 4200, 6500),
-      ...this.generateSpawns('goblin', 25, 2500, 3500, 5000, 5500),
+      // === 3. Kademe: Orta — İskelet + Ork (orta mesafe) ===
+      // İskelet — orta-doğu
+      ...this.generateSpawns('skeleton', 35, 4500, 2000, 7000, 5000),
+      ...this.generateSpawns('skeleton', 20, 5000, 1000, 6500, 3500),
+      // Ork — orta-güney
+      ...this.generateSpawns('orc', 30, 1500, 4500, 5000, 7000),
+      ...this.generateSpawns('orc', 20, 2500, 5500, 4500, 6800),
 
-      // İskelet — doğu-orta
-      ...this.generateSpawns('skeleton', 35, 4500, 1500, 7000, 4500),
-      ...this.generateSpawns('skeleton', 25, 5000, 2500, 6800, 4000),
+      // === 4. Kademe: Zor — Golem + Hayalet (uzak bölgeler) ===
+      // Golem — doğu şeridi
+      ...this.generateSpawns('golem', 25, 6500, 4000, 9200, 7000),
+      ...this.generateSpawns('golem', 15, 7000, 1500, 9000, 4000),
+      // Hayalet — güney şeridi
+      ...this.generateSpawns('wraith', 25, 3000, 7000, 6500, 9200),
+      ...this.generateSpawns('wraith', 15, 1000, 7500, 3500, 9000),
 
-      // Ork — batı-güney
-      ...this.generateSpawns('orc', 30, 200, 5500, 3000, 8000),
-      ...this.generateSpawns('orc', 20, 500, 6500, 2500, 7500),
-
-      // === Dış Halka (zor) ===
-      // Golem — kuzeydoğu köşe
-      ...this.generateSpawns('golem', 25, 6500, 200, 9200, 3200),
-      ...this.generateSpawns('golem', 15, 7000, 500, 9000, 2800),
-
-      // Hayalet — güneydoğu
-      ...this.generateSpawns('wraith', 25, 5500, 5500, 8500, 8000),
-      ...this.generateSpawns('wraith', 15, 6000, 6000, 8000, 7500),
-
-      // Ejder Yavrusu — güney + güneybatı geniş alan
-      ...this.generateSpawns('drake', 20, 3500, 7500, 6500, 9200),
-      ...this.generateSpawns('drake', 20, 7000, 7000, 9200, 9200),
-      ...this.generateSpawns('drake', 10, 7500, 3500, 9200, 6000),
+      // === 5. Kademe: En Zor — Ejder Yavrusu (sağ alt köşe) ===
+      ...this.generateSpawns('drake', 30, 7000, 6500, 9200, 9200),
+      ...this.generateSpawns('drake', 15, 6500, 7500, 9000, 9000),
     ];
 
-    // ===== BÖLGE BOSSLARI (haritaya eşit dağılmış) =====
+    // ===== BÖLGE BOSSLARI (zorluk sırasına göre konumlandırılmış) =====
     const zoneBosses = [
+      // Kolay bosslar — köye yakın
       { type: 'slime_king', x: 1800, y: 1800, label: 'Balçık Kralı' },
-      { type: 'alpha_wolf', x: 3500, y: 1200, label: 'Alfa Kurt' },
-      { type: 'goblin_chief', x: 3000, y: 5200, label: 'Goblin Şefi' },
-      { type: 'skeleton_lord', x: 5800, y: 3000, label: 'İskelet Lordu' },
-      { type: 'orc_warlord', x: 1500, y: 7000, label: 'Ork Savaş Lordu' },
-      { type: 'crystal_golem', x: 8000, y: 1800, label: 'Kristal Golem' },
-      { type: 'wraith_queen', x: 7000, y: 6500, label: 'Hayalet Kraliçe' },
+      { type: 'alpha_wolf', x: 3800, y: 1200, label: 'Alfa Kurt' },
+      // Orta bosslar — orta mesafe
+      { type: 'goblin_chief', x: 3500, y: 3500, label: 'Goblin Şefi' },
+      { type: 'skeleton_lord', x: 5800, y: 3200, label: 'İskelet Lordu' },
+      { type: 'orc_warlord', x: 3000, y: 6000, label: 'Ork Savaş Lordu' },
+      // Zor bosslar — uzak
+      { type: 'crystal_golem', x: 8000, y: 5000, label: 'Kristal Golem' },
+      { type: 'wraith_queen', x: 5000, y: 8200, label: 'Hayalet Kraliçe' },
+      // En zor — sağ alt köşe
       { type: 'drake_mother', x: 8200, y: 8200, label: 'Ejder Anası' },
     ];
     this._zoneBossLabels = {};
