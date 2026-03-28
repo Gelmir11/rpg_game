@@ -401,7 +401,7 @@ export class UIScene extends Phaser.Scene {
     });
 
     // ===== STATS BELOW EQUIPMENT =====
-    const barY = 410;
+    const barY = 390;
     const barW = 140;
     // HP
     this._add(this.add.text(charX - barW/2, barY, `HP`, { fontSize: '11px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FF6666', fontStyle: 'bold' }).setDepth(402));
@@ -422,11 +422,21 @@ export class UIScene extends Phaser.Scene {
     this._add(this.add.rectangle(charX, barY + 68, barW, 8, 0x111).setDepth(401));
     this._add(this.add.rectangle(charX - barW/2 + barW * expProg / 2, barY + 68, barW * expProg, 6, 0x4169E1).setDepth(402));
     // Stats line
-    this._add(this.add.text(charX, barY + 84, `ATK: ${ps.getAttack()}   DEF: ${ps.getDefense()}`, {
+    this._add(this.add.text(charX, barY + 80, `ATK: ${ps.getAttack()}   DEF: ${ps.getDefense()}`, {
       fontSize: '12px', fontFamily: 'Nunito, Arial, sans-serif', color: '#ccc', fontStyle: 'bold'
     }).setOrigin(0.5).setDepth(402));
+    // Regen stats
+    const hpR = ps.getHpRegen(), manaR = ps.getManaRegen();
+    const regenParts = [];
+    if (hpR > 0) regenParts.push(`♥ +${hpR}/sn`);
+    if (manaR > 0) regenParts.push(`✦ +${manaR}/sn`);
+    if (regenParts.length > 0) {
+      this._add(this.add.text(charX, barY + 96, regenParts.join('   '), {
+        fontSize: '11px', fontFamily: 'Nunito, Arial, sans-serif', color: '#88cc88', fontStyle: 'bold'
+      }).setOrigin(0.5).setDepth(402));
+    }
     // Gold prominently displayed
-    this._add(this.add.text(charX, barY + 102, `Altın: ${formatGold(ps.gold)}`, {
+    this._add(this.add.text(charX, barY + 112, `Altın: ${formatGold(ps.gold)}`, {
       fontSize: '14px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FFD700', fontStyle: 'bold'
     }).setOrigin(0.5).setDepth(402));
 
