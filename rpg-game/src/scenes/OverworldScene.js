@@ -126,6 +126,9 @@ export class OverworldScene extends Phaser.Scene {
     this.mapWidth = mapWidth * tileSize;
     this.mapHeight = mapHeight * tileSize;
 
+    // Zemin geçiş yumuşatma — farklı zemin türleri arasında gradient overlay
+    this.drawTerrainTransitions(mapData, mapWidth, mapHeight, tileSize);
+
     // Set physics world bounds to match map size
     this.physics.world.setBounds(0, 0, this.mapWidth, this.mapHeight);
 
@@ -169,6 +172,39 @@ export class OverworldScene extends Phaser.Scene {
         fontStyle: 'bold', stroke: '#000', strokeThickness: 4
       }).setOrigin(0.5).setDepth(9999);
     });
+  }
+
+  // Zemin türleri arasında yumuşak geçiş overlay'leri
+  drawTerrainTransitions(mapData, mapW, mapH, T) {
+    const getType = (idx) => {
+      if (idx <= 7) return 0;   // grass
+      if (idx <= 15) return 1;  // dirt
+      if (idx <= 23) return 2;  // stone
+      if (idx <= 27) return 3;  // water
+      if (idx <= 39) return 4;  // wall
+      if (idx <= 47) return 5;  // wood
+      return 6; // dark
+    };
+    const colors = [0x347034, 0x5e4535, 0x555555, 0x1a3068, 0x222222, 0x6a4a2a, 0x080808];
+    const fade = Math.floor(T * 0.35);
+
+    // Sadece sınır tile'larını çiz (çoğu tile atlanır — performans dostu)
+    const g = this.add.graphics().setDepth(2);
+    for (let y = 1; y < mapH - 1; y++) {
+      for (let x = 1; x < mapW - 1; x++) {
+        const cur = getType(mapData[y][x]);
+        const top = getType(mapData[y - 1][x]);
+        const bot = getType(mapData[y + 1][x]);
+        const lft = getType(mapData[y][x - 1]);
+        const rgt = getType(mapData[y][x + 1]);
+        if (top === cur && bot === cur && lft === cur && rgt === cur) continue;
+        const px = x * T, py = y * T;
+        if (top !== cur) { g.fillStyle(colors[top], 0.2); g.fillRect(px, py, T, fade); }
+        if (bot !== cur) { g.fillStyle(colors[bot], 0.2); g.fillRect(px, py + T - fade, T, fade); }
+        if (lft !== cur) { g.fillStyle(colors[lft], 0.2); g.fillRect(px, py, fade, T); }
+        if (rgt !== cur) { g.fillStyle(colors[rgt], 0.2); g.fillRect(px + T - fade, py, fade, T); }
+      }
+    }
   }
 
   createVillageZone() {
