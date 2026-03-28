@@ -938,14 +938,15 @@ export class OverworldScene extends Phaser.Scene {
 
     // Zone labels on map
     const zoneStyle = { fontSize: '36px', fontFamily: 'Nunito, Arial, sans-serif', fontStyle: 'bold', stroke: '#000', strokeThickness: 5 };
-    this.add.text(1800, 1800, 'Balçık Ormanı', { ...zoneStyle, color: '#44AA44' }).setOrigin(0.5).setDepth(9999).setAlpha(0.6);
-    this.add.text(4000, 3500, 'Goblin Kampı', { ...zoneStyle, color: '#3CB371' }).setOrigin(0.5).setDepth(9999).setAlpha(0.6);
-    this.add.text(6000, 2000, 'İskelet Mezarlığı', { ...zoneStyle, color: '#CCCCAA' }).setOrigin(0.5).setDepth(9999).setAlpha(0.6);
-    this.add.text(3000, 6500, 'Ork Kalesi', { ...zoneStyle, color: '#6B8E23' }).setOrigin(0.5).setDepth(9999).setAlpha(0.6);
-    this.add.text(1800, 2800, 'Kurt Ormanı', { ...zoneStyle, color: '#808080' }).setOrigin(0.5).setDepth(9999).setAlpha(0.6);
-    this.add.text(7500, 3500, 'Golem Vadisi', { ...zoneStyle, color: '#8B8B83' }).setOrigin(0.5).setDepth(9999).setAlpha(0.6);
-    this.add.text(2000, 7500, 'Hayalet Bataklığı', { ...zoneStyle, color: '#9370DB' }).setOrigin(0.5).setDepth(9999).setAlpha(0.6);
-    this.add.text(8100, 8000, 'Ejder Yavrusu Yuvası', { ...zoneStyle, color: '#CC3300' }).setOrigin(0.5).setDepth(9999).setAlpha(0.6);
+    // Etiketler canavar spawn alanlarıyla eşleştirildi
+    this.add.text(1500, 1500, 'Balçık Ormanı', { ...zoneStyle, color: '#44AA44' }).setOrigin(0.5).setDepth(9999).setAlpha(0.6);
+    this.add.text(3500, 1000, 'Kurt Ormanı', { ...zoneStyle, color: '#808080' }).setOrigin(0.5).setDepth(9999).setAlpha(0.6);
+    this.add.text(3200, 3200, 'Goblin Kampı', { ...zoneStyle, color: '#3CB371' }).setOrigin(0.5).setDepth(9999).setAlpha(0.6);
+    this.add.text(5800, 3000, 'İskelet Mezarlığı', { ...zoneStyle, color: '#CCCCAA' }).setOrigin(0.5).setDepth(9999).setAlpha(0.6);
+    this.add.text(3000, 5800, 'Ork Kalesi', { ...zoneStyle, color: '#6B8E23' }).setOrigin(0.5).setDepth(9999).setAlpha(0.6);
+    this.add.text(7800, 3000, 'Golem Vadisi', { ...zoneStyle, color: '#8B8B83' }).setOrigin(0.5).setDepth(9999).setAlpha(0.6);
+    this.add.text(4800, 8000, 'Hayalet Bataklığı', { ...zoneStyle, color: '#9370DB' }).setOrigin(0.5).setDepth(9999).setAlpha(0.6);
+    this.add.text(8000, 7800, 'Ejder Yavrusu Yuvası', { ...zoneStyle, color: '#CC3300' }).setOrigin(0.5).setDepth(9999).setAlpha(0.6);
   }
 
   createFogOfWar() {
