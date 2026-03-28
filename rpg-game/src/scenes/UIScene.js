@@ -427,13 +427,19 @@ export class UIScene extends Phaser.Scene {
     }).setOrigin(0.5).setDepth(402));
     // Regen stats
     const hpR = ps.getHpRegen(), manaR = ps.getManaRegen();
-    const regenParts = [];
-    if (hpR > 0) regenParts.push(`♥ +${hpR}/sn`);
-    if (manaR > 0) regenParts.push(`✦ +${manaR}/sn`);
-    if (regenParts.length > 0) {
-      this._add(this.add.text(charX, barY + 96, regenParts.join('   '), {
-        fontSize: '11px', fontFamily: 'Nunito, Arial, sans-serif', color: '#88cc88', fontStyle: 'bold'
-      }).setOrigin(0.5).setDepth(402));
+    const regenX = charX;
+    if (hpR > 0 || manaR > 0) {
+      const regenY = barY + 96;
+      if (hpR > 0) {
+        this._add(this.add.text(regenX - 40, regenY, `HP+${hpR}/sn`, {
+          fontSize: '11px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FF6666', fontStyle: 'bold'
+        }).setOrigin(0.5).setDepth(402));
+      }
+      if (manaR > 0) {
+        this._add(this.add.text(regenX + 40, regenY, `MP+${manaR}/sn`, {
+          fontSize: '11px', fontFamily: 'Nunito, Arial, sans-serif', color: '#6688FF', fontStyle: 'bold'
+        }).setOrigin(0.5).setDepth(402));
+      }
     }
     // Gold prominently displayed
     this._add(this.add.text(charX, barY + 112, `Altın: ${formatGold(ps.gold)}`, {
