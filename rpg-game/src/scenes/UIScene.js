@@ -449,9 +449,9 @@ export class UIScene extends Phaser.Scene {
       const setNames = { leather: 'Deri', iron: 'Demir', steel: 'Çelik', dragon: 'Ejder', mythril: 'Mithril', abyssal: 'Uçurum', duskhollow: 'Alacakaranlık' };
       const sName = setNames[setInfo.set] || setInfo.set;
       this._add(this.add.text(charX, statY, `⚔ ${sName} Seti (${setInfo.count}/5): ATK+${setInfo.attack} DEF+${setInfo.defense}`, {
-        fontSize: '10px', fontFamily: 'Nunito, Arial, sans-serif', fontStyle: 'bold', color: '#FFaa33'
+        ...statFont, color: '#FFaa33'
       }).setOrigin(0.5).setDepth(402));
-      statY += 14;
+      statY += 16;
     }
     // Regen stats
     const hpR = ps.getHpRegen(), manaR = ps.getManaRegen();
