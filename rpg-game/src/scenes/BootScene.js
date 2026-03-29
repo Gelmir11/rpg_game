@@ -769,7 +769,7 @@ export class BootScene extends Phaser.Scene {
       { key: 'slime', w: 56, h: 48 },
       { key: 'goblin', w: 60, h: 72 },
       { key: 'skeleton', w: 60, h: 80 },
-      { key: 'orc', w: 72, h: 84 },
+      { key: 'orc', w: 84, h: 96 },
       { key: 'wolf', w: 56, h: 48 },
       { key: 'golem', w: 64, h: 72 },
       { key: 'wraith', w: 52, h: 64 },
@@ -867,21 +867,29 @@ export class BootScene extends Phaser.Scene {
           g.fillStyle(0x5a3a1a); g.fillRect(x + 50, y + 16, 8, 4);
 
         } else if (m.key === 'orc') {
-          g.fillStyle(0x4a5a2a); g.fillRect(x + 18 + b, y + 58, 14, 20); g.fillRect(x + 40 - b, y + 58, 14, 20);
-          g.fillStyle(0x3a2a1a); g.fillRoundedRect(x + 16 + b, y + 72, 18, 10, 2); g.fillRoundedRect(x + 38 - b, y + 72, 18, 10, 2);
-          this.grad(g, x + 10, y + 24, 52, 36, 0x556B2F, 0x4a5a20);
-          g.fillStyle(0x5a5a5a); g.fillRect(x + 14, y + 26, 44, 24);
-          g.fillStyle(0x6a6a6a); g.fillRect(x + 16, y + 28, 40, 6);
-          g.fillStyle(0x4a2a0a); g.fillRect(x + 12, y + 52, 48, 6);
-          g.fillStyle(0x556B2F); g.fillRoundedRect(x + 2, y + 26, 12, 24, 3); g.fillRoundedRect(x + 58, y + 26, 12, 24, 3);
-          g.fillStyle(0x5a5a5a); g.fillRoundedRect(x + 1, y + 24, 14, 8, 3); g.fillRoundedRect(x + 57, y + 24, 14, 8, 3);
-          g.fillStyle(0x556B2F); g.fillRoundedRect(x + 16, y + 2, 40, 24, 5);
-          g.fillStyle(0x4a5a1a); g.fillRect(x + 20, y + 8, 32, 4);
-          g.fillStyle(0xFF0000); g.fillRect(x + 24, y + 10, 8, 6); g.fillRect(x + 40, y + 10, 8, 6);
-          g.fillStyle(0xFFFF00); g.fillCircle(x + 28, y + 13, 2); g.fillCircle(x + 44, y + 13, 2);
-          g.fillStyle(0xFFFFF0); g.fillRect(x + 26, y + 22, 4, 6); g.fillRect(x + 42, y + 22, 4, 6);
-          g.fillStyle(0x5a3a1a); g.fillRect(x + 66, y + 14, 4, 40);
-          g.fillStyle(0x808080); g.fillTriangle(x + 62, y + 10, x + 70, y + 6, x + 70, y + 20);
+          // Büyütülmüş ork (84x96) — silah sprite içinde
+          // Bacaklar
+          g.fillStyle(0x4a5a2a); g.fillRect(x + 22 + b, y + 68, 16, 22); g.fillRect(x + 46 - b, y + 68, 16, 22);
+          g.fillStyle(0x3a2a1a); g.fillRoundedRect(x + 20 + b, y + 84, 20, 10, 2); g.fillRoundedRect(x + 44 - b, y + 84, 20, 10, 2);
+          // Gövde (zırh)
+          this.grad(g, x + 14, y + 30, 56, 40, 0x556B2F, 0x4a5a20);
+          g.fillStyle(0x5a5a5a); g.fillRect(x + 18, y + 32, 48, 28);
+          g.fillStyle(0x6a6a6a); g.fillRect(x + 20, y + 34, 44, 8);
+          g.fillStyle(0x4a2a0a); g.fillRect(x + 16, y + 62, 52, 8);
+          // Omuzluk
+          g.fillStyle(0x556B2F); g.fillRoundedRect(x + 6, y + 32, 14, 28, 3); g.fillRoundedRect(x + 64, y + 32, 14, 28, 3);
+          g.fillStyle(0x5a5a5a); g.fillRoundedRect(x + 5, y + 30, 16, 10, 3); g.fillRoundedRect(x + 63, y + 30, 16, 10, 3);
+          // Kafa
+          g.fillStyle(0x556B2F); g.fillRoundedRect(x + 22, y + 6, 40, 28, 6);
+          g.fillStyle(0x4a5a1a); g.fillRect(x + 26, y + 14, 32, 5);
+          // Gözler (kırmızı + sarı göz bebeği)
+          g.fillStyle(0xFF0000); g.fillRect(x + 30, y + 16, 9, 7); g.fillRect(x + 46, y + 16, 9, 7);
+          g.fillStyle(0xFFFF00); g.fillCircle(x + 34, y + 19, 2); g.fillCircle(x + 50, y + 19, 2);
+          // Dişler
+          g.fillStyle(0xFFFFF0); g.fillRect(x + 32, y + 28, 5, 6); g.fillRect(x + 48, y + 28, 5, 6);
+          // Balta (sprite içinde, sağ omuz)
+          g.fillStyle(0x5a3a1a); g.fillRect(x + 70, y + 20, 4, 42);
+          g.fillStyle(0x808080); g.fillTriangle(x + 66, y + 16, x + 74, y + 12, x + 74, y + 26);
 
         } else if (m.key === 'wolf') {
           g.fillStyle(0x000000, 0.3); g.fillEllipse(x + m.w / 2, y + m.h - 5, m.w - 14, 8);
