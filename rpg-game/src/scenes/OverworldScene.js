@@ -580,6 +580,11 @@ export class OverworldScene extends Phaser.Scene {
       this.bossPatterns.initBoss(monster);
     }
 
+    // Collision with water/walls
+    if (this.groundLayer) {
+      this.physics.add.collider(monster, this.groundLayer);
+    }
+
     // Simple animation
     if (!this.anims.exists(`${type}_idle`)) {
       this.anims.create({
