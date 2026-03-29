@@ -543,13 +543,26 @@ export class OverworldScene extends Phaser.Scene {
     const clampMinY = Math.max(minY, margin);
     const spawns = [];
     for (let i = 0; i < count; i++) {
-      spawns.push({
-        type,
-        x: Phaser.Math.Between(clampMinX, clampMaxX),
-        y: Phaser.Math.Between(clampMinY, clampMaxY)
-      });
+      // Su ve duvar tile'larına spawn olmasını engelle (max 10 deneme)
+      for (let attempt = 0; attempt < 10; attempt++) {
+        const sx = Phaser.Math.Between(clampMinX, clampMaxX);
+        const sy = Phaser.Math.Between(clampMinY, clampMaxY);
+        if (this.isWalkableTile(sx, sy)) {
+          spawns.push({ type, x: sx, y: sy });
+          break;
+        }
+      }
     }
     return spawns;
+  }
+
+  // Verilen piksel koordinatının yürünebilir bir tile üzerinde olup olmadığını kontrol et
+  isWalkableTile(px, py) {
+    if (!this.groundLayer) return true;
+    const tile = this.groundLayer.getTileAtWorldXY(px, py);
+    if (!tile) return false;
+    // Su: 24-27, Duvar: 32-39 → yürünemez
+    return tile.index < 24 || (tile.index > 27 && tile.index < 32);
   }
 
   spawnMonster(type, x, y) {
@@ -1421,7 +1434,14 @@ export class OverworldScene extends Phaser.Scene {
     } else {
       const respawnTime = data.isZoneBoss ? 600000 : 240000; // Bölge boss: 10dk, normal: 4dk
       this.time.delayedCall(respawnTime, () => {
-        const newMonster = this.spawnMonster(data.id, data.spawnX + Phaser.Math.Between(-150, 150), data.spawnY + Phaser.Math.Between(-150, 150));
+        // Respawn: su/duvar olmayan yere spawn (max 5 deneme)
+        let rx = data.spawnX, ry = data.spawnY;
+        for (let t = 0; t < 5; t++) {
+          const tx = data.spawnX + Phaser.Math.Between(-150, 150);
+          const ty = data.spawnY + Phaser.Math.Between(-150, 150);
+          if (this.isWalkableTile(tx, ty)) { rx = tx; ry = ty; break; }
+        }
+        const newMonster = this.spawnMonster(data.id, rx, ry);
         if (newMonster) {
           const idx = this.monsterObjects.indexOf(monster);
           if (idx >= 0) this.monsterObjects[idx] = newMonster;
@@ -1979,6 +1999,16 @@ export class OverworldScene extends Phaser.Scene {
           };
         }
         monster.body.setVelocity(data.wanderDir.x, data.wanderDir.y);
+
+        // Su/duvar tile'ına doğru gidiyorsa geri dön
+        const nextX = monster.x + data.wanderDir.x * 0.5;
+        const nextY = monster.y + data.wanderDir.y * 0.5;
+        if (!this.isWalkableTile(nextX, nextY)) {
+          // Spawn noktasına geri dön
+          const angle = Phaser.Math.Angle.Between(monster.x, monster.y, data.spawnX, data.spawnY);
+          monster.body.setVelocity(Math.cos(angle) * data.speed * 0.4, Math.sin(angle) * data.speed * 0.4);
+          data.wanderTimer = 0; // Yeni yön seç
+        }
 
         // Don't wander too far from spawn
         const maxWander = data.isZoneBoss || data.isBoss ? 600 : 800;
