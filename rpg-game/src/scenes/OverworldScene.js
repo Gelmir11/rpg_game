@@ -1416,7 +1416,7 @@ export class OverworldScene extends Phaser.Scene {
     } else {
       const respawnTime = data.isZoneBoss ? 600000 : 240000; // Bölge boss: 10dk, normal: 4dk
       this.time.delayedCall(respawnTime, () => {
-        const newMonster = this.spawnMonster(data.id, data.spawnX + Phaser.Math.Between(-50, 50), data.spawnY + Phaser.Math.Between(-50, 50));
+        const newMonster = this.spawnMonster(data.id, data.spawnX + Phaser.Math.Between(-150, 150), data.spawnY + Phaser.Math.Between(-150, 150));
         if (newMonster) {
           const idx = this.monsterObjects.indexOf(monster);
           if (idx >= 0) this.monsterObjects[idx] = newMonster;
@@ -1976,8 +1976,9 @@ export class OverworldScene extends Phaser.Scene {
         monster.body.setVelocity(data.wanderDir.x, data.wanderDir.y);
 
         // Don't wander too far from spawn
+        const maxWander = data.isZoneBoss || data.isBoss ? 600 : 800;
         const distFromSpawn = Phaser.Math.Distance.Between(monster.x, monster.y, data.spawnX, data.spawnY);
-        if (distFromSpawn > 400) {
+        if (distFromSpawn > maxWander) {
           const angle = Phaser.Math.Angle.Between(monster.x, monster.y, data.spawnX, data.spawnY);
           monster.body.setVelocity(Math.cos(angle) * data.speed * 0.5, Math.sin(angle) * data.speed * 0.5);
         }
