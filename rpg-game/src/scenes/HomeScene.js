@@ -266,16 +266,23 @@ export class HomeScene extends Phaser.Scene {
       });
     }
 
-    if (Phaser.Input.Keyboard.JustDown(this.interactKey)) {
+    // Otomatik etkileşim (yakınlık bazlı + E tuşu desteği)
+    const now = this.time.now;
+    const ePressed = Phaser.Input.Keyboard.JustDown(this.interactKey);
+    if (now > (this._lastAutoInteract || 0) + 800 || ePressed) {
       // Check exit (door at bottom center)
-      if (Phaser.Math.Distance.Between(this.player.x, this.player.y, 400, 468) < 50) {
+      const exitDist = Phaser.Math.Distance.Between(this.player.x, this.player.y, 400, 468);
+      if (exitDist < 35 || (ePressed && exitDist < 50)) {
+        this._lastAutoInteract = now;
         this.playerState.save();
         this.scene.start('OverworldScene');
         return;
       }
 
       // Check bed (top right)
-      if (Phaser.Math.Distance.Between(this.player.x, this.player.y, 550, 190) < 80) {
+      const bedDist = Phaser.Math.Distance.Between(this.player.x, this.player.y, 550, 190);
+      if (bedDist < 50 || (ePressed && bedDist < 80)) {
+        this._lastAutoInteract = now;
         this.playerState.hp = this.playerState.getMaxHp();
         this.playerState.mana = this.playerState.getMaxMana();
         this.playerState.save();
@@ -285,7 +292,9 @@ export class HomeScene extends Phaser.Scene {
       }
 
       // Check storage chest (left side)
-      if (Phaser.Math.Distance.Between(this.player.x, this.player.y, 250, 175) < 80) {
+      const chestDist = Phaser.Math.Distance.Between(this.player.x, this.player.y, 250, 175);
+      if (chestDist < 50 || (ePressed && chestDist < 80)) {
+        this._lastAutoInteract = now;
         this.openStorage();
       }
     }

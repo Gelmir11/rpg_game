@@ -574,11 +574,14 @@ export class DungeonScene extends Phaser.Scene {
       }
     }
 
-    // Interact check
-    if (Phaser.Input.Keyboard.JustDown(this.interactKey)) {
+    // Otomatik etkileşim (yakınlık bazlı + E tuşu desteği)
+    const now = this.time.now;
+    const ePressed = Phaser.Input.Keyboard.JustDown(this.interactKey);
+    if (now > (this._lastAutoInteract || 0) + 800 || ePressed) {
       // Exit/up
       const exitDist = Phaser.Math.Distance.Between(this.player.x, this.player.y, this.exitZone.x, this.exitZone.y);
-      if (exitDist < 40) {
+      if (exitDist < 35 || (ePressed && exitDist < 50)) {
+        this._lastAutoInteract = now;
         if (this.currentFloor === 1) {
           this.playerState.dungeonFloor = 1;
           this.playerState.save();
@@ -595,7 +598,8 @@ export class DungeonScene extends Phaser.Scene {
       // Down to next floor
       if (this.bossDefeated && this.downZone && this.currentFloor < 10) {
         const downDist = Phaser.Math.Distance.Between(this.player.x, this.player.y, this.downZone.x, this.downZone.y);
-        if (downDist < 40) {
+        if (downDist < 35 || (ePressed && downDist < 50)) {
+          this._lastAutoInteract = now;
           this.playerState.dungeonFloor = this.currentFloor + 1;
           if (this.currentFloor + 1 > this.playerState.maxDungeonFloor) {
             this.playerState.maxDungeonFloor = this.currentFloor + 1;
@@ -609,7 +613,8 @@ export class DungeonScene extends Phaser.Scene {
       // NPC interaction
       if (this.entranceNPC) {
         const npcDist = Phaser.Math.Distance.Between(this.player.x, this.player.y, this.entranceNPC.x, this.entranceNPC.y);
-        if (npcDist < 60) {
+        if (npcDist < 45 || (ePressed && npcDist < 60)) {
+          this._lastAutoInteract = now;
           this.handleNPCInteraction(this.entranceNPC);
         }
       }
