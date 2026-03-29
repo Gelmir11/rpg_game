@@ -575,9 +575,12 @@ export class DungeonScene extends Phaser.Scene {
     }
 
     // Otomatik etkileşim (yakınlık bazlı + E tuşu desteği)
+    // Spawn sonrası 2sn koruma (spawn yakınında hemen tetiklenmemesi için)
     const now = this.time.now;
+    if (!this._spawnTime) this._spawnTime = now;
+    const spawnSafe = now - this._spawnTime < 2000;
     const ePressed = Phaser.Input.Keyboard.JustDown(this.interactKey);
-    if (now > (this._lastAutoInteract || 0) + 800 || ePressed) {
+    if ((now > (this._lastAutoInteract || 0) + 800 && !spawnSafe) || ePressed) {
       // Exit/up
       const exitDist = Phaser.Math.Distance.Between(this.player.x, this.player.y, this.exitZone.x, this.exitZone.y);
       if (exitDist < 35 || (ePressed && exitDist < 50)) {

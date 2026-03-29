@@ -1689,6 +1689,10 @@ export class OverworldScene extends Phaser.Scene {
   handleInteraction() {
     // Otomatik etkileşim: yakınlık bazlı, cooldown ile
     const now = this.time.now;
+    // Spawn sonrası 2sn koruma (portalddan çıkınca hemen geri girmemesi için)
+    if (!this._spawnTime) this._spawnTime = now;
+    const spawnSafe = now - this._spawnTime < 2000;
+    if (spawnSafe && !Phaser.Input.Keyboard.JustDown(this.interactKey)) return;
     if (now < (this._lastAutoInteract || 0) + 800) return; // 800ms cooldown
 
     // E tuşu ile de tetiklenebilir

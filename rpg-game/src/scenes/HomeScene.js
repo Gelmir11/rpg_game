@@ -268,8 +268,10 @@ export class HomeScene extends Phaser.Scene {
 
     // Otomatik etkileşim (yakınlık bazlı + E tuşu desteği)
     const now = this.time.now;
+    if (!this._spawnTime) this._spawnTime = now;
+    const spawnSafe = now - this._spawnTime < 1500;
     const ePressed = Phaser.Input.Keyboard.JustDown(this.interactKey);
-    if (now > (this._lastAutoInteract || 0) + 800 || ePressed) {
+    if ((now > (this._lastAutoInteract || 0) + 800 && !spawnSafe) || ePressed) {
       // Check exit (door at bottom center)
       const exitDist = Phaser.Math.Distance.Between(this.player.x, this.player.y, 400, 468);
       if (exitDist < 35 || (ePressed && exitDist < 50)) {
