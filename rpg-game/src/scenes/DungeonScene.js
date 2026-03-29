@@ -19,6 +19,8 @@ export class DungeonScene extends Phaser.Scene {
     this.monsterObjects = [];
     this.currentFloor = this.playerState.dungeonFloor || 1;
     this.bossDefeated = false;
+    this._spawnTime = null; // Spawn koruma süresini sıfırla
+    this._lastAutoInteract = 0;
     this.skillSystem = new SkillSystem(this);
     this.combatUtils = new CombatUtils(this);
     this.bossPatterns = new BossPatternSystem(this);

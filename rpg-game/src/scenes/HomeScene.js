@@ -11,6 +11,8 @@ export class HomeScene extends Phaser.Scene {
     this.playerState = PlayerState.getInstance();
     this.storageOpen = false;
     this.storagePage = 0; // 0 = sayfa 1, 1 = sayfa 2
+    this._spawnTime = this.time.now; // Spawn koruma süresini sıfırla
+    this._lastAutoInteract = 0;
 
     this.drawRoom();
     this.createPlayer();
@@ -274,7 +276,7 @@ export class HomeScene extends Phaser.Scene {
     if ((now > (this._lastAutoInteract || 0) + 800 && !spawnSafe) || ePressed) {
       // Check exit (door at bottom center)
       const exitDist = Phaser.Math.Distance.Between(this.player.x, this.player.y, 400, 468);
-      if (exitDist < 35 || (ePressed && exitDist < 50)) {
+      if (exitDist < 50 || (ePressed && exitDist < 70)) {
         this._lastAutoInteract = now;
         this.playerState.save();
         this.scene.start('OverworldScene');
@@ -560,9 +562,9 @@ export class HomeScene extends Phaser.Scene {
     // Divider
     add(this.add.rectangle(395, 310, 3, 490, 0x5555aa).setDepth(101));
 
-    // Right: Storage with pagination (2 pages × 100 slots)
+    // Right: Storage with pagination (5 pages × 100 slots)
     const page = this.storagePage || 0;
-    const totalPages = 2;
+    const totalPages = 5;
     add(this.add.text(600, 55, `Depo (${ps.storage.length}/${ps.maxStorage})`, {
       fontSize: '15px', fontFamily: 'Nunito, Arial, sans-serif', color: '#cc99ff', fontStyle: 'bold'
     }).setOrigin(0.5).setDepth(103));

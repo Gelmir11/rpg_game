@@ -103,9 +103,9 @@ export class PlayerState {
     // Grid pozisyonları: [{ entry, col, row }] — item'ların envanterdeki sabit yerleri
     this.inventoryGrid = this.inventoryGrid || [];
 
-    // Ev deposu (max 200 slot, 2 sayfa × 100)
+    // Ev deposu (max 500 slot, 5 sayfa × 100)
     this.storage = [];
-    this.maxStorage = 200;
+    this.maxStorage = 500;
     // Depo grid pozisyonları
     this.storageGrid = this.storageGrid || [];
 
@@ -575,7 +575,7 @@ export class PlayerState {
     const item = ITEMS_REF ? ITEMS_REF[id] : null;
     const gw = item ? (item.gridW || 1) : 1;
     const gh = item ? (item.gridH || 1) : 1;
-    this.addToGrid(this.storageGrid, itemEntry, 10, 20, gw, gh);
+    this.addToGrid(this.storageGrid, itemEntry, 10, 50, gw, gh);
     return true;
   }
 
