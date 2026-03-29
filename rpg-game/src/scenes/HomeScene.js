@@ -205,7 +205,7 @@ export class HomeScene extends Phaser.Scene {
     const pTex = ps.gender === 'female' ? 'player_female' : 'player';
     this.player = this.physics.add.sprite(400, 340, pTex, 0);
     this.player.setSize(28, 28).setOffset(18, 60).setDepth(10).setCollideWorldBounds(true);
-    this.physics.world.setBounds(182, 130, 436, 338);
+    this.physics.world.setBounds(182, 130, 436, 370);
     this.playerDirection = 'down';
 
     // Equipment overlay sprites
