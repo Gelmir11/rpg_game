@@ -92,10 +92,10 @@ export const MONSTERS = {
   // ===== OVERWORLD BOSS =====
   ancient_dragon: {
     id: 'ancient_dragon', name: 'Kadim Ejder',
-    hp: 3000, attack: 80, defense: 45, speed: 30,
-    exp: 500, gold: 300, level: 12,
+    hp: 25000, attack: 350, defense: 200, speed: 35,
+    exp: 5000, gold: 2500, level: 40,
     color: '#4B0082', bodyColor: '#6A0DAD',
-    behavior: 'boss', aggroRange: 250, isBoss: true
+    behavior: 'boss', aggroRange: 300, isBoss: true
   },
 
   // ===== BÖLGE BOSSLARI (respawn: 60sn) =====
