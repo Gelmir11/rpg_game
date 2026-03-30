@@ -13,6 +13,8 @@ export const CLASS_DEFINITIONS = {
     description: 'Güçlü yakın dövüş savaşçısı. Yüksek HP ve saldırı gücü.',
     baseStats: { maxHp: 120, maxMana: 20, baseAttack: 12, baseDefense: 8, speed: 140 },
     growth: { maxHp: 10, maxMana: 2, baseAttack: 2, baseDefense: 1 },
+    // Savaşçı pasif: seviye başına +0.5 ATK, +0.3 DEF ekstra
+    passiveBonus: { attackPerLevel: 0.5, defensePerLevel: 0.3 },
     startWeapon: 'wooden_sword',
     color: '#e74c3c'
   },
@@ -22,6 +24,7 @@ export const CLASS_DEFINITIONS = {
     description: 'Çevik menzilli savaşçı. Dengeli saldırı ve savunma.',
     baseStats: { maxHp: 100, maxMana: 30, baseAttack: 10, baseDefense: 6, speed: 160 },
     growth: { maxHp: 7, maxMana: 3, baseAttack: 1.5, baseDefense: 1.5 },
+    passiveBonus: {},
     startWeapon: 'wooden_bow',
     color: '#27ae60'
   },
@@ -31,6 +34,8 @@ export const CLASS_DEFINITIONS = {
     description: 'Güçlü büyü ustası. Yüksek mana ve büyü hasarı.',
     baseStats: { maxHp: 80, maxMana: 60, baseAttack: 8, baseDefense: 5, speed: 130 },
     growth: { maxHp: 5, maxMana: 6, baseAttack: 1, baseDefense: 1 },
+    // Büyücü pasif: ekstra mana regen +2/sn
+    passiveBonus: { manaRegen: 2 },
     startWeapon: 'wooden_staff',
     color: '#8e44ad'
   }
@@ -79,7 +84,7 @@ export class PlayerState {
     this.baseDefense = classDef.baseStats.baseDefense;
     this.speed = classDef.baseStats.speed;
 
-    // Ekipman (8 slot)
+    // Ekipman (9 slot)
     this.equipped = {
       head: null,
       chest: null,
@@ -88,7 +93,8 @@ export class PlayerState {
       weapon: null,
       necklace: null,
       earring: null,
-      belt: null
+      belt: null,
+      ring: null
     };
 
     // Envanter (max 100 slot)
@@ -97,7 +103,7 @@ export class PlayerState {
     // Grid pozisyonları: [{ entry, col, row }] — item'ların envanterdeki sabit yerleri
     this.inventoryGrid = this.inventoryGrid || [];
 
-    // Ev deposu (max 500 slot)
+    // Ev deposu (max 500 slot, 5 sayfa × 100)
     this.storage = [];
     this.maxStorage = 500;
     // Depo grid pozisyonları
@@ -177,7 +183,49 @@ export class PlayerState {
     return leveledUp;
   }
 
-  // Toplam saldırı (baz + ekipman + ekipman bonusu + buff)
+  // Toplam saldırı (baz + ekipman + ekipman bonusu + buff + sınıf pasif)
+  // Set bonus sistemi: aynı setten 3/4/5 parça giyince ATK+DEF bonusu
+  static SET_PREFIXES = ['leather', 'iron', 'steel', 'dragon', 'mythril', 'abyssal', 'duskhollow'];
+  static SET_SLOTS = ['head', 'chest', 'legs', 'arms', 'belt'];
+  static SET_BONUSES = {
+    leather:    { 3: { attack: 2, defense: 2 },   4: { attack: 4, defense: 4 },   5: { attack: 6, defense: 6 } },
+    iron:       { 3: { attack: 4, defense: 4 },   4: { attack: 8, defense: 8 },   5: { attack: 12, defense: 12 } },
+    steel:      { 3: { attack: 6, defense: 6 },   4: { attack: 12, defense: 12 }, 5: { attack: 20, defense: 20 } },
+    dragon:     { 3: { attack: 10, defense: 10 }, 4: { attack: 20, defense: 20 }, 5: { attack: 35, defense: 35 } },
+    mythril:    { 3: { attack: 15, defense: 15 }, 4: { attack: 30, defense: 30 }, 5: { attack: 50, defense: 50 } },
+    abyssal:    { 3: { attack: 25, defense: 25 }, 4: { attack: 50, defense: 50 }, 5: { attack: 80, defense: 80 } },
+    duskhollow: { 3: { attack: 40, defense: 40 }, 4: { attack: 75, defense: 75 }, 5: { attack: 120, defense: 120 } },
+  };
+
+  getSetBonus() {
+    const counts = {};
+    PlayerState.SET_SLOTS.forEach(slot => {
+      const eq = this.equipped[slot];
+      if (!eq || !eq.id) return;
+      for (const prefix of PlayerState.SET_PREFIXES) {
+        if (eq.id.startsWith(prefix + '_')) {
+          counts[prefix] = (counts[prefix] || 0) + 1;
+          break;
+        }
+      }
+    });
+    let totalAtk = 0, totalDef = 0;
+    let activeSet = null, activeCount = 0;
+    for (const [prefix, count] of Object.entries(counts)) {
+      const bonuses = PlayerState.SET_BONUSES[prefix];
+      if (bonuses) {
+        // En yüksek eşiği bul (5, 4 veya 3)
+        const threshold = count >= 5 ? 5 : count >= 4 ? 4 : count >= 3 ? 3 : 0;
+        if (threshold > 0 && bonuses[threshold]) {
+          totalAtk += bonuses[threshold].attack;
+          totalDef += bonuses[threshold].defense;
+          if (count > activeCount) { activeSet = prefix; activeCount = count; }
+        }
+      }
+    }
+    return { attack: totalAtk, defense: totalDef, set: activeSet, count: activeCount };
+  }
+
   getAttack() {
     let atk = this.baseAttack;
     Object.values(this.equipped).forEach(eq => {
@@ -187,6 +235,13 @@ export class PlayerState {
       }
     });
     this.buffs.forEach(b => { if (b.attack) atk += b.attack; });
+    // Sınıf pasif bonusu
+    const classDef = CLASS_DEFINITIONS[this.playerClass];
+    if (classDef && classDef.passiveBonus && classDef.passiveBonus.attackPerLevel) {
+      atk += Math.floor(classDef.passiveBonus.attackPerLevel * (this.level - 1));
+    }
+    // Set bonusu
+    atk += this.getSetBonus().attack;
     return atk;
   }
 
@@ -199,6 +254,13 @@ export class PlayerState {
       }
     });
     this.buffs.forEach(b => { if (b.defense) def += b.defense; });
+    // Sınıf pasif bonusu
+    const classDef = CLASS_DEFINITIONS[this.playerClass];
+    if (classDef && classDef.passiveBonus && classDef.passiveBonus.defensePerLevel) {
+      def += Math.floor(classDef.passiveBonus.defensePerLevel * (this.level - 1));
+    }
+    // Set bonusu
+    def += this.getSetBonus().defense;
     return def;
   }
 
@@ -226,6 +288,35 @@ export class PlayerState {
       }
     });
     return mp;
+  }
+
+  // Ekipman bazlı HP rejenerasyonu (saniyede X HP)
+  getHpRegen() {
+    let regen = 0;
+    Object.values(this.equipped).forEach(eq => {
+      if (eq) {
+        if (eq.hpRegen) regen += eq.hpRegen;
+        if (eq._bonuses && eq._bonuses.hpRegen) regen += eq._bonuses.hpRegen;
+      }
+    });
+    return regen;
+  }
+
+  // Ekipman bazlı Mana rejenerasyonu (saniyede X Mana, baz 1 + ekipman)
+  getManaRegen() {
+    let regen = 1; // baz mana regen
+    Object.values(this.equipped).forEach(eq => {
+      if (eq) {
+        if (eq.manaRegen) regen += eq.manaRegen;
+        if (eq._bonuses && eq._bonuses.manaRegen) regen += eq._bonuses.manaRegen;
+      }
+    });
+    // Sınıf pasif bonusu (Büyücü: +2 mana regen)
+    const classDef = CLASS_DEFINITIONS[this.playerClass];
+    if (classDef && classDef.passiveBonus && classDef.passiveBonus.manaRegen) {
+      regen += classDef.passiveBonus.manaRegen;
+    }
+    return regen;
   }
 
   restoreMana(amount) {
@@ -309,16 +400,25 @@ export class PlayerState {
       bonuses.maxHp = Math.floor(Math.random() * 10) + 5;
       if (Math.random() < 0.3) bonuses.defense = Math.floor(Math.random() * 3) + 1;
     }
-    // Küpe: bonus attack/defense + bazen maxMana
+    // Küpe: bonus attack/defense + çok nadir hpRegen/manaRegen
     else if (baseItemId.includes('ring')) {
       bonuses.attack = Math.floor(Math.random() * 3) + 1;
       bonuses.defense = Math.floor(Math.random() * 3) + 1;
-      if (Math.random() < 0.3) bonuses.maxMana = Math.floor(Math.random() * 10) + 5;
+      if (Math.random() < 0.04) bonuses.manaRegen = 1;
+      if (Math.random() < 0.03) bonuses.hpRegen = 1;
     }
-    // Kolye: bonus maxHp + bazen attack, maxMana
+    // Yüzük: bonus maxHp/maxMana + çok nadir hpRegen/manaRegen
+    else if (baseItemId.includes('yuzuk')) {
+      bonuses.maxHp = Math.floor(Math.random() * 15) + 5;
+      bonuses.maxMana = Math.floor(Math.random() * 10) + 3;
+      if (Math.random() < 0.04) bonuses.hpRegen = 1;
+      if (Math.random() < 0.03) bonuses.manaRegen = 1;
+    }
+    // Kolye: bonus maxHp + çok nadir hpRegen/manaRegen
     else if (baseItemId.includes('amulet')) {
       bonuses.maxHp = Math.floor(Math.random() * 15) + 5;
-      if (Math.random() < 0.4) bonuses.attack = Math.floor(Math.random() * 3) + 1;
+      if (Math.random() < 0.04) bonuses.hpRegen = 1;
+      if (Math.random() < 0.03) bonuses.manaRegen = 1;
       if (Math.random() < 0.3) bonuses.maxMana = Math.floor(Math.random() * 10) + 5;
     }
 
@@ -503,6 +603,7 @@ export class PlayerState {
     if (itemData.type === 'weapon') return 'weapon';
     if (itemData.type === 'armor') return 'chest';
     if (itemData.type === 'accessory') {
+      if (itemData.id.includes('yuzuk')) return 'ring';
       if (itemData.id.includes('ring')) return 'earring';
       if (itemData.id.includes('amulet')) return 'necklace';
       if (itemData.id.includes('helm')) return 'head';
@@ -622,13 +723,27 @@ export class PlayerState {
     return this.gatherCounts[resourceId] || 0;
   }
 
-  // Mana rejenerasyon (saniyede 1 mana)
+  // Mana rejenerasyon (saniyede baz 1 + ekipman bonusu)
   regenMana(delta) {
     this._manaRegenTimer = (this._manaRegenTimer || 0) + delta;
     if (this._manaRegenTimer >= 1000) {
       this._manaRegenTimer -= 1000;
-      if (this.mana < this.getMaxMana()) {
-        this.mana = Math.min(this.mana + 1, this.getMaxMana());
+      const regen = this.getManaRegen();
+      if (regen > 0 && this.mana < this.getMaxMana()) {
+        this.mana = Math.min(this.mana + regen, this.getMaxMana());
+      }
+    }
+  }
+
+  // HP rejenerasyon (ekipman bazlı, saniyede X HP)
+  regenHp(delta) {
+    const regen = this.getHpRegen();
+    if (regen <= 0) return;
+    this._hpRegenTimer = (this._hpRegenTimer || 0) + delta;
+    if (this._hpRegenTimer >= 1000) {
+      this._hpRegenTimer -= 1000;
+      if (this.hp < this.getMaxHp()) {
+        this.hp = Math.min(this.hp + regen, this.getMaxHp());
       }
     }
   }
@@ -674,6 +789,23 @@ export class PlayerState {
     Object.assign(this, data);
     // Geriye uyumluluk: eski kayıtlarda sınıf yoksa warrior
     if (!this.playerClass) this.playerClass = 'warrior';
+    if (this.equipped && !this.equipped.ring) this.equipped.ring = null;
+    // Equipped item'ları ITEMS tanımlarından güncelle (yeni eklenen statlar için)
+    const itemDefs = typeof window !== 'undefined' && window.__ITEMS_REF;
+    if (this.equipped && itemDefs) {
+      Object.keys(this.equipped).forEach(slot => {
+        const eq = this.equipped[slot];
+        if (eq && eq.id && itemDefs[eq.id]) {
+          const fresh = itemDefs[eq.id];
+          // Yeni statları kopyala ama mevcut bonusları koru
+          const bonuses = eq._bonuses;
+          const uid = eq._uid;
+          Object.assign(eq, fresh);
+          if (bonuses) eq._bonuses = bonuses;
+          if (uid) eq._uid = uid;
+        }
+      });
+    }
     this.saveSlot = slot;
     return true;
   }

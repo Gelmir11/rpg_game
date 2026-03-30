@@ -2,7 +2,7 @@ import { PlayerState } from './PlayerState.js';
 
 /**
  * Paylaşılan savaş yardımcı fonksiyonları
- * OverworldScene, DungeonScene, LabyrinthScene tarafından kullanılır
+ * OverworldScene, DungeonScene tarafından kullanılır
  */
 export class CombatUtils {
   constructor(scene) {
@@ -125,7 +125,7 @@ export class CombatUtils {
 
     // Damage number
     const dmgText = scene.add.text(x, y - 15, `-${damage}`, {
-      fontSize: '14px', fontFamily: 'Arial, sans-serif', color: '#ff8888',
+      fontSize: '14px', fontFamily: 'Nunito, Arial, sans-serif', color: '#ff8888',
       fontStyle: 'bold', stroke: '#000', strokeThickness: 2
     }).setOrigin(0.5).setDepth(10);
 
@@ -171,7 +171,7 @@ export class CombatUtils {
             monster.monsterData.currentHp -= dot.damage;
             // Green damage text for poison
             const dmgText = this.scene.add.text(monster.x + (Math.random() - 0.5) * 20, monster.y - 10, `-${dot.damage}`, {
-              fontSize: '11px', fontFamily: 'Arial, sans-serif', color: '#00ff88',
+              fontSize: '11px', fontFamily: 'Nunito, Arial, sans-serif', color: '#00ff88',
               fontStyle: 'bold', stroke: '#000', strokeThickness: 2
             }).setOrigin(0.5).setDepth(10);
             this.scene.tweens.add({

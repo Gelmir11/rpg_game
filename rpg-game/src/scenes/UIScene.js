@@ -27,13 +27,13 @@ export class UIScene extends Phaser.Scene {
     // HP/MP bars will be drawn above player in-game
 
     // Top left: Level + EXP bar
-    this.levelText = this.add.text(10, 8, '', { fontSize: '20px', fontFamily: 'Arial, sans-serif', color: '#d0b0f0', fontStyle: 'bold', stroke: '#000', strokeThickness: 4 }).setDepth(200);
+    this.levelText = this.add.text(10, 8, '', { fontSize: '20px', fontFamily: 'Nunito, Arial, sans-serif', color: '#d0b0f0', fontStyle: 'bold', stroke: '#000', strokeThickness: 4 }).setDepth(200);
 
     // EXP bar under level text
-    this.add.text(10, 32, 'EXP', { fontSize: '14px', fontFamily: 'Arial, sans-serif', color: '#6688FF', fontStyle: 'bold', stroke: '#000', strokeThickness: 3 }).setDepth(200);
+    this.add.text(10, 32, 'EXP', { fontSize: '14px', fontFamily: 'Nunito, Arial, sans-serif', color: '#6688FF', fontStyle: 'bold', stroke: '#000', strokeThickness: 3 }).setDepth(200);
     this.expBarBg = this.add.rectangle(50, 40, 160, 12, 0x1a1a1a).setOrigin(0, 0.5).setDepth(200).setStrokeStyle(1, 0x444);
     this.expBarFill = this.add.rectangle(51, 40, 158, 10, 0x4169E1).setOrigin(0, 0.5).setDepth(201);
-    this.expText = this.add.text(130, 32, '', { fontSize: '12px', fontFamily: 'Arial, sans-serif', color: '#AAAAFF', fontStyle: 'bold', stroke: '#000', strokeThickness: 3 }).setOrigin(0.5, 0).setDepth(202);
+    this.expText = this.add.text(130, 32, '', { fontSize: '12px', fontFamily: 'Nunito, Arial, sans-serif', color: '#AAAAFF', fontStyle: 'bold', stroke: '#000', strokeThickness: 3 }).setOrigin(0.5, 0).setDepth(202);
 
     this.goldText = { setText: () => {} };
 
@@ -47,7 +47,7 @@ export class UIScene extends Phaser.Scene {
 
     // Active quests (top right)
     this.questText = this.add.text(790, 8, '', {
-      fontSize: '13px', fontFamily: 'Arial, sans-serif', color: '#cc99ff',
+      fontSize: '13px', fontFamily: 'Nunito, Arial, sans-serif', color: '#cc99ff',
       align: 'right', wordWrap: { width: 200 }, fontStyle: 'bold', stroke: '#000', strokeThickness: 3
     }).setOrigin(1, 0).setDepth(200);
 
@@ -60,29 +60,29 @@ export class UIScene extends Phaser.Scene {
     this.minimapPlayerDot = this.add.circle(0, 0, 3, 0x00FF00).setDepth(203);
     this.minimapData = { x: mmX, y: mmY, size: mmSize };
 
-    // Controls hint (bottom)
-    this.controlsText = this.add.text(400, 578, 'WASD: Hareket   E: Etkileşim   F: Topla   K: Envanter   T: Köye Işınlan   1-4: Yetenek', {
-      fontSize: '14px', fontFamily: 'Arial, sans-serif', color: '#777', fontStyle: 'bold', stroke: '#000', strokeThickness: 3
-    }).setOrigin(0.5).setDepth(200);
+    // Controls hint removed — clean UI
+
+    // Settings button (top-right corner)
+    this.createSettingsButton();
 
     // Skill bar
     this.createSkillBar();
 
     // Notification area
     this.notifText = this.add.text(400, 70, '', {
-      fontSize: '24px', fontFamily: 'Arial, sans-serif', color: '#FFD700',
+      fontSize: '24px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FFD700',
       fontStyle: 'bold', stroke: '#000', strokeThickness: 4
     }).setOrigin(0.5).setDepth(200).setAlpha(0);
 
     // Dialogue box
     this.dialogueBg = this.add.rectangle(400, 510, 740, 150, 0x0a0a1a, 0.94).setDepth(300).setStrokeStyle(2, 0x6a4aaa).setVisible(false);
-    this.dialogueName = this.add.text(60, 448, '', { fontSize: '22px', fontFamily: 'Arial, sans-serif', color: '#DAA520', fontStyle: 'bold', stroke: '#000', strokeThickness: 3 }).setDepth(301).setVisible(false);
+    this.dialogueName = this.add.text(60, 448, '', { fontSize: '22px', fontFamily: 'Nunito, Arial, sans-serif', color: '#DAA520', fontStyle: 'bold', stroke: '#000', strokeThickness: 3 }).setDepth(301).setVisible(false);
     this.dialogueText = this.add.text(60, 475, '', {
-      fontSize: '18px', fontFamily: 'Arial, sans-serif', color: '#ddd',
+      fontSize: '18px', fontFamily: 'Nunito, Arial, sans-serif', color: '#ddd',
       wordWrap: { width: 660 }, lineSpacing: 6
     }).setDepth(301).setVisible(false);
-    this.dialogueHint = this.add.text(720, 570, '[E] Kapat', {
-      fontSize: '18px', fontFamily: 'Arial, sans-serif', color: '#666'
+    this.dialogueHint = this.add.text(720, 570, 'Kapat', {
+      fontSize: '18px', fontFamily: 'Nunito, Arial, sans-serif', color: '#666'
     }).setOrigin(1, 0.5).setDepth(301).setVisible(false);
 
     this.updateHUD();
@@ -172,6 +172,7 @@ export class UIScene extends Phaser.Scene {
 
   updateMinimap() {
     if (!this.minimapGfx || !this.minimapData) return;
+    if (this.settings && !this.settings.minimap) return;
     const g = this.minimapGfx;
     g.clear();
 
@@ -283,7 +284,7 @@ export class UIScene extends Phaser.Scene {
 
     // Title bar
     this._add(this.add.rectangle(400, 30, 760, 36, 0x1a1a3a).setDepth(401));
-    this._add(this.add.text(400, 30, 'KARAKTER & ENVANTER', { fontSize: '18px', fontFamily: 'Arial, sans-serif', color: '#c0a0e0', fontStyle: 'bold' }).setOrigin(0.5).setDepth(402));
+    this._add(this.add.text(400, 30, 'KARAKTER & ENVANTER', { fontSize: '18px', fontFamily: 'Nunito, Arial, sans-serif', color: '#c0a0e0', fontStyle: 'bold' }).setOrigin(0.5).setDepth(402));
 
     // ===== LEFT PANEL: Character =====
     const charX = 160, charY = 240;
@@ -293,7 +294,7 @@ export class UIScene extends Phaser.Scene {
 
     // Character name + level
     this._add(this.add.text(charX, 58, `Lv.${ps.level} ${ps.playerName || 'Kahraman'}`, {
-      fontSize: '16px', fontFamily: 'Arial, sans-serif', color: '#c0a0e0', fontStyle: 'bold'
+      fontSize: '16px', fontFamily: 'Nunito, Arial, sans-serif', color: '#c0a0e0', fontStyle: 'bold'
     }).setOrigin(0.5).setDepth(402));
 
     // Character sprite (centered, not too big)
@@ -311,18 +312,23 @@ export class UIScene extends Phaser.Scene {
       }
     });
 
-    // Equipment slots around character — compact ellipse
-    const slotRX = 95, slotRY = 105;
+    // Equipment slots around character — compact ellipse (9 slots)
+    const slotRX = 100, slotRY = 110;
+    const slotCount = 9;
     const equipSlots = [
-      { slot: 'head',     label: 'Kask',     angle: -Math.PI / 2 },          // top
-      { slot: 'necklace', label: 'Kolye',   angle: -Math.PI / 4 },          // top-right
-      { slot: 'chest',    label: 'Zırh',    angle: 0 },                      // right
-      { slot: 'arms',     label: 'Kolluk',  angle: Math.PI / 4 },           // bottom-right
-      { slot: 'legs',     label: 'Pantolon',angle: Math.PI / 2 },           // bottom
-      { slot: 'belt',     label: 'Kemer',   angle: 3 * Math.PI / 4 },       // bottom-left
-      { slot: 'weapon',   label: 'Silah',   angle: Math.PI },                // left
-      { slot: 'earring',  label: 'Küpe',    angle: -3 * Math.PI / 4 },     // top-left
-    ].map(s => ({ ...s, x: charX + Math.cos(s.angle) * slotRX, y: charY + Math.sin(s.angle) * slotRY + (s.slot === 'head' ? -15 : 0) }));
+      { slot: 'head',     label: 'Kask' },
+      { slot: 'necklace', label: 'Kolye' },
+      { slot: 'chest',    label: 'Zırh' },
+      { slot: 'arms',     label: 'Kolluk' },
+      { slot: 'legs',     label: 'Pantolon' },
+      { slot: 'belt',     label: 'Kemer' },
+      { slot: 'ring',     label: 'Yüzük' },
+      { slot: 'weapon',   label: 'Silah' },
+      { slot: 'earring',  label: 'Küpe' },
+    ].map((s, i) => {
+      const angle = -Math.PI / 2 + i * (2 * Math.PI / slotCount);
+      return { ...s, angle, x: charX + Math.cos(angle) * slotRX, y: charY + Math.sin(angle) * slotRY + (s.slot === 'head' ? -15 : 0) };
+    });
 
     equipSlots.forEach(es => {
       // Slot background
@@ -330,7 +336,7 @@ export class UIScene extends Phaser.Scene {
 
       // Slot label below
       this._add(this.add.text(es.x, es.y + 28, es.label, {
-        fontSize: '11px', fontFamily: 'Arial, sans-serif', color: '#9999cc',
+        fontSize: '11px', fontFamily: 'Nunito, Arial, sans-serif', color: '#9999cc',
         stroke: '#000', strokeThickness: 3
       }).setOrigin(0.5).setDepth(405));
 
@@ -358,7 +364,7 @@ export class UIScene extends Phaser.Scene {
         let eqHover = null;
         eqIcon.on('pointerover', () => {
           eqHover = this._add(this.add.text(es.x, es.y - 32, eqItem.name, {
-            fontSize: '13px', fontFamily: 'Arial, sans-serif', color: '#FFD700',
+            fontSize: '13px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FFD700',
             backgroundColor: '#111', padding: { x: 6, y: 3 }, stroke: '#000', strokeThickness: 2
           }).setOrigin(0.5).setDepth(410));
 
@@ -375,6 +381,8 @@ export class UIScene extends Phaser.Scene {
           if (eqItem.defense) stats += `Savunma: +${eqItem.defense}\n`;
           if (eqItem.maxHp) stats += `Max HP: +${eqItem.maxHp}\n`;
           if (eqItem.maxMana) stats += `Max Mana: +${eqItem.maxMana}\n`;
+          if (eqItem.hpRegen) stats += `Can Yen.: +${eqItem.hpRegen}/sn\n`;
+          if (eqItem.manaRegen) stats += `Mana Yen.: +${eqItem.manaRegen}/sn\n`;
           if (eqItem.manaCost) stats += `Mana: ${eqItem.manaCost}/atış\n`;
           if (hasBonus) {
             stats += '--- ✦ BONUS ✦ ---\n';
@@ -382,6 +390,8 @@ export class UIScene extends Phaser.Scene {
             if (hasBonus.defense) stats += `+${hasBonus.defense} Savunma\n`;
             if (hasBonus.maxHp) stats += `+${hasBonus.maxHp} Max HP\n`;
             if (hasBonus.maxMana) stats += `+${hasBonus.maxMana} Max Mana\n`;
+            if (hasBonus.hpRegen) stats += `+${hasBonus.hpRegen} Can Yen./sn\n`;
+            if (hasBonus.manaRegen) stats += `+${hasBonus.manaRegen} Mana Yen./sn\n`;
           }
           equipTooltipText.setText(stats.trim());
           equipTooltipText.setColor('#c0a0e0');
@@ -395,70 +405,119 @@ export class UIScene extends Phaser.Scene {
     });
 
     // ===== STATS BELOW EQUIPMENT =====
-    const barY = 410;
+    const barY = 390;
     const barW = 140;
     // HP
-    this._add(this.add.text(charX - barW/2, barY, `HP`, { fontSize: '11px', fontFamily: 'Arial, sans-serif', color: '#FF6666', fontStyle: 'bold' }).setDepth(402));
-    this._add(this.add.text(charX + barW/2, barY, `${ps.hp}/${ps.getMaxHp()}`, { fontSize: '11px', fontFamily: 'Arial, sans-serif', color: '#FF8888' }).setOrigin(1, 0).setDepth(402));
+    this._add(this.add.text(charX - barW/2, barY, `HP`, { fontSize: '11px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FF6666', fontStyle: 'bold' }).setDepth(402));
+    const hpValText = this._add(this.add.text(charX + barW/2, barY, `${ps.hp}/${ps.getMaxHp()}`, { fontSize: '11px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FF8888' }).setOrigin(1, 0).setDepth(402));
     this._add(this.add.rectangle(charX, barY + 16, barW, 8, 0x111).setDepth(401));
-    this._add(this.add.rectangle(charX - barW/2 + barW * (ps.hp / ps.getMaxHp()) / 2, barY + 16, barW * (ps.hp / ps.getMaxHp()), 6, 0xCC0000).setDepth(402));
+    const hpFillBar = this._add(this.add.rectangle(charX - barW/2 + barW * (ps.hp / ps.getMaxHp()) / 2, barY + 16, barW * (ps.hp / ps.getMaxHp()), 6, 0xCC0000).setDepth(402));
     // MP
-    this._add(this.add.text(charX - barW/2, barY + 26, `MP`, { fontSize: '11px', fontFamily: 'Arial, sans-serif', color: '#9966FF', fontStyle: 'bold' }).setDepth(402));
-    this._add(this.add.text(charX + barW/2, barY + 26, `${ps.mana}/${ps.getMaxMana()}`, { fontSize: '11px', fontFamily: 'Arial, sans-serif', color: '#aa88ff' }).setOrigin(1, 0).setDepth(402));
+    this._add(this.add.text(charX - barW/2, barY + 26, `MP`, { fontSize: '11px', fontFamily: 'Nunito, Arial, sans-serif', color: '#9966FF', fontStyle: 'bold' }).setDepth(402));
+    const mpValText = this._add(this.add.text(charX + barW/2, barY + 26, `${ps.mana}/${ps.getMaxMana()}`, { fontSize: '11px', fontFamily: 'Nunito, Arial, sans-serif', color: '#aa88ff' }).setOrigin(1, 0).setDepth(402));
     this._add(this.add.rectangle(charX, barY + 42, barW, 8, 0x111).setDepth(401));
-    this._add(this.add.rectangle(charX - barW/2 + barW * (ps.mana / ps.getMaxMana()) / 2, barY + 42, barW * (ps.mana / ps.getMaxMana()), 6, 0x6a5acd).setDepth(402));
+    const mpFillBar = this._add(this.add.rectangle(charX - barW/2 + barW * (ps.mana / ps.getMaxMana()) / 2, barY + 42, barW * (ps.mana / ps.getMaxMana()), 6, 0x6a5acd).setDepth(402));
+    // Live update HP/MP bars every 500ms while inventory is open
+    this._invStatTimer = this.time.addEvent({
+      delay: 500, loop: true,
+      callback: () => {
+        if (!this.inventoryOpen) return;
+        const hpR2 = ps.hp / ps.getMaxHp();
+        hpValText.setText(`${ps.hp}/${ps.getMaxHp()}`);
+        hpFillBar.setPosition(charX - barW/2 + barW * hpR2 / 2, barY + 16);
+        hpFillBar.setSize(Math.max(1, barW * hpR2), 6);
+        const mpR2 = ps.mana / ps.getMaxMana();
+        mpValText.setText(`${ps.mana}/${ps.getMaxMana()}`);
+        mpFillBar.setPosition(charX - barW/2 + barW * mpR2 / 2, barY + 42);
+        mpFillBar.setSize(Math.max(1, barW * mpR2), 6);
+      }
+    });
     // EXP
     const expCur = ps.getExpForLevel(ps.level);
     const expNext = ps.getExpForLevel(ps.level + 1);
     const expProg = Math.max(0, (ps.exp - expCur) / (expNext - expCur));
-    this._add(this.add.text(charX - barW/2, barY + 52, `EXP`, { fontSize: '11px', fontFamily: 'Arial, sans-serif', color: '#6688FF', fontStyle: 'bold' }).setDepth(402));
-    this._add(this.add.text(charX + barW/2, barY + 52, `${ps.exp}/${expNext}`, { fontSize: '11px', fontFamily: 'Arial, sans-serif', color: '#8888FF' }).setOrigin(1, 0).setDepth(402));
+    this._add(this.add.text(charX - barW/2, barY + 52, `EXP`, { fontSize: '11px', fontFamily: 'Nunito, Arial, sans-serif', color: '#6688FF', fontStyle: 'bold' }).setDepth(402));
+    this._add(this.add.text(charX + barW/2, barY + 52, `${ps.exp}/${expNext}`, { fontSize: '11px', fontFamily: 'Nunito, Arial, sans-serif', color: '#8888FF' }).setOrigin(1, 0).setDepth(402));
     this._add(this.add.rectangle(charX, barY + 68, barW, 8, 0x111).setDepth(401));
     this._add(this.add.rectangle(charX - barW/2 + barW * expProg / 2, barY + 68, barW * expProg, 6, 0x4169E1).setDepth(402));
     // Stats line
-    this._add(this.add.text(charX, barY + 84, `ATK: ${ps.getAttack()}   DEF: ${ps.getDefense()}`, {
-      fontSize: '12px', fontFamily: 'Arial, sans-serif', color: '#ccc', fontStyle: 'bold'
+    const statFont = { fontSize: '12px', fontFamily: 'Nunito, Arial, sans-serif', fontStyle: 'bold' };
+    let statY = barY + 80;
+    this._add(this.add.text(charX, statY, `ATK: ${ps.getAttack()}   DEF: ${ps.getDefense()}`, {
+      ...statFont, color: '#ccc'
     }).setOrigin(0.5).setDepth(402));
-    // Gold prominently displayed
-    this._add(this.add.text(charX, barY + 102, `Altın: ${formatGold(ps.gold)}`, {
-      fontSize: '14px', fontFamily: 'Arial, sans-serif', color: '#FFD700', fontStyle: 'bold'
+    statY += 16;
+    // Set bonus info
+    const setInfo = ps.getSetBonus();
+    if (setInfo.set && setInfo.count >= 3) {
+      const setNames = { leather: 'Deri', iron: 'Demir', steel: 'Çelik', dragon: 'Ejder', mythril: 'Mithril', abyssal: 'Uçurum', duskhollow: 'Alacakaranlık' };
+      const sName = setNames[setInfo.set] || setInfo.set;
+      this._add(this.add.text(charX, statY, `⚔ ${sName} Seti (${setInfo.count}/5): ATK+${setInfo.attack} DEF+${setInfo.defense}`, {
+        ...statFont, color: '#FFaa33'
+      }).setOrigin(0.5).setDepth(402));
+      statY += 16;
+    }
+    // Regen stats
+    const hpR = ps.getHpRegen(), manaR = ps.getManaRegen();
+    if (hpR > 0 || manaR > 0) {
+      if (hpR > 0) {
+        this._add(this.add.text(charX - 40, statY, `HP+${hpR}/sn`, {
+          ...statFont, color: '#FF6666'
+        }).setOrigin(0.5).setDepth(402));
+      }
+      if (manaR > 0) {
+        this._add(this.add.text(charX + 40, statY, `MP+${manaR}/sn`, {
+          ...statFont, color: '#6688FF'
+        }).setOrigin(0.5).setDepth(402));
+      }
+      statY += 16;
+    }
+    // Gold
+    this._add(this.add.text(charX, statY, `Altın: ${formatGold(ps.gold)}`, {
+      ...statFont, color: '#FFD700'
     }).setOrigin(0.5).setDepth(402));
 
     // ===== RIGHT PANEL: Inventory Grid =====
-    const rightX = 540; // center of right panel
-    this._add(this.add.rectangle(rightX, 310, 400, 480, 0x0a0a1a, 0.5).setDepth(400).setStrokeStyle(1, 0x3a3a5a));
+    const invPanelLeft = 310;
+    const invPanelRight = 780;
+    const invPanelTop = 50;
+    const invPanelBot = 580;
+    const invPanelW = invPanelRight - invPanelLeft;
+    const invPanelH = invPanelBot - invPanelTop;
+    const rightX = invPanelLeft + invPanelW / 2;
+    this._add(this.add.rectangle(rightX, invPanelTop + invPanelH / 2, invPanelW, invPanelH, 0x0a0a1a, 0.5).setDepth(400).setStrokeStyle(1, 0x3a3a5a));
 
     // Bottom info area split into two panels
-    const tipY = 510;
-    const halfW = 186;
-    const tipLeftX = rightX - halfW / 2 - 2;  // left panel center
-    const tipRightX = rightX + halfW / 2 + 2;  // right panel center
+    const tipH = 100;
+    const tipY = invPanelBot - tipH / 2 - 4;
+    const halfW = (invPanelW - 12) / 2;
+    const tipLeftX = invPanelLeft + halfW / 2 + 3;
+    const tipRightX = invPanelRight - halfW / 2 - 3;
 
     // Left: Equipment info (hover tooltip for equipped items)
-    this._add(this.add.rectangle(tipLeftX, tipY, halfW, 80, 0x15153a, 0.9).setDepth(401).setStrokeStyle(1, 0x3a3a5a));
-    const equipTooltipText = this._add(this.add.text(tipLeftX - halfW / 2 + 8, tipY - 32, '', {
-      fontSize: '11px', fontFamily: 'Arial, sans-serif', color: '#777',
-      align: 'left', wordWrap: { width: halfW - 16 }
+    this._add(this.add.rectangle(tipLeftX, tipY, halfW, tipH, 0x15153a, 0.9).setDepth(401).setStrokeStyle(1, 0x3a3a5a));
+    const equipTooltipText = this._add(this.add.text(tipLeftX - halfW / 2 + 6, tipY - tipH / 2 + 4, '', {
+      fontSize: '10px', fontFamily: 'Nunito, Arial, sans-serif', color: '#777',
+      align: 'left', wordWrap: { width: halfW - 12 }, lineSpacing: 1
     }).setOrigin(0, 0).setDepth(402));
 
     // Right: Item info (hover tooltip for inventory items)
-    this._add(this.add.rectangle(tipRightX, tipY, halfW, 80, 0x15153a, 0.9).setDepth(401).setStrokeStyle(1, 0x3a3a5a));
-    const tooltipText = this._add(this.add.text(tipRightX - halfW / 2 + 8, tipY - 32, '', {
-      fontSize: '11px', fontFamily: 'Arial, sans-serif', color: '#777',
-      align: 'left', wordWrap: { width: halfW - 16 }
+    this._add(this.add.rectangle(tipRightX, tipY, halfW, tipH, 0x15153a, 0.9).setDepth(401).setStrokeStyle(1, 0x3a3a5a));
+    const tooltipText = this._add(this.add.text(tipRightX - halfW / 2 + 6, tipY - tipH / 2 + 4, '', {
+      fontSize: '10px', fontFamily: 'Nunito, Arial, sans-serif', color: '#777',
+      align: 'left', wordWrap: { width: halfW - 12 }, lineSpacing: 1
     }).setOrigin(0, 0).setDepth(402));
 
-    // Inventory grid - 10x10 = 100 slots, ortalı
+    // Inventory grid - 10x10 = 100 slots
     const cellSize = 36;
     const cols = 10;
     const maxRows = 10;
     const gridW = cols * cellSize;   // 360
     const gridH = maxRows * cellSize; // 360
-    // Dış panel: rightX=540, y=310, w=400, h=480 → üst=70, alt=550, tooltip=470-550
-    const panelLeft = rightX - 200;  // 340
-    const panelTop = 70;
-    const panelUsableH = 400; // 70 → 470 (tooltip üstü)
-    const gridStartX = panelLeft + (400 - gridW) / 2; // yatay ortala
+    const panelLeft = invPanelLeft;
+    const panelTop = invPanelTop;
+    const panelUsableH = invPanelH - tipH - 12; // tooltip üstü
+    const gridStartX = panelLeft + (invPanelW - gridW) / 2; // yatay ortala
     const titleH = 24;
     const gridStartY = panelTop + (panelUsableH - gridH - titleH) / 2 + titleH; // dikey ortala
 
@@ -486,7 +545,7 @@ export class UIScene extends Phaser.Scene {
     });
 
     const itemCount = this.add.text(gridStartX + gridW / 2, gridStartY - 30, `${ps.getUsedSlots()}/${ps.maxInventory}`, {
-      fontSize: '13px', fontFamily: 'Arial, sans-serif', color: '#888', stroke: '#000', strokeThickness: 3
+      fontSize: '13px', fontFamily: 'Nunito, Arial, sans-serif', color: '#888', stroke: '#000', strokeThickness: 3
     }).setOrigin(0.5).setDepth(405);
     this.invElements.push(itemCount);
 
@@ -497,7 +556,7 @@ export class UIScene extends Phaser.Scene {
       }
     }
 
-    // Grid'i sıfırdan oluştur — önceki pozisyonları hatırla
+    // Mevcut pozisyonları koru — sadece yeni itemler için boş yer bul
     const oldGrid = ps.inventoryGrid || [];
     ps.inventoryGrid = [];
     const occupied = Array.from({ length: maxRows }, () => Array(cols).fill(false));
@@ -521,26 +580,37 @@ export class UIScene extends Phaser.Scene {
       return null;
     };
 
-    // Her stacked item için pozisyon belirle
+    // Önce eski pozisyonu olan itemleri yerleştir (pozisyonları koru)
     const gridEntries = [];
+    const withPos = [];
+    const withoutPos = [];
     stacked.forEach(stack => {
       const item = ITEMS[stack.itemId];
       if (!item) return;
       const gw = item.gridW || 1, gh = item.gridH || 1;
-      // Önceki pozisyonu hatırla
-      const key = stack.stackable ? stack.itemId : stack.entry;
       const prev = oldGrid.find(g => {
         if (stack.stackable) return ps.getBaseItemId(g.entry) === stack.itemId;
         return g.entry === stack.entry;
       });
-      let pos = null;
       if (prev && canPlace(prev.col, prev.row, gw, gh)) {
-        pos = { col: prev.col, row: prev.row };
+        withPos.push({ stack, gw, gh, pos: { col: prev.col, row: prev.row } });
       } else {
-        pos = findSlot(gw, gh);
+        withoutPos.push({ stack, gw, gh });
       }
+    });
+    // Eski pozisyonları önce kilitle
+    withPos.forEach(({ stack, gw, gh, pos }) => {
+      markOcc(pos.col, pos.row, gw, gh);
+      const key = stack.stackable ? stack.itemId : stack.entry;
+      ps.inventoryGrid.push({ entry: key, col: pos.col, row: pos.row });
+      gridEntries.push({ ...stack, col: pos.col, row: pos.row });
+    });
+    // Sonra yeni itemlere boş yer bul
+    withoutPos.forEach(({ stack, gw, gh }) => {
+      const pos = findSlot(gw, gh);
       if (!pos) return;
       markOcc(pos.col, pos.row, gw, gh);
+      const key = stack.stackable ? stack.itemId : stack.entry;
       ps.inventoryGrid.push({ entry: key, col: pos.col, row: pos.row });
       gridEntries.push({ ...stack, col: pos.col, row: pos.row });
     });
@@ -629,14 +699,14 @@ export class UIScene extends Phaser.Scene {
       // Size label for big items
       if (gw > 1 || gh > 1) {
         this._add(this.add.text(ix + gw * cellSize / 2 - 4, iy + gh * cellSize / 2 - 4, `${gw}x${gh}`, {
-          fontSize: '9px', fontFamily: 'Arial, sans-serif', color: '#555'
+          fontSize: '9px', fontFamily: 'Nunito, Arial, sans-serif', color: '#555'
         }).setOrigin(1, 1).setDepth(403));
       }
 
       // Stack count badge
       if (stack.count > 1) {
         this._add(this.add.text(ix + cellSize / 2 - 4, iy + cellSize / 2 - 4, `${stack.count}`, {
-          fontSize: '13px', fontFamily: 'Arial, sans-serif', color: '#fff', fontStyle: 'bold',
+          fontSize: '13px', fontFamily: 'Nunito, Arial, sans-serif', color: '#fff', fontStyle: 'bold',
           backgroundColor: '#333', padding: { x: 2, y: 0 }, stroke: '#000', strokeThickness: 2
         }).setOrigin(1, 1).setDepth(403));
       }
@@ -646,7 +716,7 @@ export class UIScene extends Phaser.Scene {
       icon.on('pointerover', () => {
         const countStr = stack.count > 1 ? ` (x${stack.count})` : '';
         hoverLabel = this._add(this.add.text(ix, iy - gh * cellSize / 2 - 12, item.name + countStr, {
-          fontSize: '13px', fontFamily: 'Arial, sans-serif', color: '#FFD700',
+          fontSize: '13px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FFD700',
           backgroundColor: '#0a0a1a', padding: { x: 4, y: 2 }, stroke: '#000', strokeThickness: 2
         }).setOrigin(0.5).setDepth(410));
         // Right: name + description
@@ -663,6 +733,8 @@ export class UIScene extends Phaser.Scene {
         if (item.mana) stats += `Mana: +${item.mana}\n`;
         if (item.maxHp) stats += `Max HP: +${item.maxHp}\n`;
         if (item.maxMana) stats += `Max Mana: +${item.maxMana}\n`;
+        if (item.hpRegen) stats += `Can Yen.: +${item.hpRegen}/sn\n`;
+        if (item.manaRegen) stats += `Mana Yen.: +${item.manaRegen}/sn\n`;
         if (item.manaCost) stats += `Mana: ${item.manaCost}/atış\n`;
         if (stack.enhanced) {
           const bonuses = ps.getItemBonuses(stack.entry);
@@ -672,6 +744,8 @@ export class UIScene extends Phaser.Scene {
             if (bonuses.defense) stats += `+${bonuses.defense} Savunma\n`;
             if (bonuses.maxHp) stats += `+${bonuses.maxHp} Max HP\n`;
             if (bonuses.maxMana) stats += `+${bonuses.maxMana} Max Mana\n`;
+            if (bonuses.hpRegen) stats += `+${bonuses.hpRegen} Can Yen./sn\n`;
+            if (bonuses.manaRegen) stats += `+${bonuses.manaRegen} Mana Yen./sn\n`;
           }
         }
         equipTooltipText.setText(stats.trim());
@@ -724,7 +798,7 @@ export class UIScene extends Phaser.Scene {
 
     // Close button (top right corner)
     const closeBtn = this._add(this.add.text(765, 30, 'X', {
-      fontSize: '20px', fontFamily: 'Arial, sans-serif', color: '#FF6666', fontStyle: 'bold',
+      fontSize: '20px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FF6666', fontStyle: 'bold',
       backgroundColor: '#2a0a0a', padding: { x: 8, y: 3 }
     }).setOrigin(0.5).setDepth(403).setInteractive({ useHandCursor: true }));
     closeBtn.on('pointerdown', () => this.closeInventory());
@@ -734,6 +808,7 @@ export class UIScene extends Phaser.Scene {
 
   closeInventory() {
     this.inventoryOpen = false;
+    if (this._invStatTimer) { this._invStatTimer.destroy(); this._invStatTimer = null; }
     if (this.invElements) {
       this.invElements.forEach(e => { if (e?.destroy) e.destroy(); });
       this.invElements = null;
@@ -766,6 +841,125 @@ export class UIScene extends Phaser.Scene {
     });
   }
 
+  // ===== SETTINGS =====
+  createSettingsButton() {
+    // Ayar durumlarını localStorage'dan yükle
+    this.settings = {
+      sound: localStorage.getItem('rpg_sound') !== 'off',
+      minimap: localStorage.getItem('rpg_minimap') !== 'off',
+    };
+    this.settingsPanelOpen = false;
+    this.settingsElements = [];
+
+    // Minimap başlangıç durumu
+    if (!this.settings.minimap) {
+      this.minimapBg.setVisible(false);
+      this.minimapGfx.setVisible(false);
+      this.minimapPlayerDot.setVisible(false);
+    }
+    // Ses başlangıç durumu
+    this.applySoundSetting();
+
+    // ⚙ Butonu
+    this.settingsBtn = this.add.text(780, 8, '⚙', {
+      fontSize: '22px', color: '#aaa'
+    }).setOrigin(0.5, 0).setDepth(210).setInteractive({ useHandCursor: true });
+    this.settingsBtn.on('pointerover', () => this.settingsBtn.setColor('#fff'));
+    this.settingsBtn.on('pointerout', () => this.settingsBtn.setColor('#aaa'));
+    this.settingsBtn.on('pointerdown', () => this.toggleSettingsPanel());
+  }
+
+  toggleSettingsPanel() {
+    if (this.settingsPanelOpen) {
+      this.closeSettingsPanel();
+    } else {
+      this.openSettingsPanel();
+    }
+  }
+
+  openSettingsPanel() {
+    this.settingsPanelOpen = true;
+    this.settingsElements.forEach(e => e?.destroy?.());
+    this.settingsElements = [];
+
+    const px = 710, py = 36;
+    const pw = 160, ph = 90;
+    const font = { fontSize: '13px', fontFamily: 'Nunito, Arial, sans-serif', fontStyle: 'bold' };
+
+    // Panel arka plan
+    const bg = this.add.rectangle(px, py + ph / 2, pw, ph, 0x12122a, 0.95).setDepth(310).setStrokeStyle(1, 0x5555aa);
+    this.settingsElements.push(bg);
+
+    // Başlık
+    const title = this.add.text(px, py + 6, 'Ayarlar', { ...font, fontSize: '14px', color: '#c0a0e0' }).setOrigin(0.5, 0).setDepth(311);
+    this.settingsElements.push(title);
+
+    // --- Ses toggle ---
+    const soundLabel = this.add.text(px - 65, py + 32, 'Ses:', { ...font, color: '#ccc' }).setOrigin(0, 0.5).setDepth(311);
+    this.settingsElements.push(soundLabel);
+    const soundBtn = this.add.text(px + 55, py + 32, this.settings.sound ? '🔊 Açık' : '🔇 Kapalı', {
+      ...font, color: this.settings.sound ? '#44cc44' : '#cc4444',
+      backgroundColor: '#1a1a3a', padding: { x: 6, y: 2 }
+    }).setOrigin(0.5, 0.5).setDepth(311).setInteractive({ useHandCursor: true });
+    soundBtn.on('pointerdown', () => {
+      this.settings.sound = !this.settings.sound;
+      localStorage.setItem('rpg_sound', this.settings.sound ? 'on' : 'off');
+      soundBtn.setText(this.settings.sound ? '🔊 Açık' : '🔇 Kapalı');
+      soundBtn.setColor(this.settings.sound ? '#44cc44' : '#cc4444');
+      this.applySoundSetting();
+    });
+    this.settingsElements.push(soundBtn);
+
+    // --- Minimap toggle ---
+    const mmLabel = this.add.text(px - 65, py + 60, 'Harita:', { ...font, color: '#ccc' }).setOrigin(0, 0.5).setDepth(311);
+    this.settingsElements.push(mmLabel);
+    const mmBtn = this.add.text(px + 55, py + 60, this.settings.minimap ? '🗺 Açık' : '❌ Kapalı', {
+      ...font, color: this.settings.minimap ? '#44cc44' : '#cc4444',
+      backgroundColor: '#1a1a3a', padding: { x: 6, y: 2 }
+    }).setOrigin(0.5, 0.5).setDepth(311).setInteractive({ useHandCursor: true });
+    mmBtn.on('pointerdown', () => {
+      this.settings.minimap = !this.settings.minimap;
+      localStorage.setItem('rpg_minimap', this.settings.minimap ? 'on' : 'off');
+      mmBtn.setText(this.settings.minimap ? '🗺 Açık' : '❌ Kapalı');
+      mmBtn.setColor(this.settings.minimap ? '#44cc44' : '#cc4444');
+      this.minimapBg.setVisible(this.settings.minimap);
+      this.minimapGfx.setVisible(this.settings.minimap);
+      this.minimapPlayerDot.setVisible(this.settings.minimap);
+    });
+    this.settingsElements.push(mmBtn);
+
+    // Panel dışına tıklayınca kapat
+    this.time.delayedCall(100, () => {
+      this._settingsCloseListener = this.input.on('pointerdown', (pointer) => {
+        const bx = px - pw / 2, by2 = py, bx2 = px + pw / 2, by3 = py + ph;
+        if (pointer.x < bx || pointer.x > bx2 || pointer.y < by2 || pointer.y > by3) {
+          this.closeSettingsPanel();
+        }
+      });
+    });
+  }
+
+  closeSettingsPanel() {
+    this.settingsPanelOpen = false;
+    this.settingsElements.forEach(e => e?.destroy?.());
+    this.settingsElements = [];
+    if (this._settingsCloseListener) {
+      this.input.off('pointerdown', this._settingsCloseListener);
+      this._settingsCloseListener = null;
+    }
+  }
+
+  applySoundSetting() {
+    const ow = this.scene.get('OverworldScene');
+    if (ow && ow.audio) {
+      ow.audio.muted = !this.settings.sound;
+      if (ow.audio.masterGain) {
+        ow.audio.masterGain.gain.value = this.settings.sound ? ow.audio.masterVolume : 0;
+      }
+      if (!this.settings.sound) ow.audio.stopMusic();
+    }
+  }
+
   // ===== SKILL BAR =====
   createSkillBar() {
     const ps = this.playerState;
@@ -787,22 +981,20 @@ export class UIScene extends Phaser.Scene {
       const bg = this.add.rectangle(x, barY, slotSize, slotSize, unlocked ? 0x1a1a3a : 0x0a0a1a, 0.85)
         .setDepth(200).setStrokeStyle(1.5, unlocked ? 0x6a5aaa : 0x2a2a4a);
 
-      // Key number
-      this.add.text(x - slotSize / 2 + 3, barY - slotSize / 2 + 1, `${i + 1}`, {
-        fontSize: '10px', fontFamily: 'Arial, sans-serif', color: '#888'
-      }).setDepth(202);
+      // Key number removed — clean UI
 
-      // Skill name (short)
-      const nameText = this.add.text(x, barY + 4, skill ? skill.name.split(' ')[0] : '', {
-        fontSize: '9px', fontFamily: 'Arial, sans-serif',
-        color: unlocked ? (skill?.color || '#aaa') : '#444',
-        fontStyle: 'bold'
-      }).setOrigin(0.5).setDepth(202);
+      // Skill icon (center)
+      if (skill && this.textures.exists(skill.icon)) {
+        const iconImg = this.add.image(x, barY - 2, skill.icon).setDepth(201).setScale(0.5);
+        if (!unlocked) iconImg.setAlpha(0.3);
+      }
 
-      // Mana cost
-      const manaText = this.add.text(x, barY + slotSize / 2 - 5, skill ? `${skill.manaCost}` : '', {
-        fontSize: '9px', fontFamily: 'Arial, sans-serif', color: '#4488ff'
-      }).setOrigin(0.5).setDepth(202);
+      // Mana cost (bottom-right corner)
+      const manaText = this.add.text(x + slotSize / 2 - 3, barY + slotSize / 2 - 3, skill ? `${skill.manaCost}` : '', {
+        fontSize: '9px', fontFamily: 'Nunito, Arial, sans-serif', color: '#4488ff',
+        stroke: '#000', strokeThickness: 2
+      }).setOrigin(1, 1).setDepth(203);
+      const nameText = null; // no name text anymore
 
       // Cooldown overlay (initially invisible)
       const cdOverlay = this.add.rectangle(x, barY, slotSize - 2, slotSize - 2, 0x000000, 0.6)
@@ -810,13 +1002,13 @@ export class UIScene extends Phaser.Scene {
 
       // Cooldown text
       const cdText = this.add.text(x, barY - 6, '', {
-        fontSize: '12px', fontFamily: 'Arial, sans-serif', color: '#ff8888', fontStyle: 'bold'
+        fontSize: '12px', fontFamily: 'Nunito, Arial, sans-serif', color: '#ff8888', fontStyle: 'bold'
       }).setOrigin(0.5).setDepth(203).setVisible(false);
 
       // Lock icon for unavailable
       if (skill && !unlocked) {
         this.add.text(x, barY - 6, `Lv.${skill.level}`, {
-          fontSize: '10px', fontFamily: 'Arial, sans-serif', color: '#ff6666'
+          fontSize: '10px', fontFamily: 'Nunito, Arial, sans-serif', color: '#ff6666'
         }).setOrigin(0.5).setDepth(203);
       }
 
@@ -833,8 +1025,7 @@ export class UIScene extends Phaser.Scene {
   updateSkillBar() {
     const ps = this.playerState;
     const activeScene = this.scene.get('OverworldScene')?.scene.isActive() ? this.scene.get('OverworldScene') :
-                        this.scene.get('DungeonScene')?.scene.isActive() ? this.scene.get('DungeonScene') :
-                        this.scene.get('LabyrinthScene')?.scene.isActive() ? this.scene.get('LabyrinthScene') : null;
+                        this.scene.get('DungeonScene')?.scene.isActive() ? this.scene.get('DungeonScene') : null;
 
     if (!activeScene || !activeScene.skillSystem) return;
     const ss = activeScene.skillSystem;
@@ -859,8 +1050,10 @@ export class UIScene extends Phaser.Scene {
       }
 
       // Gray out if no mana
-      const color = !hasManа ? '#666' : (slot.skill.color || '#aaa');
-      slot.nameText.setColor(unlocked ? color : '#444');
+      if (slot.nameText) {
+        const color = !hasManа ? '#666' : (slot.skill.color || '#aaa');
+        slot.nameText.setColor(unlocked ? color : '#444');
+      }
     });
   }
 }

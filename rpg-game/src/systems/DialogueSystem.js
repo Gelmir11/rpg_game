@@ -104,7 +104,7 @@ export class DialogueSystem {
 
     this.choices.forEach((choice, i) => {
       const btn = this.scene.add.text(80 + i * 250, startY, `${i + 1}. ${choice.text}`, {
-        fontSize: '14px', fontFamily: 'Arial, sans-serif',
+        fontSize: '14px', fontFamily: 'Nunito, Arial, sans-serif',
         color: '#c0a0e0', backgroundColor: '#1a1a3a',
         padding: { x: 12, y: 6 }, fontStyle: 'bold'
       }).setDepth(302).setInteractive({ useHandCursor: true });

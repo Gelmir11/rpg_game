@@ -135,7 +135,7 @@ export class BootScene extends Phaser.Scene {
     const g = this.make.graphics({ x: 0, y: 0, add: false });
 
     // Row base colors used for extrusion fill
-    const rowBase = [0x2a5a2a, 0x3e2a1a, 0x555555, 0x0a1840, 0x222222, 0x6a4a2a, 0x0a0a1a, 0x020202];
+    const rowBase = [0x347034, 0x3e2a1a, 0x555555, 0x0a1840, 0x222222, 0x6a4a2a, 0x0a0a1a, 0x020202];
 
     for (let i = 0; i < cols; i++) {
       const rng = new Phaser.Math.RandomDataGenerator([`g${i}`]);
@@ -145,50 +145,60 @@ export class BootScene extends Phaser.Scene {
         g.fillStyle(rowBase[r]); g.fillRect(i * S, r * S, S, S);
       }
 
-      // ========== Row 0: Grass — vivid, varied, natural ==========
+      // ========== Row 0: Grass — seamless, organic, no grid lines ==========
       const x = i * S + M, y = 0 * S + M;
-      // Brighter base gradient with per-tile variation
-      const baseLight = [0x3e7a3e, 0x3a6e3a, 0x408040, 0x367036, 0x3c7a3c, 0x387438, 0x3a6e3a, 0x347034][i];
-      const baseDark = [0x2a5a2a, 0x285428, 0x2c5e2c, 0x265226, 0x2a5a2a, 0x285628, 0x265226, 0x2a582a][i];
-      this.grad(g, x, y, T, T, baseLight, baseDark);
-      // Natural ground patches — earthy spots for variation
-      for (let j = 0; j < 12; j++) {
-        g.fillStyle(rng.pick([0x306030, 0x2a5228, 0x346834, 0x2e5a30]), 0.4);
-        g.fillRect(x + rng.between(0, T - 5), y + rng.between(0, T - 5), rng.between(4, 10), rng.between(3, 7));
+      // Uniform base color across ALL tiles to eliminate grid borders
+      const grassBase = 0x347034;
+      g.fillStyle(grassBase); g.fillRect(x, y, T, T);
+      // Organic noise patches — large soft blobs that overlap tile edges
+      for (let j = 0; j < 20; j++) {
+        const nx = x + rng.between(-4, T + 4);
+        const ny = y + rng.between(-4, T + 4);
+        const nr = rng.between(6, 18);
+        g.fillStyle(rng.pick([0x2e6830, 0x387038, 0x306630, 0x3a7a3a, 0x2a5e2c, 0x368036]), rng.realInRange(0.15, 0.35));
+        g.fillCircle(nx, ny, nr);
       }
-      // Light dappled sunlight patches
-      for (let j = 0; j < 3; j++) {
-        g.fillStyle(rng.pick([0x4a8a4a, 0x509050, 0x48864a]), 0.2);
-        g.fillCircle(x + rng.between(12, 52), y + rng.between(12, 52), rng.between(6, 14));
+      // Soft light patches — dappled sunlight feel
+      for (let j = 0; j < 5; j++) {
+        g.fillStyle(rng.pick([0x48884a, 0x4a8e4c, 0x509050]), rng.realInRange(0.08, 0.18));
+        g.fillCircle(x + rng.between(4, 60), y + rng.between(4, 60), rng.between(8, 20));
       }
-      // Grass blades — varied heights, more vivid greens
-      for (let j = 0; j < 35; j++) {
+      // Subtle dark patches for depth
+      for (let j = 0; j < 4; j++) {
+        g.fillStyle(rng.pick([0x265226, 0x2a5428, 0x224e22]), rng.realInRange(0.1, 0.2));
+        g.fillCircle(x + rng.between(4, 60), y + rng.between(4, 60), rng.between(5, 14));
+      }
+      // Grass blades — dense and varied
+      for (let j = 0; j < 40; j++) {
         const gx = x + rng.between(1, T - 2);
-        const gy = y + rng.between(10, T - 2);
-        const gh = rng.between(4, 10);
-        const shade = rng.pick([0x4a8a4a, 0x58985a, 0x68a868, 0x4a7a3a, 0x3a7a4a, 0x509850]);
-        g.fillStyle(shade, 0.75); g.fillRect(gx, gy - gh, 1, gh);
-        if (rng.frac() > 0.5) { g.fillStyle(shade, 0.35); g.fillRect(gx + 1, gy - gh + 1, 1, gh - 2); }
+        const gy = y + rng.between(6, T - 2);
+        const gh = rng.between(3, 8);
+        const shade = rng.pick([0x4a8a4a, 0x58985a, 0x5aa85a, 0x4a7a3a, 0x3a7a4a, 0x509850, 0x489048]);
+        g.fillStyle(shade, rng.realInRange(0.5, 0.8)); g.fillRect(gx, gy - gh, 1, gh);
+        if (rng.frac() > 0.4) { g.fillStyle(shade, 0.25); g.fillRect(gx + 1, gy - gh + 1, 1, gh - 2); }
       }
-      // Subtle twilight tint on darker variants (reduced intensity)
-      if (i >= 5) { g.fillStyle(0x1a1030, 0.1); g.fillRect(x, y, T, T); }
-      // Wildflowers on some tiles
-      if (i === 1 || i === 5) {
-        g.fillStyle(0xE88AE8); g.fillCircle(x + 14, y + 28, 2.5); g.fillStyle(0xFFE060, 0.9); g.fillCircle(x + 14, y + 28, 1);
-        g.fillStyle(0xAA80DD); g.fillCircle(x + 48, y + 44, 2); g.fillStyle(0xFFE060, 0.8); g.fillCircle(x + 48, y + 44, 0.8);
-        g.fillStyle(0xFF8CAA); g.fillCircle(x + 32, y + 18, 2); g.fillStyle(0xFFFFFF, 0.6); g.fillCircle(x + 32, y + 18, 0.8);
-      }
-      // Small clover / ground detail on other tiles
-      if (i === 2 || i === 6) {
-        for (let c = 0; c < 3; c++) {
-          const cx2 = x + rng.between(8, 56), cy2 = y + rng.between(8, 56);
-          g.fillStyle(0x3a8a3a, 0.5); g.fillCircle(cx2, cy2, 2); g.fillCircle(cx2 + 2, cy2 - 1, 2); g.fillCircle(cx2 + 1, cy2 + 2, 2);
+      // Wildflowers scattered naturally
+      if (i === 1 || i === 4) {
+        const fc = rng.between(2, 4);
+        for (let f = 0; f < fc; f++) {
+          const fx = x + rng.between(8, 56), fy = y + rng.between(8, 56);
+          g.fillStyle(rng.pick([0xE88AE8, 0xAA80DD, 0xFF8CAA, 0xFFCC44])); g.fillCircle(fx, fy, 2);
+          g.fillStyle(0xFFE060, 0.9); g.fillCircle(fx, fy, 0.8);
         }
       }
+      // Clover patches
+      if (i === 2 || i === 5) {
+        for (let c = 0; c < 3; c++) {
+          const cx2 = x + rng.between(8, 56), cy2 = y + rng.between(8, 56);
+          g.fillStyle(0x3a8a3a, 0.45); g.fillCircle(cx2, cy2, 2); g.fillCircle(cx2 + 2, cy2 - 1, 2); g.fillCircle(cx2 + 1, cy2 + 2, 2);
+        }
+      }
+      // Tiny pebbles
       if (i === 3 || i === 7) {
-        // Small pebbles
-        g.fillStyle(0x7a7a6a, 0.4); g.fillCircle(x + 20, y + 42, 2); g.fillCircle(x + 44, y + 28, 1.5);
-        g.fillStyle(0x8a8a7a, 0.3); g.fillCircle(x + 36, y + 52, 2.5);
+        for (let p = 0; p < 3; p++) {
+          g.fillStyle(rng.pick([0x7a7a6a, 0x8a8a7a, 0x6a6a5a]), 0.3);
+          g.fillCircle(x + rng.between(8, 56), y + rng.between(8, 56), rng.realInRange(1, 2.5));
+        }
       }
 
       // ========== Row 1: Dirt ==========
@@ -759,10 +769,12 @@ export class BootScene extends Phaser.Scene {
       { key: 'slime', w: 56, h: 48 },
       { key: 'goblin', w: 60, h: 72 },
       { key: 'skeleton', w: 60, h: 80 },
-      { key: 'orc', w: 72, h: 84 },
+      { key: 'orc', w: 84, h: 96 },
       { key: 'wolf', w: 56, h: 48 },
       { key: 'golem', w: 64, h: 72 },
       { key: 'wraith', w: 52, h: 64 },
+      { key: 'fungoid', w: 56, h: 64 },
+      { key: 'fire_elemental', w: 60, h: 72 },
       { key: 'dragon', w: 128, h: 120 },
       // Ejder yavruları
       { key: 'drake', w: 96, h: 88 },
@@ -777,6 +789,8 @@ export class BootScene extends Phaser.Scene {
       { key: 'alpha_wolf', w: 64, h: 52 },
       { key: 'crystal_golem', w: 72, h: 80 },
       { key: 'wraith_queen', w: 60, h: 72 },
+      { key: 'fungoid_king', w: 64, h: 72 },
+      { key: 'fire_lord', w: 68, h: 80 },
       // Labyrinth monsters
       { key: 'minotaur', w: 72, h: 84 },
       { key: 'shadow_spider', w: 56, h: 48 },
@@ -853,21 +867,29 @@ export class BootScene extends Phaser.Scene {
           g.fillStyle(0x5a3a1a); g.fillRect(x + 50, y + 16, 8, 4);
 
         } else if (m.key === 'orc') {
-          g.fillStyle(0x4a5a2a); g.fillRect(x + 18 + b, y + 58, 14, 20); g.fillRect(x + 40 - b, y + 58, 14, 20);
-          g.fillStyle(0x3a2a1a); g.fillRoundedRect(x + 16 + b, y + 72, 18, 10, 2); g.fillRoundedRect(x + 38 - b, y + 72, 18, 10, 2);
-          this.grad(g, x + 10, y + 24, 52, 36, 0x556B2F, 0x4a5a20);
-          g.fillStyle(0x5a5a5a); g.fillRect(x + 14, y + 26, 44, 24);
-          g.fillStyle(0x6a6a6a); g.fillRect(x + 16, y + 28, 40, 6);
-          g.fillStyle(0x4a2a0a); g.fillRect(x + 12, y + 52, 48, 6);
-          g.fillStyle(0x556B2F); g.fillRoundedRect(x + 2, y + 26, 12, 24, 3); g.fillRoundedRect(x + 58, y + 26, 12, 24, 3);
-          g.fillStyle(0x5a5a5a); g.fillRoundedRect(x + 1, y + 24, 14, 8, 3); g.fillRoundedRect(x + 57, y + 24, 14, 8, 3);
-          g.fillStyle(0x556B2F); g.fillRoundedRect(x + 16, y + 2, 40, 24, 5);
-          g.fillStyle(0x4a5a1a); g.fillRect(x + 20, y + 8, 32, 4);
-          g.fillStyle(0xFF0000); g.fillRect(x + 24, y + 10, 8, 6); g.fillRect(x + 40, y + 10, 8, 6);
-          g.fillStyle(0xFFFF00); g.fillCircle(x + 28, y + 13, 2); g.fillCircle(x + 44, y + 13, 2);
-          g.fillStyle(0xFFFFF0); g.fillRect(x + 26, y + 22, 4, 6); g.fillRect(x + 42, y + 22, 4, 6);
-          g.fillStyle(0x5a3a1a); g.fillRect(x + 66, y + 14, 4, 40);
-          g.fillStyle(0x808080); g.fillTriangle(x + 62, y + 10, x + 70, y + 6, x + 70, y + 20);
+          // Büyütülmüş ork (84x96) — silah sprite içinde
+          // Bacaklar
+          g.fillStyle(0x4a5a2a); g.fillRect(x + 22 + b, y + 68, 16, 22); g.fillRect(x + 46 - b, y + 68, 16, 22);
+          g.fillStyle(0x3a2a1a); g.fillRoundedRect(x + 20 + b, y + 84, 20, 10, 2); g.fillRoundedRect(x + 44 - b, y + 84, 20, 10, 2);
+          // Gövde (zırh)
+          this.grad(g, x + 14, y + 30, 56, 40, 0x556B2F, 0x4a5a20);
+          g.fillStyle(0x5a5a5a); g.fillRect(x + 18, y + 32, 48, 28);
+          g.fillStyle(0x6a6a6a); g.fillRect(x + 20, y + 34, 44, 8);
+          g.fillStyle(0x4a2a0a); g.fillRect(x + 16, y + 62, 52, 8);
+          // Omuzluk
+          g.fillStyle(0x556B2F); g.fillRoundedRect(x + 6, y + 32, 14, 28, 3); g.fillRoundedRect(x + 64, y + 32, 14, 28, 3);
+          g.fillStyle(0x5a5a5a); g.fillRoundedRect(x + 5, y + 30, 16, 10, 3); g.fillRoundedRect(x + 63, y + 30, 16, 10, 3);
+          // Kafa
+          g.fillStyle(0x556B2F); g.fillRoundedRect(x + 22, y + 6, 40, 28, 6);
+          g.fillStyle(0x4a5a1a); g.fillRect(x + 26, y + 14, 32, 5);
+          // Gözler (kırmızı + sarı göz bebeği)
+          g.fillStyle(0xFF0000); g.fillRect(x + 30, y + 16, 9, 7); g.fillRect(x + 46, y + 16, 9, 7);
+          g.fillStyle(0xFFFF00); g.fillCircle(x + 34, y + 19, 2); g.fillCircle(x + 50, y + 19, 2);
+          // Dişler
+          g.fillStyle(0xFFFFF0); g.fillRect(x + 32, y + 28, 5, 6); g.fillRect(x + 48, y + 28, 5, 6);
+          // Balta (sprite içinde, sağ omuz)
+          g.fillStyle(0x5a3a1a); g.fillRect(x + 70, y + 20, 4, 42);
+          g.fillStyle(0x808080); g.fillTriangle(x + 66, y + 16, x + 74, y + 12, x + 74, y + 26);
 
         } else if (m.key === 'wolf') {
           g.fillStyle(0x000000, 0.3); g.fillEllipse(x + m.w / 2, y + m.h - 5, m.w - 14, 8);
@@ -939,6 +961,47 @@ export class BootScene extends Phaser.Scene {
           // Hands
           g.fillStyle(0x8A7AEE, 0.5);
           g.fillCircle(x + 8, y + 36 + b * 2, 5); g.fillCircle(x + 44, y + 36 - b * 2, 5);
+
+        } else if (m.key === 'fungoid') {
+          // Legs (stubby brown)
+          g.fillStyle(0x5a3a1a); g.fillRect(x + 14 + b, y + 46, 10, 14); g.fillRect(x + 32 - b, y + 46, 10, 14);
+          g.fillStyle(0x4a2a0a); g.fillRect(x + 12 + b, y + 56, 14, 6); g.fillRect(x + 30 - b, y + 56, 14, 6);
+          // Body (mushroom stem)
+          this.grad(g, x + 16, y + 24, 24, 24, 0x8B6914, 0x6B4914);
+          g.fillStyle(0x7a5a14, 0.5); g.fillRect(x + 18, y + 28, 20, 4);
+          // Mushroom cap (big red dome)
+          g.fillStyle(0xCC2200); g.fillEllipse(x + 28, y + 16, 48, 28);
+          g.fillStyle(0xDD3311); g.fillEllipse(x + 28, y + 14, 42, 22);
+          // Spots on cap
+          g.fillStyle(0xFFFFCC, 0.7); g.fillCircle(x + 18, y + 10, 4); g.fillCircle(x + 36, y + 8, 3);
+          g.fillCircle(x + 28, y + 4, 3); g.fillCircle(x + 42, y + 14, 2);
+          // Eyes (small yellow)
+          g.fillStyle(0xFFFF00); g.fillCircle(x + 22, y + 24, 3); g.fillCircle(x + 34, y + 24, 3);
+          g.fillStyle(0x000000); g.fillCircle(x + 23, y + 24, 1); g.fillCircle(x + 35, y + 24, 1);
+          // Arms (small)
+          g.fillStyle(0x6B4914); g.fillRoundedRect(x + 6, y + 28, 10, 12, 3); g.fillRoundedRect(x + 40, y + 28, 10, 12, 3);
+
+        } else if (m.key === 'fire_elemental') {
+          // Legs (flame trails)
+          g.fillStyle(0xCC3300); g.fillRect(x + 16 + b, y + 50, 10, 18); g.fillRect(x + 34 - b, y + 50, 10, 18);
+          g.fillStyle(0xFF4500, 0.5); g.fillRect(x + 14 + b, y + 60, 14, 10); g.fillRect(x + 32 - b, y + 60, 14, 10);
+          // Body (fire core)
+          this.grad(g, x + 12, y + 22, 36, 30, 0xFF4500, 0xCC3300);
+          g.fillStyle(0xFF6600, 0.6); g.fillEllipse(x + 30, y + 36, 30, 26);
+          g.fillStyle(0xFFAA00, 0.4); g.fillEllipse(x + 30, y + 34, 20, 18);
+          // Arms (flame wisps)
+          g.fillStyle(0xFF4500); g.fillRoundedRect(x + 2, y + 24, 12, 20, 4); g.fillRoundedRect(x + 46, y + 24, 12, 20, 4);
+          g.fillStyle(0xFFAA00, 0.5); g.fillCircle(x + 8, y + 22, 5); g.fillCircle(x + 52, y + 22, 5);
+          // Head (flame)
+          g.fillStyle(0xFF6600); g.fillEllipse(x + 30, y + 14, 24, 20);
+          g.fillStyle(0xFFAA00); g.fillEllipse(x + 30, y + 12, 18, 14);
+          g.fillStyle(0xFFDD00, 0.6); g.fillEllipse(x + 30, y + 10, 10, 8);
+          // Crown flames
+          g.fillStyle(0xFF4500); g.fillTriangle(x + 22, y + 4, x + 26, y - 6, x + 30, y + 4);
+          g.fillTriangle(x + 30, y + 2, x + 34, y - 8, x + 38, y + 2);
+          // Eyes (white hot)
+          g.fillStyle(0xFFFFFF); g.fillCircle(x + 24, y + 14, 3); g.fillCircle(x + 36, y + 14, 3);
+          g.fillStyle(0xFF0000); g.fillCircle(x + 25, y + 14, 1); g.fillCircle(x + 37, y + 14, 1);
 
         } else if (m.key === 'dragon') {
           // === EJDER (128x120) - Gerçekçi kırmızı ejderha ===
@@ -1534,6 +1597,53 @@ export class BootScene extends Phaser.Scene {
           g.fillTriangle(x + 26, y + 8, x + 30, y - 2, x + 34, y + 8);
           g.fillTriangle(x + 36, y + 8, x + 40, y, x + 44, y + 8);
           g.fillStyle(0xFF00FF); g.fillCircle(x + 30, y, 2);
+
+        } else if (m.key === 'fungoid_king') {
+          // Legs
+          g.fillStyle(0x5a3a1a); g.fillRect(x + 16 + b, y + 50, 12, 16); g.fillRect(x + 36 - b, y + 50, 12, 16);
+          g.fillStyle(0x4a2a0a); g.fillRect(x + 14 + b, y + 62, 16, 8); g.fillRect(x + 34 - b, y + 62, 16, 8);
+          // Body
+          this.grad(g, x + 14, y + 26, 36, 26, 0x8B6914, 0x6B4914);
+          g.fillStyle(0x7a5a14, 0.5); g.fillRect(x + 16, y + 30, 32, 5);
+          // Giant mushroom cap (purple-red)
+          g.fillStyle(0x8B0040); g.fillEllipse(x + 32, y + 16, 56, 32);
+          g.fillStyle(0xAA1155); g.fillEllipse(x + 32, y + 14, 48, 26);
+          // Royal spots
+          g.fillStyle(0xFFD700, 0.8); g.fillCircle(x + 20, y + 8, 5); g.fillCircle(x + 42, y + 6, 4);
+          g.fillCircle(x + 32, y + 2, 4); g.fillCircle(x + 50, y + 12, 3);
+          // Crown
+          g.fillStyle(0xFFD700); g.fillRect(x + 22, y - 2, 20, 4);
+          g.fillTriangle(x + 24, y - 2, x + 27, y - 10, x + 30, y - 2);
+          g.fillTriangle(x + 32, y - 2, x + 35, y - 12, x + 38, y - 2);
+          // Eyes (red glowing)
+          g.fillStyle(0xFF0000); g.fillCircle(x + 24, y + 24, 4); g.fillCircle(x + 40, y + 24, 4);
+          g.fillStyle(0xFFFF00); g.fillCircle(x + 25, y + 24, 2); g.fillCircle(x + 41, y + 24, 2);
+          // Arms
+          g.fillStyle(0x6B4914); g.fillRoundedRect(x + 4, y + 28, 12, 16, 3); g.fillRoundedRect(x + 48, y + 28, 12, 16, 3);
+
+        } else if (m.key === 'fire_lord') {
+          // Legs (thick flame pillars)
+          g.fillStyle(0xCC3300); g.fillRect(x + 16 + b, y + 54, 14, 20); g.fillRect(x + 38 - b, y + 54, 14, 20);
+          g.fillStyle(0xFF4500, 0.6); g.fillRect(x + 14 + b, y + 66, 18, 12); g.fillRect(x + 36 - b, y + 66, 18, 12);
+          // Body (massive fire core)
+          this.grad(g, x + 10, y + 22, 48, 34, 0xFF4500, 0xCC2200);
+          g.fillStyle(0xFF6600, 0.7); g.fillEllipse(x + 34, y + 38, 42, 30);
+          g.fillStyle(0xFFAA00, 0.5); g.fillEllipse(x + 34, y + 36, 30, 22);
+          // Arms (big flame wisps)
+          g.fillStyle(0xFF4500); g.fillRoundedRect(x + 0, y + 22, 14, 26, 5); g.fillRoundedRect(x + 54, y + 22, 14, 26, 5);
+          g.fillStyle(0xFFAA00, 0.6); g.fillCircle(x + 7, y + 20, 7); g.fillCircle(x + 61, y + 20, 7);
+          // Head (inferno)
+          g.fillStyle(0xFF6600); g.fillEllipse(x + 34, y + 14, 30, 24);
+          g.fillStyle(0xFFAA00); g.fillEllipse(x + 34, y + 12, 24, 18);
+          g.fillStyle(0xFFDD00, 0.7); g.fillEllipse(x + 34, y + 10, 14, 10);
+          // Crown of flames (boss)
+          g.fillStyle(0xFF4500); g.fillTriangle(x + 20, y + 2, x + 24, y - 10, x + 28, y + 2);
+          g.fillTriangle(x + 28, y + 0, x + 34, y - 14, x + 40, y + 0);
+          g.fillTriangle(x + 40, y + 2, x + 44, y - 10, x + 48, y + 2);
+          g.fillStyle(0xFFD700); g.fillTriangle(x + 30, y + 0, x + 34, y - 10, x + 38, y + 0);
+          // Eyes (white-hot, larger)
+          g.fillStyle(0xFFFFFF); g.fillCircle(x + 28, y + 14, 4); g.fillCircle(x + 40, y + 14, 4);
+          g.fillStyle(0xFF0000); g.fillCircle(x + 29, y + 14, 2); g.fillCircle(x + 41, y + 14, 2);
 
         } else if (m.key === 'dungeon_boss_10') {
           // ===== ALACAKARANLIK EFENDİSİ - Kötülüğün Dev Ejderhası =====
@@ -2789,39 +2899,220 @@ export class BootScene extends Phaser.Scene {
       { key: 'icon_ring_strength', draw: g=>{}, px: [
         '......GGG.......',
         '.....G...G......',
-        '.....G...G......',
-        '......GGG.......',
-        '.......G........',
-        '.......G........',
-        '......gYg.......',
-        '.....gYYYg......',
-        '....gYRRRYg.....',
-        '....gRrrrRg.....',
-        '....gRrrrRg.....',
-        '.....gRRRg......',
-        '......gRg.......',
-        '.......g........',
+        '....G.....G.....',
+        '....G...........',
+        '....G...........',
+        '.....G..........',
+        '.....G..........',
+        '......G.........',
+        '.....gYg........',
+        '....gYRYg.......',
+        '....gRrrRg......',
+        '....gRrrRg......',
+        '.....gRRg.......',
+        '......gg........',
         '................',
         '................',
       ], pal: {'.':0,'G':0xB8860B,'Y':0xDAA520,'g':0x8a6a10,'R':0xCC0000,'r':0xFF4444}},
       { key: 'icon_ring_defense', draw: g=>{}, px: [
         '......GGG.......',
         '.....G...G......',
-        '.....G...G......',
-        '......GGG.......',
-        '.......G........',
-        '.......G........',
-        '......gSg.......',
-        '.....gSSSg......',
-        '....gSBBBSg.....',
-        '....gBbbbBg.....',
-        '....gBbbbBg.....',
-        '.....gBBBg......',
-        '......gBg.......',
-        '.......g........',
+        '....G.....G.....',
+        '....G...........',
+        '....G...........',
+        '.....G..........',
+        '.....G..........',
+        '......G.........',
+        '.....gSg........',
+        '....gSBSg.......',
+        '....gBbbBg......',
+        '....gBbbBg......',
+        '.....gBBg.......',
+        '......gg........',
         '................',
         '................',
       ], pal: {'.':0,'G':0x2a5a8a,'S':0x4682B4,'g':0x1a3a5a,'B':0x0088CC,'b':0x44BBFF}},
+      { key: 'icon_maze_ring', draw: g=>{}, px: [
+        '......GGG.......',
+        '.....G...G......',
+        '....G.....G.....',
+        '....G...........',
+        '....G...........',
+        '.....G..........',
+        '.....G..........',
+        '......G.........',
+        '.....gPg........',
+        '....gPMPg.......',
+        '....gMmmMg......',
+        '....gMmmMg......',
+        '.....gMMg.......',
+        '......gg........',
+        '................',
+        '................',
+      ], pal: {'.':0,'G':0x7B68EE,'P':0x9370DB,'g':0x4a2a8a,'M':0x8A2BE2,'m':0xBA55D3}},
+      { key: 'icon_dark_ring', draw: g=>{}, px: [
+        '......GGG.......',
+        '.....G...G......',
+        '....G.....G.....',
+        '....G...........',
+        '....G...........',
+        '.....G..........',
+        '.....G..........',
+        '......G.........',
+        '.....gDg........',
+        '....gDPDg.......',
+        '....gPppPg......',
+        '....gPppPg......',
+        '.....gPPg.......',
+        '......gg........',
+        '................',
+        '................',
+      ], pal: {'.':0,'G':0x1a0a2a,'D':0x2A0A3A,'g':0x0a0018,'P':0x4B0082,'p':0x6A0DAD}},
+      { key: 'icon_duskhollow_ring', draw: g=>{}, px: [
+        '......GGG.......',
+        '.....G...G......',
+        '....G.....G.....',
+        '....G...........',
+        '....G...........',
+        '.....G..........',
+        '.....G..........',
+        '......G.........',
+        '.....gEg........',
+        '....gEPEg.......',
+        '....gPppPg......',
+        '....gPppPg......',
+        '.....gPPg.......',
+        '......gg........',
+        '................',
+        '................',
+      ], pal: {'.':0,'G':0x8A2BE2,'E':0x9370DB,'g':0x3a0a6a,'P':0x6A0DAD,'p':0xAA55FF}},
+      // ===== YÜZÜKLER (Ring) =====
+      { key: 'icon_yuzuk_hp', draw: g=>{}, px: [
+        '................',
+        '......gggg......',
+        '.....g.cc.g.....',
+        '....g.cPPc.g....',
+        '....g..cc..g....',
+        '...R........R...',
+        '...R........R...',
+        '...R........R...',
+        '...R........R...',
+        '....R......R....',
+        '....R......R....',
+        '.....RRRRRR.....',
+        '................',
+        '................',
+        '................',
+        '................',
+      ], pal: {'.':0,'R':0xB8860B,'g':0x8a6a10,'c':0xDC143C,'P':0xFF4466}},
+      { key: 'icon_yuzuk_iron', draw: g=>{}, px: [
+        '................',
+        '......gggg......',
+        '.....g.cc.g.....',
+        '....g.cSSc.g....',
+        '....g..cc..g....',
+        '...M........M...',
+        '...M........M...',
+        '...M........M...',
+        '...M........M...',
+        '....M......M....',
+        '....M......M....',
+        '.....MMMMMM.....',
+        '................',
+        '................',
+        '................',
+        '................',
+      ], pal: {'.':0,'M':0x808080,'g':0x555555,'c':0xA0A0A0,'S':0xCCCCCC}},
+      { key: 'icon_yuzuk_steel', draw: g=>{}, px: [
+        '................',
+        '......gggg......',
+        '.....g.cc.g.....',
+        '....g.cBBc.g....',
+        '....g..cc..g....',
+        '...S........S...',
+        '...S........S...',
+        '...S........S...',
+        '...S........S...',
+        '....S......S....',
+        '....S......S....',
+        '.....SSSSSS.....',
+        '................',
+        '................',
+        '................',
+        '................',
+      ], pal: {'.':0,'S':0xC0C0C0,'g':0x888888,'c':0xB0B0B0,'B':0xE0E0E0}},
+      { key: 'icon_yuzuk_dragon', draw: g=>{}, px: [
+        '................',
+        '......gggg......',
+        '.....g.cc.g.....',
+        '....g.cFFc.g....',
+        '....g..cc..g....',
+        '...D........D...',
+        '...D........D...',
+        '...D........D...',
+        '...D........D...',
+        '....D......D....',
+        '....D......D....',
+        '.....DDDDDD.....',
+        '................',
+        '................',
+        '................',
+        '................',
+      ], pal: {'.':0,'D':0x8B0000,'g':0x5a0000,'c':0xAA2200,'F':0xFF4500}},
+      { key: 'icon_yuzuk_mythril', draw: g=>{}, px: [
+        '................',
+        '......gggg......',
+        '.....g.cc.g.....',
+        '....g.cBBc.g....',
+        '....g..cc..g....',
+        '...M........M...',
+        '...M........M...',
+        '...M........M...',
+        '...M........M...',
+        '....M......M....',
+        '....M......M....',
+        '.....MMMMMM.....',
+        '................',
+        '................',
+        '................',
+        '................',
+      ], pal: {'.':0,'M':0x7EC8E3,'g':0x4a8aaa,'c':0x6AB8D3,'B':0xAAE8FF}},
+      { key: 'icon_yuzuk_abyssal', draw: g=>{}, px: [
+        '................',
+        '......gggg......',
+        '.....g.cc.g.....',
+        '....g.cDDc.g....',
+        '....g..cc..g....',
+        '...A........A...',
+        '...A........A...',
+        '...A........A...',
+        '...A........A...',
+        '....A......A....',
+        '....A......A....',
+        '.....AAAAAA.....',
+        '................',
+        '................',
+        '................',
+        '................',
+      ], pal: {'.':0,'A':0x4A0028,'g':0x2a0018,'c':0x3A0020,'D':0x6A0048}},
+      { key: 'icon_yuzuk_duskhollow', draw: g=>{}, px: [
+        '................',
+        '......gggg......',
+        '.....g.cc.g.....',
+        '....g.cPPc.g....',
+        '....g..cc..g....',
+        '...E........E...',
+        '...E........E...',
+        '...E........E...',
+        '...E........E...',
+        '....E......E....',
+        '....E......E....',
+        '.....EEEEEE.....',
+        '................',
+        '................',
+        '................',
+        '................',
+      ], pal: {'.':0,'E':0x6A0DAD,'g':0x3a0a6a,'c':0x5A0D9D,'P':0xAA55FF}},
       { key: 'icon_amulet_hp', draw: g=>{}, px: [
         '..GGGGGGGGGGGG..',
         '..G..........G..',
@@ -3761,6 +4052,135 @@ export class BootScene extends Phaser.Scene {
 
   generateUISprites() {
     const mk = (key, w, h, fn) => { const g = this.make.graphics({ add: false }); fn(g); g.generateTexture(key, w, h); g.destroy(); };
+
+    // ===== SKILL ICONS (48x48) =====
+    const S = 48;
+
+    // Warrior: Güçlü Vuruş — kılıç darbesi
+    mk('skill_power_strike', S, S, g => {
+      g.fillStyle(0x1a0808, 0.6); g.fillRoundedRect(0, 0, S, S, 6);
+      g.fillStyle(0xcccccc); g.fillRect(22, 4, 4, 28); // blade
+      g.fillStyle(0xffffff, 0.6); g.fillRect(23, 5, 1, 26); // shine
+      g.fillStyle(0x8B4513); g.fillRect(18, 32, 12, 4); // guard
+      g.fillStyle(0x654321); g.fillRect(22, 36, 4, 10); // handle
+      g.fillStyle(0xe74c3c, 0.5); g.fillCircle(24, 16, 10); // power glow
+      g.lineStyle(2, 0xe74c3c, 0.7);
+      g.lineBetween(10, 10, 18, 18); g.lineBetween(30, 10, 38, 4); // slash lines
+    });
+
+    // Warrior: Kalkan Çarpması — kalkan
+    mk('skill_shield_bash', S, S, g => {
+      g.fillStyle(0x1a1208, 0.6); g.fillRoundedRect(0, 0, S, S, 6);
+      g.fillStyle(0x8B7355); g.fillRoundedRect(10, 6, 28, 36, 4); // shield body
+      g.fillStyle(0xA0894D); g.fillRoundedRect(12, 8, 24, 32, 3); // shield inner
+      g.fillStyle(0xf39c12); g.fillCircle(24, 22, 6); // boss center
+      g.fillStyle(0xFFD700, 0.8); g.fillCircle(24, 22, 3); // boss highlight
+      g.lineStyle(2, 0x6B5B3F); g.strokeRoundedRect(10, 6, 28, 36, 4);
+      g.fillStyle(0xf39c12, 0.4); g.fillCircle(38, 14, 6); // impact flash
+    });
+
+    // Warrior: Kasırga — dönerek saldırı
+    mk('skill_whirlwind', S, S, g => {
+      g.fillStyle(0x1a0e05, 0.6); g.fillRoundedRect(0, 0, S, S, 6);
+      g.lineStyle(2.5, 0xe67e22, 0.8);
+      g.beginPath(); for (let a = 0; a < Math.PI * 4; a += 0.2) {
+        const r = 4 + a * 2.2; const px = 24 + Math.cos(a) * r; const py = 24 + Math.sin(a) * r;
+        a === 0 ? g.moveTo(px, py) : g.lineTo(px, py);
+      } g.strokePath();
+      g.fillStyle(0xcccccc); g.fillRect(22, 20, 4, 12); // sword center
+      g.fillStyle(0xe67e22, 0.3); g.fillCircle(24, 24, 16); // aoe glow
+    });
+
+    // Warrior: Savaş Çığlığı — buff ses dalgası
+    mk('skill_war_cry', S, S, g => {
+      g.fillStyle(0x1a0505, 0.6); g.fillRoundedRect(0, 0, S, S, 6);
+      g.fillStyle(0xc0392b); g.fillCircle(18, 24, 8); // head
+      g.fillStyle(0xc0392b, 0.8); g.fillRect(14, 20, 8, 4); // mouth open
+      g.lineStyle(2, 0xff6644, 0.6);
+      g.strokeCircle(30, 24, 6); g.strokeCircle(34, 24, 10); g.strokeCircle(38, 24, 14); // sound waves
+      g.fillStyle(0xc0392b, 0.2); g.fillCircle(24, 24, 18); // aura
+    });
+
+    // Ranger: Hızlı Atış — tek ok
+    mk('skill_quick_shot', S, S, g => {
+      g.fillStyle(0x081a08, 0.6); g.fillRoundedRect(0, 0, S, S, 6);
+      g.fillStyle(0x27ae60); g.fillTriangle(36, 24, 28, 20, 28, 28); // arrowhead
+      g.fillStyle(0x8B4513); g.fillRect(8, 23, 22, 2); // shaft
+      g.fillStyle(0x27ae60, 0.4);
+      g.fillTriangle(6, 20, 10, 24, 6, 28); // feather
+      g.lineStyle(1, 0x27ae60, 0.5); g.lineBetween(38, 22, 44, 20); g.lineBetween(38, 26, 44, 28); // speed lines
+    });
+
+    // Ranger: Çoklu Ok — 3 ok yayılıyor
+    mk('skill_multi_arrow', S, S, g => {
+      g.fillStyle(0x081a0a, 0.6); g.fillRoundedRect(0, 0, S, S, 6);
+      for (let i = -1; i <= 1; i++) {
+        const ay = 24 + i * 10;
+        g.fillStyle(0x2ecc71); g.fillTriangle(36, ay, 30, ay - 3, 30, ay + 3);
+        g.fillStyle(0x8B4513); g.fillRect(12, ay - 1, 20, 2);
+      }
+      g.fillStyle(0x2ecc71, 0.3); g.fillCircle(24, 24, 16);
+    });
+
+    // Ranger: Zehirli Ok — ok + zehir damlası
+    mk('skill_poison_arrow', S, S, g => {
+      g.fillStyle(0x081a12, 0.6); g.fillRoundedRect(0, 0, S, S, 6);
+      g.fillStyle(0x1abc9c); g.fillTriangle(36, 24, 28, 20, 28, 28);
+      g.fillStyle(0x8B4513); g.fillRect(8, 23, 22, 2);
+      g.fillStyle(0x1abc9c, 0.6); g.fillCircle(32, 30, 4); g.fillCircle(28, 36, 3); g.fillCircle(36, 38, 2); // poison drops
+      g.fillStyle(0x0f8a6a, 0.3); g.fillCircle(30, 32, 8); // poison cloud
+    });
+
+    // Ranger: Kartal Gözü — göz ikonu
+    mk('skill_eagle_eye', S, S, g => {
+      g.fillStyle(0x061a10, 0.6); g.fillRoundedRect(0, 0, S, S, 6);
+      g.fillStyle(0x16a085); g.fillEllipse(24, 24, 28, 16); // eye shape
+      g.fillStyle(0x0a0a0a); g.fillCircle(24, 24, 6); // pupil
+      g.fillStyle(0x16a085, 0.8); g.fillCircle(24, 24, 3); // iris
+      g.fillStyle(0xffffff, 0.7); g.fillCircle(22, 22, 1.5); // eye shine
+      g.lineStyle(2, 0x16a085, 0.5); g.lineBetween(6, 24, 12, 24); g.lineBetween(36, 24, 42, 24); // eye corners
+    });
+
+    // Mage: Ateş Topu — alev küre
+    mk('skill_fireball', S, S, g => {
+      g.fillStyle(0x1a0808, 0.6); g.fillRoundedRect(0, 0, S, S, 6);
+      g.fillStyle(0xe74c3c, 0.3); g.fillCircle(24, 24, 16); // outer glow
+      g.fillStyle(0xe74c3c); g.fillCircle(24, 24, 10); // fireball
+      g.fillStyle(0xf39c12); g.fillCircle(24, 24, 6); // inner fire
+      g.fillStyle(0xFFD700); g.fillCircle(24, 22, 3); // hot center
+      g.fillStyle(0xffffff, 0.5); g.fillCircle(22, 20, 1.5); // shine
+      g.fillStyle(0xe74c3c, 0.5); g.fillEllipse(14, 28, 12, 6); // flame trail
+    });
+
+    // Mage: Buz Oku — buz kristal
+    mk('skill_ice_bolt', S, S, g => {
+      g.fillStyle(0x081018, 0.6); g.fillRoundedRect(0, 0, S, S, 6);
+      g.fillStyle(0x3498db); g.fillTriangle(24, 6, 14, 32, 34, 32); // crystal
+      g.fillStyle(0x85C1E9, 0.6); g.fillTriangle(24, 10, 18, 28, 30, 28); // inner crystal
+      g.fillStyle(0xffffff, 0.4); g.fillTriangle(22, 12, 18, 24, 24, 24); // shine facet
+      g.fillStyle(0x3498db, 0.3); g.fillCircle(24, 24, 14); // frost aura
+      g.fillStyle(0xAED6F1, 0.5); g.fillCircle(16, 36, 2); g.fillCircle(32, 36, 2); g.fillCircle(24, 40, 2); // ice shards
+    });
+
+    // Mage: Zincir Yıldırım — yıldırım
+    mk('skill_chain_lightning', S, S, g => {
+      g.fillStyle(0x141408, 0.6); g.fillRoundedRect(0, 0, S, S, 6);
+      g.fillStyle(0xf1c40f, 0.3); g.fillCircle(24, 24, 16); // glow
+      g.lineStyle(3, 0xf1c40f, 0.9);
+      g.beginPath(); g.moveTo(20, 4); g.lineTo(26, 18); g.lineTo(18, 20); g.lineTo(28, 38); g.lineTo(22, 26); g.lineTo(30, 24); g.lineTo(24, 10); g.strokePath();
+      g.fillStyle(0xffffff, 0.7); g.fillCircle(24, 20, 2); // flash
+      g.lineStyle(1.5, 0xf1c40f, 0.5); g.lineBetween(28, 28, 40, 34); g.lineBetween(18, 28, 6, 36); // chain branches
+    });
+
+    // Mage: Büyü Kalkanı — sihir kalkan
+    mk('skill_arcane_shield', S, S, g => {
+      g.fillStyle(0x100818, 0.6); g.fillRoundedRect(0, 0, S, S, 6);
+      g.lineStyle(3, 0x9b59b6, 0.7); g.strokeCircle(24, 24, 16); // outer ring
+      g.lineStyle(2, 0x9b59b6, 0.4); g.strokeCircle(24, 24, 12); // inner ring
+      g.fillStyle(0x9b59b6, 0.2); g.fillCircle(24, 24, 16); // fill
+      g.fillStyle(0xD2B4DE, 0.6); g.fillCircle(24, 12, 3); g.fillCircle(12, 28, 3); g.fillCircle(36, 28, 3); // rune points
+      g.fillStyle(0xffffff, 0.3); g.fillCircle(20, 18, 4); // highlight
+    });
 
     // HP bar background — embossed look
     mk('hp_bar_bg', 200, 20, g => {

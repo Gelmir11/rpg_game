@@ -1,29 +1,34 @@
 import { PlayerState } from './PlayerState.js';
 
 // Sınıf bazlı yetenek tanımları
+// Sınıf-silah eşleşmesi: savaş skilleri sadece doğru silahla kullanılabilir
+// buff tipi skiller herhangi silahla kullanılabilir (requiredWeapon yok)
 export const SKILL_DEFINITIONS = {
   warrior: [
     {
       id: 'power_strike', name: 'Güçlü Vuruş', level: 1,
       type: 'melee_attack', manaCost: 8, cooldown: 3000,
       damageMultiplier: 1.8, range: 90, aoe: false,
+      requiredWeapon: 'sword',
       icon: 'skill_power_strike', color: '#e74c3c',
-      description: 'Güçlü bir kılıç darbesi (1.8x hasar)'
+      description: 'Güçlü bir kılıç darbesi (1.8x hasar) [Kılıç gerekli]'
     },
     {
       id: 'shield_bash', name: 'Kalkan Çarpması', level: 5,
       type: 'melee_attack', manaCost: 12, cooldown: 5000,
       damageMultiplier: 1.2, range: 70, aoe: false,
       effect: { stun: 1500 },
+      requiredWeapon: 'sword',
       icon: 'skill_shield_bash', color: '#f39c12',
-      description: 'Düşmanı 1.5s sersemletir'
+      description: 'Düşmanı 1.5s sersemletir [Kılıç gerekli]'
     },
     {
       id: 'whirlwind', name: 'Kasırga', level: 10,
       type: 'melee_aoe', manaCost: 20, cooldown: 8000,
       damageMultiplier: 1.5, range: 100, aoe: true, aoeRadius: 100,
+      requiredWeapon: 'sword',
       icon: 'skill_whirlwind', color: '#e67e22',
-      description: 'Etraftaki tüm düşmanlara 1.5x hasar'
+      description: 'Etraftaki tüm düşmanlara 1.5x hasar [Kılıç gerekli]'
     },
     {
       id: 'war_cry', name: 'Savaş Çığlığı', level: 15,
@@ -39,16 +44,18 @@ export const SKILL_DEFINITIONS = {
       type: 'projectile', manaCost: 5, cooldown: 2000,
       damageMultiplier: 1.5, range: 300,
       projectileSpeed: 400, projectileKey: 'projectile_arrow',
+      requiredWeapon: 'bow',
       icon: 'skill_quick_shot', color: '#27ae60',
-      description: 'Hızlı bir ok fırlatır (1.5x hasar)'
+      description: 'Hızlı bir ok fırlatır (1.5x hasar) [Yay gerekli]'
     },
     {
       id: 'multi_arrow', name: 'Çoklu Ok', level: 5,
       type: 'projectile_multi', manaCost: 15, cooldown: 6000,
       damageMultiplier: 1.0, range: 280, count: 3, spreadAngle: 15,
       projectileSpeed: 350, projectileKey: 'projectile_arrow',
+      requiredWeapon: 'bow',
       icon: 'skill_multi_arrow', color: '#2ecc71',
-      description: '3 ok aynı anda fırlatır'
+      description: '3 ok aynı anda fırlatır [Yay gerekli]'
     },
     {
       id: 'poison_arrow', name: 'Zehirli Ok', level: 10,
@@ -56,8 +63,9 @@ export const SKILL_DEFINITIONS = {
       damageMultiplier: 1.2, range: 280,
       projectileSpeed: 300, projectileKey: 'projectile_arrow',
       dot: { damage: 3, interval: 1000, duration: 5000 },
+      requiredWeapon: 'bow',
       icon: 'skill_poison_arrow', color: '#1abc9c',
-      description: 'Zehirli ok, 5s boyunca hasar verir'
+      description: 'Zehirli ok, 5s boyunca hasar verir [Yay gerekli]'
     },
     {
       id: 'eagle_eye', name: 'Kartal Gözü', level: 15,
@@ -74,8 +82,9 @@ export const SKILL_DEFINITIONS = {
       damageMultiplier: 2.0, range: 220,
       projectileSpeed: 250, projectileKey: 'projectile_magic',
       aoe: true, aoeRadius: 50,
+      requiredWeapon: 'staff',
       icon: 'skill_fireball', color: '#e74c3c',
-      description: 'Ateş topu, alan hasarı (2x hasar)'
+      description: 'Ateş topu, alan hasarı (2x hasar) [Asa gerekli]'
     },
     {
       id: 'ice_bolt', name: 'Buz Oku', level: 5,
@@ -83,16 +92,18 @@ export const SKILL_DEFINITIONS = {
       damageMultiplier: 1.6, range: 240,
       projectileSpeed: 300, projectileKey: 'projectile_magic',
       effect: { slow: 0.5, duration: 3000 },
+      requiredWeapon: 'staff',
       icon: 'skill_ice_bolt', color: '#3498db',
-      description: 'Düşmanı 3s yavaşlatır (1.6x hasar)'
+      description: 'Düşmanı 3s yavaşlatır (1.6x hasar) [Asa gerekli]'
     },
     {
       id: 'chain_lightning', name: 'Zincir Yıldırım', level: 10,
       type: 'chain', manaCost: 25, cooldown: 8000,
       damageMultiplier: 1.8, range: 200,
       chainCount: 3, chainRange: 120,
+      requiredWeapon: 'staff',
       icon: 'skill_chain_lightning', color: '#f1c40f',
-      description: 'Yıldırım 3 düşmana sıçrar'
+      description: 'Yıldırım 3 düşmana sıçrar [Asa gerekli]'
     },
     {
       id: 'arcane_shield', name: 'Büyü Kalkanı', level: 15,
@@ -126,6 +137,13 @@ export class SkillSystem {
     const skill = this.getSkillById(skillId);
     if (!skill) return { can: false, reason: 'Yetenek bulunamadı' };
     if (this.ps.level < skill.level) return { can: false, reason: `Lv.${skill.level} gerekli` };
+    // Silah türü kontrolü
+    if (skill.requiredWeapon) {
+      const wType = this.ps.equipped.weapon?.weaponType;
+      const weaponNames = { sword: 'Kılıç', bow: 'Yay', staff: 'Asa' };
+      if (!wType) return { can: false, reason: `${weaponNames[skill.requiredWeapon]} gerekli` };
+      if (wType !== skill.requiredWeapon) return { can: false, reason: `${weaponNames[skill.requiredWeapon]} gerekli` };
+    }
     if (this.ps.mana < skill.manaCost) return { can: false, reason: 'Yetersiz mana' };
     const now = Date.now();
     const lastUse = this.cooldowns[skillId] || 0;
@@ -416,65 +434,102 @@ export class SkillSystem {
 
   showSkillHit(x, y, skill, damage) {
     const scene = this.scene;
-
-    // Damage text
     const color = skill.color || '#ffffff';
-    const dmgText = scene.add.text(x, y - 20, `-${damage}`, {
-      fontSize: '18px', fontFamily: 'Arial, sans-serif', color,
-      fontStyle: 'bold', stroke: '#000', strokeThickness: 3
-    }).setOrigin(0.5).setDepth(10);
+    const c = parseInt(color.replace('#', ''), 16);
 
+    // Camera shake on melee skills (light)
+    if (skill.type === 'melee_attack' || skill.type === 'melee_aoe') {
+      scene.cameras.main.shake(80, 0.004);
+    }
+
+    // Damage text — skill-colored
+    const dmgText = scene.add.text(x, y - 20, `-${damage}`, {
+      fontSize: '20px', fontFamily: 'Nunito, Arial, sans-serif', color,
+      fontStyle: 'bold', stroke: '#000', strokeThickness: 4
+    }).setOrigin(0.5).setDepth(10);
     scene.tweens.add({
-      targets: dmgText, y: y - 50, alpha: 0,
+      targets: dmgText, y: y - 55, alpha: 0,
       duration: 800, ease: 'Power2',
       onComplete: () => dmgText.destroy()
     });
 
-    // Hit particles
+    // Impact flash + ring (single combined graphic)
+    const flash = scene.add.circle(x, y, 6, 0xFFFFFF, 0.7).setDepth(9);
+    scene.tweens.add({ targets: flash, scale: 3, alpha: 0, duration: 200, onComplete: () => flash.destroy() });
+
+    // Hit particles — one-shot explode (NOT continuous emitting)
     if (scene.textures.exists('particle_hit')) {
-      const emitter = scene.add.particles(x, y, 'particle_hit', {
-        speed: { min: 50, max: 120 }, angle: { min: 0, max: 360 },
-        scale: { start: 0.6, end: 0 }, lifespan: 300,
-        quantity: 5, blendMode: 'ADD',
-        tint: parseInt(color.replace('#', ''), 16)
-      });
-      scene.time.delayedCall(300, () => emitter.destroy());
+      scene.add.particles(x, y, 'particle_hit', {
+        speed: { min: 40, max: 100 }, scale: { start: 0.6, end: 0 },
+        lifespan: 300, blendMode: 'ADD', tint: c, emitting: false
+      }).explode(5);
+    }
+
+    // Skill-specific one-shot effects
+    if (skill.id === 'fireball' && scene.textures.exists('particle_fire')) {
+      scene.add.particles(x, y, 'particle_fire', {
+        speed: { min: 40, max: 100 }, scale: { start: 0.8, end: 0 },
+        lifespan: 400, blendMode: 'ADD', emitting: false
+      }).explode(6);
+    } else if (skill.id === 'ice_bolt' && scene.textures.exists('particle_ice')) {
+      scene.add.particles(x, y, 'particle_ice', {
+        speed: { min: 40, max: 100 }, scale: { start: 0.7, end: 0 },
+        lifespan: 400, blendMode: 'ADD', gravityY: 60, emitting: false
+      }).explode(5);
+    } else if (skill.id === 'power_strike' || skill.id === 'shield_bash') {
+      const arc = scene.add.graphics().setDepth(9);
+      arc.lineStyle(3, c, 0.7);
+      arc.beginPath(); arc.arc(x, y, 25, -0.8, 0.8, false); arc.strokePath();
+      scene.tweens.add({ targets: arc, alpha: 0, scale: 1.5, duration: 250, onComplete: () => arc.destroy() });
     }
   }
 
   showAOEEffect(x, y, radius, color) {
     const scene = this.scene;
-    const g = scene.add.graphics().setDepth(4);
     const c = parseInt((color || '#ffffff').replace('#', ''), 16);
-    g.fillStyle(c, 0.2);
-    g.fillCircle(x, y, radius);
-    g.lineStyle(2, c, 0.6);
-    g.strokeCircle(x, y, radius);
 
-    scene.tweens.add({
-      targets: g, alpha: 0,
-      duration: 500,
-      onComplete: () => g.destroy()
-    });
+    // Single expanding ring
+    const ring = scene.add.circle(x, y, 10, c, 0).setDepth(4).setStrokeStyle(2, c, 0.7);
+    scene.tweens.add({ targets: ring, scale: radius / 10, alpha: 0, duration: 400, onComplete: () => ring.destroy() });
+
+    // Ground fill
+    const g = scene.add.graphics().setDepth(3);
+    g.fillStyle(c, 0.12); g.fillCircle(x, y, radius);
+    scene.tweens.add({ targets: g, alpha: 0, duration: 500, onComplete: () => g.destroy() });
+
+    // Light camera shake
+    scene.cameras.main.shake(100, 0.005);
   }
 
   showBuffEffect(x, y, color) {
     const scene = this.scene;
+    const c = parseInt((color || '#FFD700').replace('#', ''), 16);
+
+    // Sparkle particles — one-shot
     if (scene.textures.exists('particle_sparkle')) {
-      const emitter = scene.add.particles(x, y, 'particle_sparkle', {
-        speed: { min: 30, max: 80 }, angle: { min: 0, max: 360 },
-        scale: { start: 0.8, end: 0 }, lifespan: 800,
-        quantity: 12, blendMode: 'ADD',
-        tint: parseInt((color || '#FFD700').replace('#', ''), 16)
-      });
-      scene.time.delayedCall(800, () => emitter.destroy());
+      scene.add.particles(x, y, 'particle_sparkle', {
+        speed: { min: 30, max: 70 }, angle: { min: 250, max: 290 },
+        scale: { start: 0.7, end: 0 }, lifespan: 700,
+        blendMode: 'ADD', tint: c, emitting: false
+      }).explode(8);
     }
+
+    // Buff glow ring
+    const glow = scene.add.circle(x, y, 20, c, 0.25).setDepth(3);
+    scene.tweens.add({ targets: glow, scale: 2, alpha: 0, duration: 600, onComplete: () => glow.destroy() });
   }
 
   drawLightning(x1, y1, x2, y2, color) {
     const scene = this.scene;
-    const g = scene.add.graphics().setDepth(6);
     const c = parseInt((color || '#f1c40f').replace('#', ''), 16);
+
+    // Glow behind lightning
+    const glow = scene.add.graphics().setDepth(5);
+    glow.lineStyle(8, c, 0.2);
+    glow.lineBetween(x1, y1, x2, y2);
+    scene.tweens.add({ targets: glow, alpha: 0, duration: 300, onComplete: () => glow.destroy() });
+
+    const g = scene.add.graphics().setDepth(6);
     g.lineStyle(3, c, 0.9);
     g.beginPath();
     g.moveTo(x1, y1);
@@ -490,10 +545,20 @@ export class SkillSystem {
     g.lineTo(x2, y2);
     g.strokePath();
 
+    // Secondary thinner branch
+    g.lineStyle(1.5, c, 0.5);
+    g.beginPath(); g.moveTo(x1 + dx * 2 + (Math.random() - 0.5) * 10, y1 + dy * 2 + (Math.random() - 0.5) * 10);
+    g.lineTo(x1 + dx * 3 + (Math.random() - 0.5) * 30, y1 + dy * 3 + (Math.random() - 0.5) * 30);
+    g.strokePath();
+
     scene.tweens.add({
       targets: g, alpha: 0,
       duration: 400,
       onComplete: () => g.destroy()
     });
+
+    // Flash at hit point
+    const hitFlash = scene.add.circle(x2, y2, 8, 0xFFFFFF, 0.9).setDepth(7);
+    scene.tweens.add({ targets: hitFlash, scale: 3, alpha: 0, duration: 200, onComplete: () => hitFlash.destroy() });
   }
 }

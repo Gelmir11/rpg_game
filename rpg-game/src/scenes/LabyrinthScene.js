@@ -142,7 +142,7 @@ export class LabyrinthScene extends Phaser.Scene {
         boss.monsterData.isBoss = true;
         if (this.bossPatterns) this.bossPatterns.initBoss(boss);
         this.add.text(bossPos.x, bossPos.y - 50, 'BOSS: Labirent Muhafızı', {
-          fontSize: '14px', fontFamily: 'Arial, sans-serif', color: '#FF4444',
+          fontSize: '14px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FF4444',
           fontStyle: 'bold', stroke: '#000', strokeThickness: 3
         }).setOrigin(0.5).setDepth(9999);
       }
@@ -165,7 +165,7 @@ export class LabyrinthScene extends Phaser.Scene {
     monster.play(`${type}_idle`);
     monster.hpBar = this.add.graphics();
     monster.nameLabel = this.add.text(x, y - 20, `${data.name} Lv.${data.level}`, {
-      fontSize: '12px', fontFamily: 'Arial, sans-serif', color: data.isBoss ? '#FF4444' : '#ff9999',
+      fontSize: '12px', fontFamily: 'Nunito, Arial, sans-serif', color: data.isBoss ? '#FF4444' : '#ff9999',
       stroke: '#000', strokeThickness: 2
     }).setOrigin(0.5).setDepth(9997);
     this.monsterObjects.push(monster);
@@ -173,8 +173,8 @@ export class LabyrinthScene extends Phaser.Scene {
   }
 
   createExitPortal() {
-    this.add.text(96, 50, 'Çıkış [E]', {
-      fontSize: '20px', fontFamily: 'Arial, sans-serif', color: '#aa6aee',
+    this.add.text(96, 50, 'Çıkış', {
+      fontSize: '20px', fontFamily: 'Nunito, Arial, sans-serif', color: '#aa6aee',
       fontStyle: 'bold', stroke: '#000', strokeThickness: 4
     }).setOrigin(0.5).setDepth(9999);
     this.exitZone = this.add.zone(96, 80, 48, 48);
@@ -190,7 +190,7 @@ export class LabyrinthScene extends Phaser.Scene {
     this.entranceNPC.npcData = NPCS.labyrinth_sage;
 
     this.add.text(nx, ny - 60, 'Labirent Bilgesi', {
-      fontSize: '14px', fontFamily: 'Arial, sans-serif', color: '#FFD700',
+      fontSize: '14px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FFD700',
       fontStyle: 'bold', stroke: '#000', strokeThickness: 3
     }).setOrigin(0.5).setDepth(9999);
 
@@ -203,7 +203,7 @@ export class LabyrinthScene extends Phaser.Scene {
     );
     if (hasQuest) {
       this.add.text(nx, ny - 78, '!', {
-        fontSize: '24px', fontFamily: 'Arial, sans-serif', color: '#FFD700',
+        fontSize: '24px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FFD700',
         fontStyle: 'bold', stroke: '#000', strokeThickness: 4
       }).setOrigin(0.5).setDepth(9999);
     }
@@ -468,7 +468,7 @@ export class LabyrinthScene extends Phaser.Scene {
 
   showDamage(x, y, text, color) {
     const t = this.add.text(x, y, String(text), {
-      fontSize: '16px', fontFamily: 'Arial, sans-serif', color, stroke: '#000', strokeThickness: 3, fontStyle: 'bold'
+      fontSize: '16px', fontFamily: 'Nunito, Arial, sans-serif', color, stroke: '#000', strokeThickness: 3, fontStyle: 'bold'
     }).setOrigin(0.5).setDepth(10000);
     this.tweens.add({ targets: t, y: y - 30, alpha: 0, duration: 800, onComplete: () => t.destroy() });
   }

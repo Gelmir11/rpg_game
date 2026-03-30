@@ -47,6 +47,13 @@ export class OverworldScene extends Phaser.Scene {
 
     // Event bus for UI communication
     this.events.on('shutdown', () => this.cleanup());
+
+    // Wake event — resume after returning from ShopScene
+    this.events.on('wake', () => {
+      this.playerState = PlayerState.getInstance();
+      const uiScene = this.scene.get('UIScene');
+      if (uiScene && uiScene.refreshUI) uiScene.refreshUI();
+    });
   }
 
   createMap() {
@@ -119,6 +126,9 @@ export class OverworldScene extends Phaser.Scene {
     this.mapWidth = mapWidth * tileSize;
     this.mapHeight = mapHeight * tileSize;
 
+    // Zemin geçiş yumuşatma — farklı zemin türleri arasında gradient overlay
+    this.drawTerrainTransitions(mapData, mapWidth, mapHeight, tileSize);
+
     // Set physics world bounds to match map size
     this.physics.world.setBounds(0, 0, this.mapWidth, this.mapHeight);
 
@@ -158,10 +168,43 @@ export class OverworldScene extends Phaser.Scene {
 
       // Label
       this.add.text((bStartX + bEndX) / 2, bTop - 22, bridgeNames[idx], {
-        fontSize: '20px', fontFamily: 'Arial, sans-serif', color: '#8a6a3a',
+        fontSize: '20px', fontFamily: 'Nunito, Arial, sans-serif', color: '#8a6a3a',
         fontStyle: 'bold', stroke: '#000', strokeThickness: 4
       }).setOrigin(0.5).setDepth(9999);
     });
+  }
+
+  // Zemin türleri arasında yumuşak geçiş overlay'leri
+  drawTerrainTransitions(mapData, mapW, mapH, T) {
+    const getType = (idx) => {
+      if (idx <= 7) return 0;   // grass
+      if (idx <= 15) return 1;  // dirt
+      if (idx <= 23) return 2;  // stone
+      if (idx <= 27) return 3;  // water
+      if (idx <= 39) return 4;  // wall
+      if (idx <= 47) return 5;  // wood
+      return 6; // dark
+    };
+    const colors = [0x347034, 0x5e4535, 0x555555, 0x1a3068, 0x222222, 0x6a4a2a, 0x080808];
+    const fade = Math.floor(T * 0.35);
+
+    // Sadece sınır tile'larını çiz (çoğu tile atlanır — performans dostu)
+    const g = this.add.graphics().setDepth(2);
+    for (let y = 1; y < mapH - 1; y++) {
+      for (let x = 1; x < mapW - 1; x++) {
+        const cur = getType(mapData[y][x]);
+        const top = getType(mapData[y - 1][x]);
+        const bot = getType(mapData[y + 1][x]);
+        const lft = getType(mapData[y][x - 1]);
+        const rgt = getType(mapData[y][x + 1]);
+        if (top === cur && bot === cur && lft === cur && rgt === cur) continue;
+        const px = x * T, py = y * T;
+        if (top !== cur) { g.fillStyle(colors[top], 0.2); g.fillRect(px, py, T, fade); }
+        if (bot !== cur) { g.fillStyle(colors[bot], 0.2); g.fillRect(px, py + T - fade, T, fade); }
+        if (lft !== cur) { g.fillStyle(colors[lft], 0.2); g.fillRect(px, py, fade, T); }
+        if (rgt !== cur) { g.fillStyle(colors[rgt], 0.2); g.fillRect(px + T - fade, py, fade, T); }
+      }
+    }
   }
 
   createVillageZone() {
@@ -253,7 +296,7 @@ export class OverworldScene extends Phaser.Scene {
 
     // Village label
     this.add.text(cx, cy - radiusY - 20, 'Alacakaranlık Köyü', {
-      fontSize: '40px', fontFamily: 'Arial, sans-serif', color: '#DAA520',
+      fontSize: '40px', fontFamily: 'Nunito, Arial, sans-serif', color: '#DAA520',
       stroke: '#000', strokeThickness: 6
     }).setOrigin(0.5).setDepth(9999);
 
@@ -326,7 +369,7 @@ export class OverworldScene extends Phaser.Scene {
       if (!this.playerBarsGfx || !this.playerBarsGfx.scene) {
         this.playerBarsGfx = this.add.graphics().setDepth(9990);
         this.playerNameText = this.add.text(0, 0, '', {
-          fontSize: '20px', fontFamily: 'Arial, sans-serif', color: '#ddd', fontStyle: 'bold', stroke: '#000', strokeThickness: 4
+          fontSize: '20px', fontFamily: 'Nunito, Arial, sans-serif', color: '#ddd', fontStyle: 'bold', stroke: '#000', strokeThickness: 4
         }).setOrigin(0.5).setDepth(9991);
       }
     } catch (e) { return; }
@@ -398,50 +441,64 @@ export class OverworldScene extends Phaser.Scene {
   createMonsters() {
     this.monsterObjects = [];
 
-    // Spawn monsters in different zones
+    // Spawn monsters — köyden (sol üst) uzaklaştıkça zorluk artar
+    // Harita: 9600x9600px. Köy sol üstte (~500,400). Nehir x≈3500 dikey.
+    // Zorluk: sol üst (kolay) → sağ alt (en zor)
     const spawns = [
-      // Zone 1: Slime Ormanı (köy çevresi, 800-3000px)
-      ...this.generateSpawns('slime', 60, 800, 200, 3000, 3000),
-      ...this.generateSpawns('slime', 40, 200, 800, 2500, 2500),
+      // === 1. Kademe: En Kolay — Slime (köy çevresi) ===
+      ...this.generateSpawns('slime', 45, 700, 700, 3000, 3000),
+      ...this.generateSpawns('slime', 25, 200, 1000, 2200, 2500),
 
-      // Zone 2: Goblin Kampı (güneydoğu, 2500-5500px)
-      ...this.generateSpawns('goblin', 50, 2500, 2500, 5500, 5500),
-      ...this.generateSpawns('goblin', 30, 3000, 1500, 5000, 4000),
+      // === 2. Kademe: Kolay — Kurt + Goblin (köyden biraz uzak) ===
+      // Kurt — kuzey şeridi
+      ...this.generateSpawns('wolf', 35, 2500, 200, 5000, 2200),
+      ...this.generateSpawns('wolf', 20, 1000, 2500, 3500, 4000),
+      // Goblin — güney ve doğuya doğru
+      ...this.generateSpawns('goblin', 35, 2000, 2500, 4500, 4500),
+      ...this.generateSpawns('goblin', 20, 3000, 1500, 5000, 3500),
 
-      // Zone 3: İskelet Mezarlığı (kuzeydoğu, 4500-7500px)
-      ...this.generateSpawns('skeleton', 40, 4500, 500, 7500, 4000),
-      ...this.generateSpawns('skeleton', 25, 5000, 1000, 7000, 3500),
+      // === 3. Kademe: Orta — Mantar + İskelet + Ork (orta mesafe) ===
+      // Mantar Adam — orta-kuzey
+      ...this.generateSpawns('fungoid', 30, 3500, 2500, 6000, 4500),
+      ...this.generateSpawns('fungoid', 20, 2500, 3500, 5000, 5000),
+      // İskelet — orta-doğu
+      ...this.generateSpawns('skeleton', 30, 4500, 2000, 7000, 5000),
+      ...this.generateSpawns('skeleton', 20, 5000, 1000, 6500, 3500),
+      // Ork — orta-güney
+      ...this.generateSpawns('orc', 25, 1500, 4500, 5000, 7000),
+      ...this.generateSpawns('orc', 20, 2500, 5500, 4500, 6800),
 
-      // Zone 4: Ork Kalesi (güneybatı, 5000-8000px)
-      ...this.generateSpawns('orc', 35, 1000, 5000, 4500, 8500),
-      ...this.generateSpawns('orc', 25, 2000, 5500, 5000, 8000),
+      // === 4. Kademe: Zor — Golem + Hayalet + Ateş Elemental (uzak bölgeler) ===
+      // Golem — doğu şeridi
+      ...this.generateSpawns('golem', 25, 6500, 4000, 9200, 7000),
+      ...this.generateSpawns('golem', 15, 7000, 1500, 9000, 4000),
+      // Hayalet — güney şeridi
+      ...this.generateSpawns('wraith', 20, 3000, 7000, 6500, 9200),
+      ...this.generateSpawns('wraith', 15, 1000, 7500, 3500, 9000),
+      // Ateş Elemental — güneydoğu
+      ...this.generateSpawns('fire_elemental', 25, 5500, 6000, 8500, 8500),
+      ...this.generateSpawns('fire_elemental', 15, 6500, 5000, 9000, 7500),
 
-      // Zone 5: Kurt Ormanı (kuzey, köy yakını)
-      ...this.generateSpawns('wolf', 40, 200, 1500, 3000, 4000),
-      ...this.generateSpawns('wolf', 30, 1500, 200, 4000, 2000),
-
-      // Zone 6: Golem Vadisi (doğu, 6000-9000px)
-      ...this.generateSpawns('golem', 25, 6000, 2000, 9000, 6000),
-      ...this.generateSpawns('golem', 15, 7000, 1000, 9000, 5000),
-
-      // Zone 7: Hayalet Bataklığı (kuzeybatı, 500-4000px)
-      ...this.generateSpawns('wraith', 20, 500, 6000, 3000, 9000),
-      ...this.generateSpawns('wraith', 15, 1000, 7000, 4000, 9000),
-
-      // Zone 8: Ejder Yavrusu Yuvası (sağ alt köşe, 7000-9200px)
-      ...this.generateSpawns('drake', 30, 7000, 7000, 9200, 9200),
-      ...this.generateSpawns('drake', 20, 7500, 7500, 9000, 9000),
+      // === 5. Kademe: En Zor — Ejder Yavrusu (sağ alt köşe) ===
+      ...this.generateSpawns('drake', 25, 7000, 6500, 9200, 9200),
+      ...this.generateSpawns('drake', 15, 6500, 7500, 9000, 9000),
     ];
 
-    // ===== BÖLGE BOSSLARI =====
+    // ===== BÖLGE BOSSLARI (zorluk sırasına göre konumlandırılmış) =====
     const zoneBosses = [
-      { type: 'slime_king', x: 1500, y: 2100, label: 'Balçık Kralı' },
-      { type: 'goblin_chief', x: 3700, y: 4100, label: 'Goblin Şefi' },
-      { type: 'skeleton_lord', x: 5700, y: 2500, label: 'İskelet Lordu' },
-      { type: 'orc_warlord', x: 2700, y: 7100, label: 'Ork Savaş Lordu' },
-      { type: 'alpha_wolf', x: 2500, y: 3200, label: 'Alfa Kurt' },
-      { type: 'crystal_golem', x: 7200, y: 4200, label: 'Kristal Golem' },
-      { type: 'wraith_queen', x: 1700, y: 8100, label: 'Hayalet Kraliçe' },
+      // Kolay bosslar — köye yakın
+      { type: 'slime_king', x: 1800, y: 1800, label: 'Balçık Kralı' },
+      { type: 'alpha_wolf', x: 3800, y: 1200, label: 'Alfa Kurt' },
+      // Orta bosslar — orta mesafe
+      { type: 'goblin_chief', x: 3500, y: 3500, label: 'Goblin Şefi' },
+      { type: 'fungoid_king', x: 4800, y: 3800, label: 'Mantar Kralı' },
+      { type: 'skeleton_lord', x: 5800, y: 3200, label: 'İskelet Lordu' },
+      { type: 'orc_warlord', x: 3000, y: 6000, label: 'Ork Savaş Lordu' },
+      // Zor bosslar — uzak
+      { type: 'crystal_golem', x: 8000, y: 5000, label: 'Kristal Golem' },
+      { type: 'wraith_queen', x: 5000, y: 8200, label: 'Hayalet Kraliçe' },
+      { type: 'fire_lord', x: 7200, y: 7200, label: 'Ateş Lordu' },
+      // En zor — sağ alt köşe
       { type: 'drake_mother', x: 8200, y: 8200, label: 'Ejder Anası' },
     ];
     this._zoneBossLabels = {};
@@ -449,7 +506,7 @@ export class OverworldScene extends Phaser.Scene {
       spawns.push({ type: zb.type, x: zb.x, y: zb.y });
       // Boss etiketi - monster'a bağlanacak
       const lbl = this.add.text(zb.x, zb.y - 50, `👑 ${zb.label}`, {
-        fontSize: '22px', fontFamily: 'Arial, sans-serif', color: '#FFD700',
+        fontSize: '22px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FFD700',
         fontStyle: 'bold', stroke: '#000', strokeThickness: 4
       }).setOrigin(0.5).setDepth(9999).setAlpha(0.8);
       this._zoneBossLabels[zb.type] = lbl;
@@ -461,7 +518,7 @@ export class OverworldScene extends Phaser.Scene {
 
     // Boss bölgesi etiketi
     this.add.text(4800, 1400, 'Kadim Ejder Yuvası', {
-      fontSize: '36px', fontFamily: 'Arial, sans-serif', color: '#FF4444',
+      fontSize: '36px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FF4444',
       fontStyle: 'bold', stroke: '#000', strokeThickness: 5
     }).setOrigin(0.5).setDepth(9999).setAlpha(0.7);
 
@@ -486,13 +543,26 @@ export class OverworldScene extends Phaser.Scene {
     const clampMinY = Math.max(minY, margin);
     const spawns = [];
     for (let i = 0; i < count; i++) {
-      spawns.push({
-        type,
-        x: Phaser.Math.Between(clampMinX, clampMaxX),
-        y: Phaser.Math.Between(clampMinY, clampMaxY)
-      });
+      // Su ve duvar tile'larına spawn olmasını engelle (max 10 deneme)
+      for (let attempt = 0; attempt < 10; attempt++) {
+        const sx = Phaser.Math.Between(clampMinX, clampMaxX);
+        const sy = Phaser.Math.Between(clampMinY, clampMaxY);
+        if (this.isWalkableTile(sx, sy)) {
+          spawns.push({ type, x: sx, y: sy });
+          break;
+        }
+      }
     }
     return spawns;
+  }
+
+  // Verilen piksel koordinatının yürünebilir bir tile üzerinde olup olmadığını kontrol et
+  isWalkableTile(px, py) {
+    if (!this.groundLayer) return true;
+    const tile = this.groundLayer.getTileAtWorldXY(px, py);
+    if (!tile) return false;
+    // Su: 24-27, Duvar: 32-39 → yürünemez
+    return tile.index < 24 || (tile.index > 27 && tile.index < 32);
   }
 
   spawnMonster(type, x, y) {
@@ -523,6 +593,11 @@ export class OverworldScene extends Phaser.Scene {
       this.bossPatterns.initBoss(monster);
     }
 
+    // Collision with water/walls
+    if (this.groundLayer) {
+      this.physics.add.collider(monster, this.groundLayer);
+    }
+
     // Simple animation
     if (!this.anims.exists(`${type}_idle`)) {
       this.anims.create({
@@ -540,7 +615,7 @@ export class OverworldScene extends Phaser.Scene {
 
     // Name label
     monster.nameLabel = this.add.text(x, y - monster.height / 2 - 22, `${data.name} Lv.${data.level}`, {
-      fontSize: '22px', fontFamily: 'Arial, sans-serif', color: '#ffcccc',
+      fontSize: '22px', fontFamily: 'Nunito, Arial, sans-serif', color: '#ffcccc',
       fontStyle: 'bold', stroke: '#000', strokeThickness: 5
     }).setOrigin(0.5).setDepth(9997);
 
@@ -579,14 +654,14 @@ export class OverworldScene extends Phaser.Scene {
 
       // Name label
       const label = this.add.text(pos.x, pos.y - 60, npc.npcData.name, {
-        fontSize: '22px', fontFamily: 'Arial, sans-serif', color: '#FFD700',
+        fontSize: '22px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FFD700',
         fontStyle: 'bold', stroke: '#000', strokeThickness: 5
       }).setOrigin(0.5).setDepth(9999);
       npc.label = label;
 
       // Quest indicator
       const questMark = this.add.text(pos.x, pos.y - 82, '!', {
-        fontSize: '28px', fontFamily: 'Arial, sans-serif', color: '#FFD700',
+        fontSize: '28px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FFD700',
         fontStyle: 'bold', stroke: '#000', strokeThickness: 5
       }).setOrigin(0.5).setDepth(9999);
       npc.questMark = questMark;
@@ -722,12 +797,12 @@ export class OverworldScene extends Phaser.Scene {
 
     const dungeonLocked = !this.playerState.hasBossKill('ancient_dragon');
     this.add.text(dnX, dnY - 36, dungeonLocked ? '🔒 Zindan' : 'Zindan', {
-      fontSize: '32px', fontFamily: 'Arial, sans-serif', color: dungeonLocked ? '#888888' : '#aa6aee',
+      fontSize: '32px', fontFamily: 'Nunito, Arial, sans-serif', color: dungeonLocked ? '#888888' : '#aa6aee',
       stroke: '#000', strokeThickness: 5
     }).setOrigin(0.5).setDepth(9999);
     if (dungeonLocked) {
       this.add.text(dnX, dnY + 20, 'Kadim Ejderi yen!', {
-        fontSize: '16px', fontFamily: 'Arial, sans-serif', color: '#FF6666',
+        fontSize: '16px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FF6666',
         stroke: '#000', strokeThickness: 3
       }).setOrigin(0.5).setDepth(9999);
     }
@@ -764,7 +839,7 @@ export class OverworldScene extends Phaser.Scene {
     hg.fillStyle(0x4a2a0a); hg.fillRoundedRect(hpx - 22, hpy - 54, 44, 18, 4);
     hg.fillStyle(0x6a4a2a); hg.fillRoundedRect(hpx - 20, hpy - 52, 40, 14, 3);
     this.add.text(hpx, hpy - 50, 'EV', {
-      fontSize: '28px', fontFamily: 'Arial, sans-serif', color: '#FFD700',
+      fontSize: '28px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FFD700',
       fontStyle: 'bold', stroke: '#000', strokeThickness: 6
     }).setOrigin(0.5).setDepth(9999);
     const homePortal = this.physics.add.staticSprite(hpx, hpy - 6, 'door_tex');
@@ -787,20 +862,16 @@ export class OverworldScene extends Phaser.Scene {
     labG.fillStyle(0x44AAFF, 0.3); labG.fillCircle(labX, labY - 14, 8);
     const labLocked = !this.playerState.hasBossKill('ancient_dragon');
     this.add.text(labX, labY - 56, labLocked ? '🔒 Labirent' : 'Labirent', {
-      fontSize: '32px', fontFamily: 'Arial, sans-serif', color: labLocked ? '#888888' : '#8B8B83',
+      fontSize: '32px', fontFamily: 'Nunito, Arial, sans-serif', color: labLocked ? '#888888' : '#8B8B83',
       fontStyle: 'bold', stroke: '#000', strokeThickness: 5
     }).setOrigin(0.5).setDepth(9999);
     if (labLocked) {
       this.add.text(labX, labY + 20, 'Kadim Ejderi yen!', {
-        fontSize: '16px', fontFamily: 'Arial, sans-serif', color: '#FF6666',
+        fontSize: '16px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FF6666',
         stroke: '#000', strokeThickness: 3
       }).setOrigin(0.5).setDepth(9999);
     }
 
-    const labPortal = this.physics.add.staticSprite(labX, labY - 10, 'portal_tex');
-    labPortal.setSize(40, 50).setDepth(5).setAlpha(0);
-    labPortal.targetScene = 'LabyrinthScene';
-    this.portalGroup.add(labPortal);
 
     // Shop removed — Tüccar NPC handles buy/sell directly
 
@@ -892,15 +963,18 @@ export class OverworldScene extends Phaser.Scene {
     }).setDepth(50);
 
     // Zone labels on map
-    const zoneStyle = { fontSize: '36px', fontFamily: 'Arial, sans-serif', fontStyle: 'bold', stroke: '#000', strokeThickness: 5 };
-    this.add.text(1800, 1800, 'Balçık Ormanı', { ...zoneStyle, color: '#44AA44' }).setOrigin(0.5).setDepth(9999).setAlpha(0.6);
-    this.add.text(4000, 3500, 'Goblin Kampı', { ...zoneStyle, color: '#3CB371' }).setOrigin(0.5).setDepth(9999).setAlpha(0.6);
-    this.add.text(6000, 2000, 'İskelet Mezarlığı', { ...zoneStyle, color: '#CCCCAA' }).setOrigin(0.5).setDepth(9999).setAlpha(0.6);
-    this.add.text(3000, 6500, 'Ork Kalesi', { ...zoneStyle, color: '#6B8E23' }).setOrigin(0.5).setDepth(9999).setAlpha(0.6);
-    this.add.text(1800, 2800, 'Kurt Ormanı', { ...zoneStyle, color: '#808080' }).setOrigin(0.5).setDepth(9999).setAlpha(0.6);
-    this.add.text(7500, 3500, 'Golem Vadisi', { ...zoneStyle, color: '#8B8B83' }).setOrigin(0.5).setDepth(9999).setAlpha(0.6);
-    this.add.text(2000, 7500, 'Hayalet Bataklığı', { ...zoneStyle, color: '#9370DB' }).setOrigin(0.5).setDepth(9999).setAlpha(0.6);
-    this.add.text(8100, 8000, 'Ejder Yavrusu Yuvası', { ...zoneStyle, color: '#CC3300' }).setOrigin(0.5).setDepth(9999).setAlpha(0.6);
+    const zoneStyle = { fontSize: '36px', fontFamily: 'Nunito, Arial, sans-serif', fontStyle: 'bold', stroke: '#000', strokeThickness: 5 };
+    // Etiketler canavar spawn alanlarıyla eşleştirildi
+    this.add.text(1500, 1500, 'Balçık Ormanı', { ...zoneStyle, color: '#44AA44' }).setOrigin(0.5).setDepth(9999).setAlpha(0.6);
+    this.add.text(3500, 1000, 'Kurt Ormanı', { ...zoneStyle, color: '#808080' }).setOrigin(0.5).setDepth(9999).setAlpha(0.6);
+    this.add.text(3200, 3200, 'Goblin Kampı', { ...zoneStyle, color: '#3CB371' }).setOrigin(0.5).setDepth(9999).setAlpha(0.6);
+    this.add.text(4800, 3500, 'Mantar Ormanı', { ...zoneStyle, color: '#8B4513' }).setOrigin(0.5).setDepth(9999).setAlpha(0.6);
+    this.add.text(5800, 3000, 'İskelet Mezarlığı', { ...zoneStyle, color: '#CCCCAA' }).setOrigin(0.5).setDepth(9999).setAlpha(0.6);
+    this.add.text(3000, 5800, 'Ork Kalesi', { ...zoneStyle, color: '#6B8E23' }).setOrigin(0.5).setDepth(9999).setAlpha(0.6);
+    this.add.text(7800, 3000, 'Golem Vadisi', { ...zoneStyle, color: '#8B8B83' }).setOrigin(0.5).setDepth(9999).setAlpha(0.6);
+    this.add.text(4800, 8000, 'Hayalet Bataklığı', { ...zoneStyle, color: '#9370DB' }).setOrigin(0.5).setDepth(9999).setAlpha(0.6);
+    this.add.text(7000, 6800, 'Ateş Vadisi', { ...zoneStyle, color: '#FF4500' }).setOrigin(0.5).setDepth(9999).setAlpha(0.6);
+    this.add.text(8000, 7800, 'Ejder Yavrusu Yuvası', { ...zoneStyle, color: '#CC3300' }).setOrigin(0.5).setDepth(9999).setAlpha(0.6);
   }
 
   createFogOfWar() {
@@ -931,6 +1005,11 @@ export class OverworldScene extends Phaser.Scene {
     // Reveal cells around player (radius of 4 cells)
     const px = Math.floor(this.player.x / this.fogCellSize);
     const py = Math.floor(this.player.y / this.fogCellSize);
+
+    // Performance: skip if player hasn't moved to a new cell
+    if (px === this._lastFogPx && py === this._lastFogPy) return;
+    this._lastFogPx = px;
+    this._lastFogPy = py;
     const radius = 4;
 
     let changed = false;
@@ -996,6 +1075,7 @@ export class OverworldScene extends Phaser.Scene {
     this.checkPortals();
     this.playerState.updateBuffs();
     this.playerState.regenMana(delta);
+    this.playerState.regenHp(delta);
     if (this.combatUtils) {
       this.combatUtils.checkProjectileCollisions(this.monsterObjects);
       this.combatUtils.updateMonsterEffects(this.monsterObjects);
@@ -1354,7 +1434,14 @@ export class OverworldScene extends Phaser.Scene {
     } else {
       const respawnTime = data.isZoneBoss ? 600000 : 240000; // Bölge boss: 10dk, normal: 4dk
       this.time.delayedCall(respawnTime, () => {
-        const newMonster = this.spawnMonster(data.id, data.spawnX + Phaser.Math.Between(-50, 50), data.spawnY + Phaser.Math.Between(-50, 50));
+        // Respawn: su/duvar olmayan yere spawn (max 5 deneme)
+        let rx = data.spawnX, ry = data.spawnY;
+        for (let t = 0; t < 5; t++) {
+          const tx = data.spawnX + Phaser.Math.Between(-150, 150);
+          const ty = data.spawnY + Phaser.Math.Between(-150, 150);
+          if (this.isWalkableTile(tx, ty)) { rx = tx; ry = ty; break; }
+        }
+        const newMonster = this.spawnMonster(data.id, rx, ry);
         if (newMonster) {
           const idx = this.monsterObjects.indexOf(monster);
           if (idx >= 0) this.monsterObjects[idx] = newMonster;
@@ -1392,21 +1479,21 @@ export class OverworldScene extends Phaser.Scene {
         lootSprite.itemId = enhancedEntry;
         lootSprite.setInteractive({ useHandCursor: true });
 
-        // Enhanced parıltı efekti
+        // Enhanced parıltı efekti (küçük, hafif)
         let sparkleGfx = null;
         if (isEnhanced) {
           sparkleGfx = this.add.graphics().setDepth(7);
           this.time.addEvent({
-            delay: 400, loop: true,
+            delay: 600, loop: true,
             callback: () => {
               if (!lootSprite.active) { sparkleGfx.destroy(); return; }
               sparkleGfx.clear();
-              sparkleGfx.fillStyle(0xFFD700, 0.3 + Math.sin(Date.now() * 0.005) * 0.2);
-              sparkleGfx.fillCircle(lootSprite.x, lootSprite.y, 18);
-              sparkleGfx.fillStyle(0xFFFFFF, 0.5);
+              const alpha = 0.15 + Math.sin(Date.now() * 0.004) * 0.1;
+              sparkleGfx.fillStyle(0xFFD700, alpha);
+              sparkleGfx.fillCircle(lootSprite.x, lootSprite.y, 8);
+              sparkleGfx.fillStyle(0xFFFFFF, 0.4);
               const angle = Date.now() * 0.003;
-              sparkleGfx.fillCircle(lootSprite.x + Math.cos(angle) * 10, lootSprite.y + Math.sin(angle) * 10, 2);
-              sparkleGfx.fillCircle(lootSprite.x + Math.cos(angle + 2) * 10, lootSprite.y + Math.sin(angle + 2) * 10, 2);
+              sparkleGfx.fillCircle(lootSprite.x + Math.cos(angle) * 6, lootSprite.y + Math.sin(angle) * 6, 1);
             }
           });
         }
@@ -1427,7 +1514,7 @@ export class OverworldScene extends Phaser.Scene {
           }
         }
         const label = this.add.text(lx, ly + 32, labelText, {
-          fontSize: '22px', fontFamily: 'Arial, sans-serif', color: labelColor, fontStyle: 'bold',
+          fontSize: '22px', fontFamily: 'Nunito, Arial, sans-serif', color: labelColor, fontStyle: 'bold',
           stroke: '#000', strokeThickness: 5, align: 'center'
         }).setOrigin(0.5).setDepth(9999);
 
@@ -1496,7 +1583,7 @@ export class OverworldScene extends Phaser.Scene {
     lootSprite.itemId = itemId;
 
     const label = this.add.text(x, y + 32, itemData.name, {
-      fontSize: '22px', fontFamily: 'Arial, sans-serif', color: itemData.color, fontStyle: 'bold',
+      fontSize: '22px', fontFamily: 'Nunito, Arial, sans-serif', color: itemData.color, fontStyle: 'bold',
       stroke: '#000', strokeThickness: 3
     }).setOrigin(0.5).setDepth(9);
 
@@ -1625,11 +1712,20 @@ export class OverworldScene extends Phaser.Scene {
   }
 
   handleInteraction() {
-    if (!Phaser.Input.Keyboard.JustDown(this.interactKey)) return;
+    // Otomatik etkileşim: yakınlık bazlı, cooldown ile
+    const now = this.time.now;
+    // Spawn sonrası 2sn koruma (portalddan çıkınca hemen geri girmemesi için)
+    if (!this._spawnTime) this._spawnTime = now;
+    const spawnSafe = now - this._spawnTime < 2000;
+    if (spawnSafe && !Phaser.Input.Keyboard.JustDown(this.interactKey)) return;
+    if (now < (this._lastAutoInteract || 0) + 800) return; // 800ms cooldown
+
+    // E tuşu ile de tetiklenebilir
+    const ePressed = Phaser.Input.Keyboard.JustDown(this.interactKey);
 
     // Check for nearby NPC
     let closestNPC = null;
-    let closestDist = 60;
+    let closestDist = 55;
 
     this.npcObjects.forEach(npc => {
       const dist = Phaser.Math.Distance.Between(this.player.x, this.player.y, npc.x, npc.y);
@@ -1639,12 +1735,13 @@ export class OverworldScene extends Phaser.Scene {
       }
     });
 
-    if (closestNPC) {
+    if (closestNPC && (ePressed || closestDist < 45)) {
+      this._lastAutoInteract = now;
       this.interactWithNPC(closestNPC);
       return;
     }
 
-    // Check for portal
+    // Check for portal (sadece çok yakınken otomatik)
     let closestPortal = null;
     closestDist = 40;
     this.portalGroup.children.entries.forEach(portal => {
@@ -1655,7 +1752,8 @@ export class OverworldScene extends Phaser.Scene {
       }
     });
 
-    if (closestPortal) {
+    if (closestPortal && (ePressed || closestDist < 30)) {
+      this._lastAutoInteract = now;
       this.enterPortal(closestPortal);
     }
   }
@@ -1749,15 +1847,13 @@ export class OverworldScene extends Phaser.Scene {
   enterPortal(portal) {
     const ps = this.playerState;
 
-    // Boss gate kontrolü: Overworld boss öldürülmeden zindan/labirent'e geçilemez
-    if (portal.targetScene === 'DungeonScene' || portal.targetScene === 'LabyrinthScene') {
+    // Boss gate kontrolü: Overworld boss öldürülmeden zindana geçilemez
+    if (portal.targetScene === 'DungeonScene') {
       if (!ps.hasBossKill('ancient_dragon')) {
         const uiScene = this.scene.get('UIScene');
         if (uiScene?.showDialogue) {
           uiScene.showDialogue('Gizemli Güç',
-            portal.targetScene === 'DungeonScene'
-              ? 'Bu zindana girmek için önce Kadim Ejderi yenmelisin! Kadim Ejder haritanın kuzeyinde bekliyor.'
-              : 'Bu labirente girmek için önce Kadim Ejderi yenmelisin! Kadim Ejder haritanın kuzeyinde bekliyor.'
+            'Bu zindana girmek için önce Kadim Ejderi yenmelisin! Kadim Ejder haritanın kuzeyinde bekliyor.'
           );
         }
         return;
@@ -1765,6 +1861,12 @@ export class OverworldScene extends Phaser.Scene {
     }
 
     ps.save();
+    // ShopScene: sleep overworld instead of destroying it (avoid 1-2 min rebuild)
+    if (portal.targetScene === 'ShopScene') {
+      this.scene.sleep('OverworldScene');
+      this.scene.launch('ShopScene');
+      return;
+    }
     this.scene.start(portal.targetScene);
   }
 
@@ -1781,7 +1883,7 @@ export class OverworldScene extends Phaser.Scene {
       if (this._tpWarning) return; // already showing
       this._tpWarning = this.add.text(this.player.x, this.player.y - 80,
         'Savaş sırasında ışınlanamazsın!', {
-          fontSize: '24px', fontFamily: 'Arial, sans-serif', color: '#FF4444',
+          fontSize: '24px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FF4444',
           fontStyle: 'bold', stroke: '#000', strokeThickness: 5
         }).setOrigin(0.5).setDepth(10001).setAlpha(1);
 
@@ -1828,11 +1930,19 @@ export class OverworldScene extends Phaser.Scene {
   }
 
   updateMonsters(time, delta) {
+    const px = this.player.x, py = this.player.y;
     this.monsterObjects.forEach(monster => {
       if (!monster.active || monster.monsterData.isDead) return;
 
       const data = monster.monsterData;
-      const distToPlayer = Phaser.Math.Distance.Between(monster.x, monster.y, this.player.x, this.player.y);
+      // Performance: skip monsters far from player (>800px)
+      const dx = monster.x - px, dy = monster.y - py;
+      const distSq = dx * dx + dy * dy;
+      if (distSq > 640000 && !data.aggroed) { // 800^2 = 640000
+        monster.body.setVelocity(0, 0);
+        return;
+      }
+      const distToPlayer = Math.sqrt(distSq);
 
       // Keep monsters out of village
       if (this.isInsideVillage(monster.x, monster.y)) {
@@ -1890,9 +2000,20 @@ export class OverworldScene extends Phaser.Scene {
         }
         monster.body.setVelocity(data.wanderDir.x, data.wanderDir.y);
 
+        // Su/duvar tile'ına doğru gidiyorsa geri dön
+        const nextX = monster.x + data.wanderDir.x * 0.5;
+        const nextY = monster.y + data.wanderDir.y * 0.5;
+        if (!this.isWalkableTile(nextX, nextY)) {
+          // Spawn noktasına geri dön
+          const angle = Phaser.Math.Angle.Between(monster.x, monster.y, data.spawnX, data.spawnY);
+          monster.body.setVelocity(Math.cos(angle) * data.speed * 0.4, Math.sin(angle) * data.speed * 0.4);
+          data.wanderTimer = 0; // Yeni yön seç
+        }
+
         // Don't wander too far from spawn
+        const maxWander = data.isZoneBoss || data.isBoss ? 600 : 800;
         const distFromSpawn = Phaser.Math.Distance.Between(monster.x, monster.y, data.spawnX, data.spawnY);
-        if (distFromSpawn > 400) {
+        if (distFromSpawn > maxWander) {
           const angle = Phaser.Math.Angle.Between(monster.x, monster.y, data.spawnX, data.spawnY);
           monster.body.setVelocity(Math.cos(angle) * data.speed * 0.5, Math.sin(angle) * data.speed * 0.5);
         }
@@ -1905,8 +2026,19 @@ export class OverworldScene extends Phaser.Scene {
   }
 
   updateMonsterHPBars() {
+    const px2 = this.player.x, py2 = this.player.y;
     this.monsterObjects.forEach(monster => {
       if (!monster.active || monster.monsterData.isDead) return;
+
+      // Performance: skip HP bars for far monsters (>600px)
+      const dx2 = monster.x - px2, dy2 = monster.y - py2;
+      if (dx2 * dx2 + dy2 * dy2 > 360000) { // 600^2
+        monster.setVisible(false);
+        if (monster.nameLabel) monster.nameLabel.setVisible(false);
+        if (monster.bossLabel) monster.bossLabel.setVisible(false);
+        monster.hpBar.clear();
+        return;
+      }
 
       // Hide monsters in unexplored (dark) areas
       const fogX = Math.floor(monster.x / this.fogCellSize);
@@ -1982,7 +2114,7 @@ export class OverworldScene extends Phaser.Scene {
 
   showDamageNumber(x, y, text, color) {
     const dmgText = this.add.text(x, y, String(text), {
-      fontSize: '32px', fontFamily: 'Arial, sans-serif', color: color,
+      fontSize: '32px', fontFamily: 'Nunito, Arial, sans-serif', color: color,
       stroke: '#000', strokeThickness: 5, fontStyle: 'bold'
     }).setOrigin(0.5).setDepth(10000);
 

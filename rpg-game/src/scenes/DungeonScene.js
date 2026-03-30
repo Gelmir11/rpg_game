@@ -19,6 +19,8 @@ export class DungeonScene extends Phaser.Scene {
     this.monsterObjects = [];
     this.currentFloor = this.playerState.dungeonFloor || 1;
     this.bossDefeated = false;
+    this._spawnTime = null; // Spawn koruma süresini sıfırla
+    this._lastAutoInteract = 0;
     this.skillSystem = new SkillSystem(this);
     this.combatUtils = new CombatUtils(this);
     this.bossPatterns = new BossPatternSystem(this);
@@ -135,12 +137,12 @@ export class DungeonScene extends Phaser.Scene {
 
       // Uyarı yazısı
       this.add.text(bx, (bossRoom.y + 1) * ts, '⚔ ALACAKARANLIK EFENDİSİ ⚔', {
-        fontSize: '20px', fontFamily: 'Arial, sans-serif', color: '#FF0000',
+        fontSize: '20px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FF0000',
         fontStyle: 'bold', stroke: '#000', strokeThickness: 4
       }).setOrigin(0.5).setDepth(9999);
 
       this.add.text(bx, (bossRoom.y + 2) * ts, 'Kötülüğün Son Kalesi', {
-        fontSize: '14px', fontFamily: 'Arial, sans-serif', color: '#FF6666',
+        fontSize: '14px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FF6666',
         fontStyle: 'italic', stroke: '#000', strokeThickness: 3
       }).setOrigin(0.5).setDepth(9999);
 
@@ -293,7 +295,7 @@ export class DungeonScene extends Phaser.Scene {
 
       // Boss odası etiketi
       this.add.text(bx, by - 50, `BOSS: ${MONSTERS[floorData.boss]?.name || 'Boss'}`, {
-        fontSize: '16px', fontFamily: 'Arial, sans-serif', color: '#FF4444',
+        fontSize: '16px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FF4444',
         fontStyle: 'bold', stroke: '#000', strokeThickness: 3
       }).setOrigin(0.5).setDepth(9999);
     }
@@ -329,7 +331,7 @@ export class DungeonScene extends Phaser.Scene {
     monster.play(`${type}_idle`);
     monster.hpBar = this.add.graphics();
     monster.nameLabel = this.add.text(x, y - 20, `${data.name} Lv.${data.level}`, {
-      fontSize: '12px', fontFamily: 'Arial, sans-serif', color: data.isBoss ? '#FF4444' : '#ff9999',
+      fontSize: '12px', fontFamily: 'Nunito, Arial, sans-serif', color: data.isBoss ? '#FF4444' : '#ff9999',
       fontStyle: 'bold', stroke: '#000', strokeThickness: 2
     }).setOrigin(0.5).setDepth(9997);
     this.monsterObjects.push(monster);
@@ -342,13 +344,13 @@ export class DungeonScene extends Phaser.Scene {
     const ey = startRoom.y * 64;
 
     if (this.currentFloor === 1) {
-      this.add.text(ex, ey - 12, 'Çıkış [E]', {
-        fontSize: '14px', fontFamily: 'Arial, sans-serif', color: '#aa6aee',
+      this.add.text(ex, ey - 12, 'Çıkış', {
+        fontSize: '14px', fontFamily: 'Nunito, Arial, sans-serif', color: '#aa6aee',
         stroke: '#000', strokeThickness: 2
       }).setDepth(20);
     } else {
-      this.add.text(ex, ey - 12, `Yukarı Kat ${this.currentFloor - 1} [E]`, {
-        fontSize: '14px', fontFamily: 'Arial, sans-serif', color: '#66AAFF',
+      this.add.text(ex, ey - 12, `Yukarı Kat ${this.currentFloor - 1}`, {
+        fontSize: '14px', fontFamily: 'Nunito, Arial, sans-serif', color: '#66AAFF',
         stroke: '#000', strokeThickness: 2
       }).setDepth(20);
     }
@@ -365,8 +367,8 @@ export class DungeonScene extends Phaser.Scene {
       const dx = (lastRoom.x + lastRoom.w - 1) * 64;
       const dy = (lastRoom.y + lastRoom.h - 1) * 64;
 
-      this.downText = this.add.text(dx, dy - 12, `Kat ${this.currentFloor + 1} ↓ [E]`, {
-        fontSize: '14px', fontFamily: 'Arial, sans-serif', color: '#FF6600',
+      this.downText = this.add.text(dx, dy - 12, `Kat ${this.currentFloor + 1} ↓`, {
+        fontSize: '14px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FF6600',
         stroke: '#000', strokeThickness: 2
       }).setDepth(20).setVisible(false);
 
@@ -392,7 +394,7 @@ export class DungeonScene extends Phaser.Scene {
       this.entranceNPC.npcData = NPCS.dungeon_keeper;
 
       this.add.text(nx, ny - 60, 'Zindan Bekçisi', {
-        fontSize: '14px', fontFamily: 'Arial, sans-serif', color: '#FFD700',
+        fontSize: '14px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FFD700',
         fontStyle: 'bold', stroke: '#000', strokeThickness: 3
       }).setOrigin(0.5).setDepth(9999);
 
@@ -405,7 +407,7 @@ export class DungeonScene extends Phaser.Scene {
       );
       if (hasQuest) {
         this.add.text(nx, ny - 78, '!', {
-          fontSize: '24px', fontFamily: 'Arial, sans-serif', color: '#FFD700',
+          fontSize: '24px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FFD700',
           fontStyle: 'bold', stroke: '#000', strokeThickness: 4
         }).setOrigin(0.5).setDepth(9999);
       }
@@ -416,12 +418,12 @@ export class DungeonScene extends Phaser.Scene {
     if (this.currentFloor === 10) {
       // 10. kat: özel boss UI
       this.floorText = this.add.text(10, 10, '⚔ SON KAT - ALACAKARANLIK EFENDİSİ ⚔', {
-        fontSize: '18px', fontFamily: 'Arial, sans-serif', color: '#FF0000',
+        fontSize: '18px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FF0000',
         fontStyle: 'bold', stroke: '#000', strokeThickness: 4
       }).setScrollFactor(0).setDepth(10000);
 
       this.bossStatusText = this.add.text(10, 34, 'Kötülüğün kalbi atıyor...', {
-        fontSize: '14px', fontFamily: 'Arial, sans-serif', color: '#FF4444',
+        fontSize: '14px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FF4444',
         fontStyle: 'italic', stroke: '#000', strokeThickness: 2
       }).setScrollFactor(0).setDepth(10000);
 
@@ -431,17 +433,17 @@ export class DungeonScene extends Phaser.Scene {
       this.bossHPBar = this.add.rectangle(150, 58, 500, 12, 0xFF0000)
         .setScrollFactor(0).setDepth(10001).setOrigin(0, 0.5);
       this.bossHPText = this.add.text(400, 58, '', {
-        fontSize: '12px', fontFamily: 'Arial, sans-serif', color: '#FFFFFF',
+        fontSize: '12px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FFFFFF',
         fontStyle: 'bold', stroke: '#000', strokeThickness: 2
       }).setScrollFactor(0).setDepth(10002).setOrigin(0.5);
     } else {
       this.floorText = this.add.text(10, 10, `Zindan - Kat ${this.currentFloor}/10`, {
-        fontSize: '18px', fontFamily: 'Arial, sans-serif', color: '#FF6600',
+        fontSize: '18px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FF6600',
         fontStyle: 'bold', stroke: '#000', strokeThickness: 3
       }).setScrollFactor(0).setDepth(10000);
 
       this.bossStatusText = this.add.text(10, 32, 'Boss: Hayatta', {
-        fontSize: '14px', fontFamily: 'Arial, sans-serif', color: '#FF4444',
+        fontSize: '14px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FF4444',
         stroke: '#000', strokeThickness: 2
       }).setScrollFactor(0).setDepth(10000);
     }
@@ -574,11 +576,17 @@ export class DungeonScene extends Phaser.Scene {
       }
     }
 
-    // Interact check
-    if (Phaser.Input.Keyboard.JustDown(this.interactKey)) {
+    // Otomatik etkileşim (yakınlık bazlı + E tuşu desteği)
+    // Spawn sonrası 2sn koruma (spawn yakınında hemen tetiklenmemesi için)
+    const now = this.time.now;
+    if (!this._spawnTime) this._spawnTime = now;
+    const spawnSafe = now - this._spawnTime < 2000;
+    const ePressed = Phaser.Input.Keyboard.JustDown(this.interactKey);
+    if ((now > (this._lastAutoInteract || 0) + 800 && !spawnSafe) || ePressed) {
       // Exit/up
       const exitDist = Phaser.Math.Distance.Between(this.player.x, this.player.y, this.exitZone.x, this.exitZone.y);
-      if (exitDist < 40) {
+      if (exitDist < 35 || (ePressed && exitDist < 50)) {
+        this._lastAutoInteract = now;
         if (this.currentFloor === 1) {
           this.playerState.dungeonFloor = 1;
           this.playerState.save();
@@ -595,7 +603,8 @@ export class DungeonScene extends Phaser.Scene {
       // Down to next floor
       if (this.bossDefeated && this.downZone && this.currentFloor < 10) {
         const downDist = Phaser.Math.Distance.Between(this.player.x, this.player.y, this.downZone.x, this.downZone.y);
-        if (downDist < 40) {
+        if (downDist < 35 || (ePressed && downDist < 50)) {
+          this._lastAutoInteract = now;
           this.playerState.dungeonFloor = this.currentFloor + 1;
           if (this.currentFloor + 1 > this.playerState.maxDungeonFloor) {
             this.playerState.maxDungeonFloor = this.currentFloor + 1;
@@ -609,7 +618,8 @@ export class DungeonScene extends Phaser.Scene {
       // NPC interaction
       if (this.entranceNPC) {
         const npcDist = Phaser.Math.Distance.Between(this.player.x, this.player.y, this.entranceNPC.x, this.entranceNPC.y);
-        if (npcDist < 60) {
+        if (npcDist < 45 || (ePressed && npcDist < 60)) {
+          this._lastAutoInteract = now;
           this.handleNPCInteraction(this.entranceNPC);
         }
       }
@@ -808,7 +818,7 @@ export class DungeonScene extends Phaser.Scene {
 
   showDamage(x, y, text, color) {
     const t = this.add.text(x, y, String(text), {
-      fontSize: '16px', fontFamily: 'Arial, sans-serif', color, stroke: '#000', strokeThickness: 3, fontStyle: 'bold'
+      fontSize: '16px', fontFamily: 'Nunito, Arial, sans-serif', color, stroke: '#000', strokeThickness: 3, fontStyle: 'bold'
     }).setOrigin(0.5).setDepth(10000);
     this.tweens.add({ targets: t, y: y - 30, alpha: 0, duration: 800, onComplete: () => t.destroy() });
   }

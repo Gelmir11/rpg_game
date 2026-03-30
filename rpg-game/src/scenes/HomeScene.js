@@ -10,6 +10,9 @@ export class HomeScene extends Phaser.Scene {
   create() {
     this.playerState = PlayerState.getInstance();
     this.storageOpen = false;
+    this.storagePage = 0; // 0 = sayfa 1, 1 = sayfa 2
+    this._spawnTime = this.time.now; // Spawn koruma süresini sıfırla
+    this._lastAutoInteract = 0;
 
     this.drawRoom();
     this.createPlayer();
@@ -114,7 +117,7 @@ export class HomeScene extends Phaser.Scene {
     g.fillStyle(0x3a4a7a); g.fillRoundedRect(bx + 4, by + 34, 74, 70, 3);
     g.fillStyle(0x4a5a8a, 0.5); g.fillRect(bx + 6, by + 36, 70, 6);
     g.fillStyle(0x4a2a0a); g.fillRect(bx, by, 82, 5);
-    this.add.text(bx + 41, by - 12, 'Yatak [E]', { fontSize: '14px', fontFamily: 'Arial, sans-serif', color: '#87CEEB', fontStyle: 'bold', stroke: '#000', strokeThickness: 3 }).setOrigin(0.5).setDepth(20);
+    this.add.text(bx + 41, by - 12, 'Yatak', { fontSize: '14px', fontFamily: 'Nunito, Arial, sans-serif', color: '#87CEEB', fontStyle: 'bold', stroke: '#000', strokeThickness: 3 }).setOrigin(0.5).setDepth(20);
     this.bedZone = this.add.zone(bx + 41, by + 55, 90, 120);
     this.physics.world.enable(this.bedZone); this.bedZone.body.setAllowGravity(false);
 
@@ -140,7 +143,7 @@ export class HomeScene extends Phaser.Scene {
     g.fillStyle(0xFFD700); g.fillRect(sx + 54, sy + 38, 20, 10);
     g.fillStyle(0x1a1a1a); g.fillCircle(sx + 64, sy + 52, 3);
     g.fillStyle(0x808080); g.fillRect(sx + 30, sy + 10, 24, 5); g.fillRect(sx + 76, sy + 10, 24, 5);
-    this.add.text(sx + 65, sy - 12, 'Depo [E]', { fontSize: '14px', fontFamily: 'Arial, sans-serif', color: '#DEB887', fontStyle: 'bold', stroke: '#000', strokeThickness: 3 }).setOrigin(0.5).setDepth(20);
+    this.add.text(sx + 65, sy - 12, 'Depo', { fontSize: '14px', fontFamily: 'Nunito, Arial, sans-serif', color: '#DEB887', fontStyle: 'bold', stroke: '#000', strokeThickness: 3 }).setOrigin(0.5).setDepth(20);
     this.chestZone = this.add.zone(sx + 65, sy + 42, 140, 90);
     this.physics.world.enable(this.chestZone); this.chestZone.body.setAllowGravity(false);
 
@@ -186,7 +189,7 @@ export class HomeScene extends Phaser.Scene {
     g.fillStyle(0x3a2a1a); g.fillRoundedRect(dx, dy, 36, wallT + 2, 2);
     g.fillStyle(0x5a3a1a); g.fillRoundedRect(dx + 2, dy + 2, 32, wallT - 4, 2);
     g.fillStyle(0xDAA520); g.fillCircle(dx + 28, dy + 12, 2);
-    this.add.text(cx, dy - 10, 'Çıkış [E]', { fontSize: '14px', fontFamily: 'Arial, sans-serif', color: '#aa6aee', fontStyle: 'bold', stroke: '#000', strokeThickness: 3 }).setOrigin(0.5).setDepth(20);
+    this.add.text(cx, dy - 10, 'Çıkış', { fontSize: '14px', fontFamily: 'Nunito, Arial, sans-serif', color: '#aa6aee', fontStyle: 'bold', stroke: '#000', strokeThickness: 3 }).setOrigin(0.5).setDepth(20);
     this.exitZone = this.add.zone(cx, dy + 10, 50, 30);
     this.physics.world.enable(this.exitZone); this.exitZone.body.setAllowGravity(false);
 
@@ -202,8 +205,17 @@ export class HomeScene extends Phaser.Scene {
     const pTex = ps.gender === 'female' ? 'player_female' : 'player';
     this.player = this.physics.add.sprite(400, 340, pTex, 0);
     this.player.setSize(28, 28).setOffset(18, 60).setDepth(10).setCollideWorldBounds(true);
-    this.physics.world.setBounds(182, 130, 436, 338);
+    this.physics.world.setBounds(182, 130, 436, 390);
     this.playerDirection = 'down';
+
+    // Recreate walk animations with the correct gender texture
+    ['walk_down', 'walk_left', 'walk_right', 'walk_up'].forEach(key => {
+      if (this.anims.exists(key)) this.anims.remove(key);
+    });
+    this.anims.create({ key: 'walk_down', frames: [{ key: pTex, frame: 0 }, { key: pTex, frame: 1 }], frameRate: 6, repeat: -1 });
+    this.anims.create({ key: 'walk_left', frames: [{ key: pTex, frame: 2 }, { key: pTex, frame: 3 }], frameRate: 6, repeat: -1 });
+    this.anims.create({ key: 'walk_right', frames: [{ key: pTex, frame: 4 }, { key: pTex, frame: 5 }], frameRate: 6, repeat: -1 });
+    this.anims.create({ key: 'walk_up', frames: [{ key: pTex, frame: 6 }, { key: pTex, frame: 7 }], frameRate: 6, repeat: -1 });
 
     // Equipment overlay sprites
     const suffix = ps.gender === 'female' ? '_f' : '';
@@ -265,16 +277,25 @@ export class HomeScene extends Phaser.Scene {
       });
     }
 
-    if (Phaser.Input.Keyboard.JustDown(this.interactKey)) {
+    // Otomatik etkileşim (yakınlık bazlı + E tuşu desteği)
+    const now = this.time.now;
+    if (!this._spawnTime) this._spawnTime = now;
+    const spawnSafe = now - this._spawnTime < 1500;
+    const ePressed = Phaser.Input.Keyboard.JustDown(this.interactKey);
+    if ((now > (this._lastAutoInteract || 0) + 800 && !spawnSafe) || ePressed) {
       // Check exit (door at bottom center)
-      if (Phaser.Math.Distance.Between(this.player.x, this.player.y, 400, 468) < 50) {
+      const exitDist = Phaser.Math.Distance.Between(this.player.x, this.player.y, 400, 468);
+      if (exitDist < 50 || (ePressed && exitDist < 70)) {
+        this._lastAutoInteract = now;
         this.playerState.save();
         this.scene.start('OverworldScene');
         return;
       }
 
       // Check bed (top right)
-      if (Phaser.Math.Distance.Between(this.player.x, this.player.y, 550, 190) < 80) {
+      const bedDist = Phaser.Math.Distance.Between(this.player.x, this.player.y, 550, 190);
+      if (bedDist < 50 || (ePressed && bedDist < 80)) {
+        this._lastAutoInteract = now;
         this.playerState.hp = this.playerState.getMaxHp();
         this.playerState.mana = this.playerState.getMaxMana();
         this.playerState.save();
@@ -284,7 +305,9 @@ export class HomeScene extends Phaser.Scene {
       }
 
       // Check storage chest (left side)
-      if (Phaser.Math.Distance.Between(this.player.x, this.player.y, 250, 175) < 80) {
+      const chestDist = Phaser.Math.Distance.Between(this.player.x, this.player.y, 250, 175);
+      if (chestDist < 50 || (ePressed && chestDist < 80)) {
+        this._lastAutoInteract = now;
         this.openStorage();
       }
     }
@@ -342,7 +365,7 @@ export class HomeScene extends Phaser.Scene {
   }
 
   // Helper to stack items and place in variable-size grid
-  buildStackedGrid(items, gridX, gridY, cols, maxRows, cellSize, depth, onClickFn, gridArrayName) {
+  buildStackedGrid(items, gridX, gridY, cols, maxRows, cellSize, depth, onClickFn, gridArrayName, rowOffset = 0) {
     const els = [];
     const ps = PlayerState.getInstance();
     const gridArray = gridArrayName === 'storage' ? ps.storageGrid : ps.inventoryGrid;
@@ -430,7 +453,7 @@ export class HomeScene extends Phaser.Scene {
       const gw = item.gridW || 1, gh = item.gridH || 1;
 
       const ix = gridX + stack.col * cellSize + (gw - 1) * cellSize / 2;
-      const iy = gridY + stack.row * cellSize + (gh - 1) * cellSize / 2;
+      const iy = gridY + (stack.row - rowOffset) * cellSize + (gh - 1) * cellSize / 2;
 
       if (gw > 1 || gh > 1)
         els.push(this.add.rectangle(ix, iy, gw * cellSize - 4, gh * cellSize - 4, 0x1a1a3a, 0.8).setDepth(depth).setStrokeStyle(1, 0x4a4a6a));
@@ -458,8 +481,8 @@ export class HomeScene extends Phaser.Scene {
         icon.setAlpha(1);
         icon.setDepth(depth + 1);
         const dropCol = Math.round((icon.x - gridX) / cellSize);
-        const dropRow = Math.round((icon.y - gridY) / cellSize);
-        if (dropCol >= 0 && dropCol + gw <= cols && dropRow >= 0 && dropRow + gh <= maxRows) {
+        const dropRow = Math.round((icon.y - gridY) / cellSize) + rowOffset;
+        if (dropCol >= 0 && dropCol + gw <= cols && dropRow >= rowOffset && dropRow + gh <= rowOffset + maxRows) {
           let canPlace = true;
           const gridIdx = activeGrid.findIndex(g => g.entry === stack.entry || (stack.stackable && ps.getBaseItemId(g.entry) === stack.itemId));
           for (let dr = 0; dr < gh && canPlace; dr++)
@@ -486,7 +509,7 @@ export class HomeScene extends Phaser.Scene {
 
       if (stack.count > 1)
         els.push(this.add.text(ix + cellSize / 2 - 4, iy + (gh * cellSize / 2) - 4, `${stack.count}`, {
-          fontSize: '12px', fontFamily: 'Arial, sans-serif', color: '#fff', fontStyle: 'bold',
+          fontSize: '12px', fontFamily: 'Nunito, Arial, sans-serif', color: '#fff', fontStyle: 'bold',
           backgroundColor: '#333', padding: { x: 2, y: 0 }, stroke: '#000', strokeThickness: 2
         }).setOrigin(1, 1).setDepth(depth + 2));
 
@@ -494,13 +517,16 @@ export class HomeScene extends Phaser.Scene {
       icon.on('pointerover', () => {
         const cs = stack.count > 1 ? ` (x${stack.count})` : '';
         hoverLabel = this.add.text(ix, iy - gh * cellSize / 2 - 10, item.name + cs, {
-          fontSize: '12px', fontFamily: 'Arial, sans-serif', color: '#FFD700',
+          fontSize: '12px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FFD700',
           backgroundColor: '#0a0a1a', padding: { x: 4, y: 2 }, stroke: '#000', strokeThickness: 2
         }).setOrigin(0.5).setDepth(depth + 5);
         els.push(hoverLabel);
       });
       icon.on('pointerout', () => { if (hoverLabel) { hoverLabel.destroy(); hoverLabel = null; } });
-      icon.on('pointerdown', (p) => { if (!p.primaryDown) return; onClickFn(stack.itemId); });
+      icon.on('pointerdown', (p) => {
+        if (!p.primaryDown) return;
+        onClickFn(stack.itemId, stack.count);
+      });
     });
 
     return els;
@@ -518,47 +544,146 @@ export class HomeScene extends Phaser.Scene {
     add(this.add.rectangle(400, 300, 760, 560, 0x0a0a1a, 0.98).setDepth(100).setStrokeStyle(2, 0x4a4a8a));
 
     // Title
-    add(this.add.text(400, 24, 'DEPO', { fontSize: '20px', fontFamily: 'Arial, sans-serif', color: '#DEB887', fontStyle: 'bold' }).setOrigin(0.5).setDepth(101));
+    add(this.add.text(400, 24, 'DEPO', { fontSize: '20px', fontFamily: 'Nunito, Arial, sans-serif', color: '#DEB887', fontStyle: 'bold' }).setOrigin(0.5).setDepth(101));
 
     // Left: Inventory
     add(this.add.text(190, 55, `Envanter (${ps.getUsedSlots()}/${ps.maxInventory})`, {
-      fontSize: '15px', fontFamily: 'Arial, sans-serif', color: '#cc99ff', fontStyle: 'bold'
+      fontSize: '15px', fontFamily: 'Nunito, Arial, sans-serif', color: '#cc99ff', fontStyle: 'bold'
     }).setOrigin(0.5).setDepth(103));
 
-    const invEls = this.buildStackedGrid(ps.inventory, 45, 85, 7, 10, 38, 101, (itemId) => {
-      if (ps.removeItem(itemId) && ps.addToStorage(itemId)) { this.closeStorage(); this.openStorage(); }
+    const invEls = this.buildStackedGrid(ps.inventory, 45, 85, 7, 10, 38, 101, (itemId, stackCount) => {
+      const doTransfer = (qty) => {
+        let moved = 0;
+        for (let i = 0; i < qty; i++) {
+          if (ps.removeItem(itemId) && ps.addToStorage(itemId)) moved++;
+          else break;
+        }
+        if (moved > 0) { this.closeStorage(); this.openStorage(); }
+      };
+      if (stackCount > 1) {
+        this.showQtyInput(0, 0, stackCount, doTransfer);
+      } else {
+        doTransfer(1);
+      }
     }, 'inventory');
     invEls.forEach(e => this.storageUIElements.push(e));
 
     // Divider
     add(this.add.rectangle(395, 310, 3, 490, 0x5555aa).setDepth(101));
 
-    // Right: Storage
+    // Right: Storage with pagination (5 pages × 100 slots)
+    const page = this.storagePage || 0;
+    const totalPages = 5;
     add(this.add.text(600, 55, `Depo (${ps.storage.length}/${ps.maxStorage})`, {
-      fontSize: '15px', fontFamily: 'Arial, sans-serif', color: '#cc99ff', fontStyle: 'bold'
+      fontSize: '15px', fontFamily: 'Nunito, Arial, sans-serif', color: '#cc99ff', fontStyle: 'bold'
     }).setOrigin(0.5).setDepth(103));
 
-    const stoEls = this.buildStackedGrid(ps.storage, 420, 85, 8, 10, 38, 101, (itemId) => {
-      if (ps.removeFromStorage(itemId) && ps.addItem(itemId)) { this.closeStorage(); this.openStorage(); }
-    }, 'storage');
+    // Filter storage items by page — page 0: grid rows 0-9, page 1: grid rows 10-19
+    const pageRowStart = page * 10;
+    const pageRowEnd = pageRowStart + 10;
+    const pageItems = ps.storage.filter(entry => {
+      const gridEntry = ps.storageGrid.find(g => g.entry === entry);
+      if (!gridEntry) return page === 0; // ungridded items show on page 1
+      return gridEntry.row >= pageRowStart && gridEntry.row < pageRowEnd;
+    });
+
+    const stoEls = this.buildStackedGrid(pageItems, 420, 85, 10, 10, 38, 101, (itemId, stackCount) => {
+      const doTransfer = (qty) => {
+        let moved = 0;
+        for (let i = 0; i < qty; i++) {
+          if (ps.removeFromStorage(itemId) && ps.addItem(itemId)) moved++;
+          else break;
+        }
+        if (moved > 0) { this.closeStorage(); this.openStorage(); }
+      };
+      if (stackCount > 1) {
+        this.showQtyInput(0, 0, stackCount, doTransfer);
+      } else {
+        doTransfer(1);
+      }
+    }, 'storage', pageRowStart);
     stoEls.forEach(e => this.storageUIElements.push(e));
+
+    // Page navigation buttons
+    const pageY = 575;
+    const prevBtn = add(this.add.text(540, pageY, '◄', {
+      fontSize: '18px', fontFamily: 'Nunito, Arial, sans-serif', color: page > 0 ? '#88aaff' : '#333',
+      fontStyle: 'bold'
+    }).setOrigin(0.5).setDepth(102).setInteractive({ useHandCursor: page > 0 }));
+    if (page > 0) prevBtn.on('pointerdown', () => { this.storagePage--; this.closeStorage(); this.openStorage(); });
+
+    add(this.add.text(600, pageY, `Sayfa ${page + 1}/${totalPages}`, {
+      fontSize: '14px', fontFamily: 'Nunito, Arial, sans-serif', color: '#aaaacc'
+    }).setOrigin(0.5).setDepth(102));
+
+    const nextBtn = add(this.add.text(660, pageY, '►', {
+      fontSize: '18px', fontFamily: 'Nunito, Arial, sans-serif', color: page < totalPages - 1 ? '#88aaff' : '#333',
+      fontStyle: 'bold'
+    }).setOrigin(0.5).setDepth(102).setInteractive({ useHandCursor: page < totalPages - 1 }));
+    if (page < totalPages - 1) nextBtn.on('pointerdown', () => { this.storagePage++; this.closeStorage(); this.openStorage(); });
 
     // Close button
     const closeBtn = add(this.add.text(760, 24, 'X', {
-      fontSize: '20px', fontFamily: 'Arial, sans-serif', color: '#FF6666', fontStyle: 'bold',
+      fontSize: '20px', fontFamily: 'Nunito, Arial, sans-serif', color: '#FF6666', fontStyle: 'bold',
       backgroundColor: '#2a0a0a', padding: { x: 8, y: 3 }
     }).setOrigin(0.5).setDepth(102).setInteractive({ useHandCursor: true }));
     closeBtn.on('pointerdown', () => this.closeStorage());
 
-    add(this.add.text(400, 575, '[E] Kapat', { fontSize: '12px', fontFamily: 'Arial, sans-serif', color: '#555' }).setOrigin(0.5).setDepth(101));
+    add(this.add.text(190, pageY, 'Kapat', { fontSize: '12px', fontFamily: 'Nunito, Arial, sans-serif', color: '#555' }).setOrigin(0.5).setDepth(101));
   }
 
   closeStorage() {
+    this.cleanupQtyInput();
     this.storageOpen = false;
     if (this.storageUIElements) {
       this.storageUIElements.forEach(e => { if (e && e.destroy) e.destroy(); });
       this.storageUIElements = null;
     }
     this.children.list.filter(c => c.depth >= 99 && c.depth <= 110).forEach(c => c.destroy());
+  }
+
+  showQtyInput(x, y, maxQty, callback) {
+    this.cleanupQtyInput();
+    const overlay = this.add.rectangle(400, 300, 800, 600, 0x000000, 0.5).setDepth(150).setInteractive();
+    const popup = this.add.rectangle(400, 280, 240, 160, 0x1a1a3a, 0.98).setDepth(151).setStrokeStyle(2, 0x6a5aaa);
+    const title = this.add.text(400, 230, 'Miktar Gir', { fontSize: '16px', fontFamily: 'Nunito, Arial, sans-serif', color: '#DEB887', fontStyle: 'bold' }).setOrigin(0.5).setDepth(152);
+    const maxLabel = this.add.text(400, 252, `(Max: ${maxQty})`, { fontSize: '12px', fontFamily: 'Nunito, Arial, sans-serif', color: '#888' }).setOrigin(0.5).setDepth(152);
+
+    const canvas = this.sys.game.canvas;
+    const rect = canvas.getBoundingClientRect();
+    const inp = document.createElement('input');
+    inp.type = 'number'; inp.min = '1'; inp.max = String(maxQty); inp.value = String(maxQty);
+    inp.style.cssText = `position:fixed;left:${rect.left + rect.width / 2 - 40}px;top:${rect.top + rect.height * 0.47 - 12}px;width:80px;height:24px;font-size:16px;text-align:center;background:#0a0a2a;color:#fff;border:1px solid #6a5aaa;border-radius:4px;z-index:9999;font-family:Nunito,Arial,sans-serif;`;
+    document.body.appendChild(inp);
+    this.qtyInput = inp;
+    setTimeout(() => { inp.focus(); inp.select(); }, 50);
+
+    const okBtn = this.add.text(360, 320, 'Tamam', { fontSize: '14px', fontFamily: 'Nunito, Arial, sans-serif', color: '#88ff88', fontStyle: 'bold', backgroundColor: '#1a3a1a', padding: { x: 10, y: 4 } }).setOrigin(0.5).setDepth(152).setInteractive({ useHandCursor: true });
+    const cancelBtn = this.add.text(440, 320, 'İptal', { fontSize: '14px', fontFamily: 'Nunito, Arial, sans-serif', color: '#ff8888', fontStyle: 'bold', backgroundColor: '#3a1a1a', padding: { x: 10, y: 4 } }).setOrigin(0.5).setDepth(152).setInteractive({ useHandCursor: true });
+
+    const doConfirm = () => {
+      let qty = parseInt(inp.value) || 1;
+      qty = Math.max(1, Math.min(qty, maxQty));
+      this.cleanupQtyInput();
+      callback(qty);
+    };
+
+    okBtn.on('pointerdown', doConfirm);
+    cancelBtn.on('pointerdown', () => this.cleanupQtyInput());
+    overlay.on('pointerdown', () => this.cleanupQtyInput());
+    inp.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') doConfirm();
+      if (e.key === 'Escape') this.cleanupQtyInput();
+    });
+
+    this._qtyPopupElements = [overlay, popup, title, maxLabel, okBtn, cancelBtn];
+  }
+
+  cleanupQtyInput() {
+    if (this.qtyInput) { this.qtyInput.remove(); this.qtyInput = null; }
+    if (this._qtyPopupElements) {
+      this._qtyPopupElements.forEach(e => { if (e && e.destroy) e.destroy(); });
+      this._qtyPopupElements = null;
+    }
   }
 }

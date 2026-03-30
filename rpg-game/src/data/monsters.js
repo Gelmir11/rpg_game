@@ -1,75 +1,92 @@
-// ===== OVERWORLD CANAVARLARI =====
+// ===== OVERWORLD CANAVARLARI (Lv.1-30, köyden uzaklığa göre) =====
 export const MONSTERS = {
+  // Kademe 1: Lv.1-3 — Köy çevresi
   slime: {
     id: 'slime', name: 'Balçık',
-    hp: 45, attack: 5, defense: 2, speed: 30,
-    exp: 15, gold: 5, level: 1,
+    hp: 50, attack: 6, defense: 2, speed: 30,
+    exp: 15, gold: 5, level: 2,
     color: '#32CD32', bodyColor: '#228B22',
     behavior: 'wander', aggroRange: 80
   },
-  goblin: {
-    id: 'goblin', name: 'Goblin',
-    hp: 120, attack: 12, defense: 6, speed: 50,
-    exp: 30, gold: 12, level: 3,
-    color: '#3CB371', bodyColor: '#2E8B57',
-    behavior: 'aggressive', aggroRange: 120
-  },
+  // Kademe 2: Lv.4-6 — Köyden biraz uzak
   wolf: {
     id: 'wolf', name: 'Kurt',
-    hp: 80, attack: 15, defense: 4, speed: 70,
-    exp: 25, gold: 8, level: 2,
+    hp: 150, attack: 18, defense: 8, speed: 70,
+    exp: 35, gold: 14, level: 5,
     color: '#808080', bodyColor: '#606060',
     behavior: 'aggressive', aggroRange: 150
   },
+  goblin: {
+    id: 'goblin', name: 'Goblin',
+    hp: 200, attack: 22, defense: 10, speed: 50,
+    exp: 45, gold: 18, level: 6,
+    color: '#3CB371', bodyColor: '#2E8B57',
+    behavior: 'aggressive', aggroRange: 120
+  },
+  // Kademe 3: Lv.8-14 — Orta mesafe
+  fungoid: {
+    id: 'fungoid', name: 'Mantar Adam',
+    hp: 400, attack: 35, defense: 18, speed: 30,
+    exp: 70, gold: 30, level: 9,
+    color: '#8B4513', bodyColor: '#6B3410',
+    behavior: 'wander', aggroRange: 100
+  },
   skeleton: {
     id: 'skeleton', name: 'İskelet',
-    hp: 250, attack: 22, defense: 12, speed: 40,
-    exp: 50, gold: 20, level: 5,
+    hp: 600, attack: 45, defense: 25, speed: 40,
+    exp: 95, gold: 40, level: 12,
     color: '#F5F5DC', bodyColor: '#D2B48C',
     behavior: 'patrol', aggroRange: 100
   },
-  golem: {
-    id: 'golem', name: 'Golem',
-    hp: 800, attack: 28, defense: 30, speed: 20,
-    exp: 70, gold: 35, level: 6,
-    color: '#8B8B83', bodyColor: '#6B6B63',
-    behavior: 'patrol', aggroRange: 90
-  },
   orc: {
     id: 'orc', name: 'Ork',
-    hp: 500, attack: 35, defense: 20, speed: 35,
-    exp: 80, gold: 40, level: 7,
+    hp: 800, attack: 55, defense: 32, speed: 35,
+    exp: 120, gold: 55, level: 14,
     color: '#556B2F', bodyColor: '#6B8E23',
     behavior: 'aggressive', aggroRange: 140
   },
+  // Kademe 4: Lv.16-22 — Uzak bölgeler
+  golem: {
+    id: 'golem', name: 'Golem',
+    hp: 1400, attack: 70, defense: 60, speed: 20,
+    exp: 180, gold: 80, level: 18,
+    color: '#8B8B83', bodyColor: '#6B6B63',
+    behavior: 'patrol', aggroRange: 90
+  },
   wraith: {
     id: 'wraith', name: 'Hayalet',
-    hp: 350, attack: 40, defense: 8, speed: 55,
-    exp: 90, gold: 50, level: 8,
+    hp: 900, attack: 85, defense: 20, speed: 55,
+    exp: 200, gold: 90, level: 20,
     color: '#9370DB', bodyColor: '#6A5ACD',
+    behavior: 'aggressive', aggroRange: 160
+  },
+  fire_elemental: {
+    id: 'fire_elemental', name: 'Ateş Elemental',
+    hp: 1200, attack: 95, defense: 35, speed: 50,
+    exp: 240, gold: 105, level: 22,
+    color: '#FF4500', bodyColor: '#CC3300',
+    behavior: 'aggressive', aggroRange: 150
+  },
+  // Kademe 5: Lv.26-30 — En uzak (sağ alt)
+  drake: {
+    id: 'drake', name: 'Ejder Yavrusu',
+    hp: 2000, attack: 120, defense: 55, speed: 40,
+    exp: 350, gold: 150, level: 27,
+    color: '#CC3300', bodyColor: '#991100',
     behavior: 'aggressive', aggroRange: 160
   },
   dragon: {
     id: 'dragon', name: 'Ejder',
-    hp: 1500, attack: 60, defense: 35, speed: 25,
-    exp: 200, gold: 100, level: 10,
+    hp: 3500, attack: 150, defense: 80, speed: 25,
+    exp: 500, gold: 220, level: 30,
     color: '#8B0000', bodyColor: '#B22222',
     behavior: 'boss', aggroRange: 200
   },
-
-  // Zone 8: Ejder Yavrusu Yuvası (sağ alt köşe)
-  drake: {
-    id: 'drake', name: 'Ejder Yavrusu',
-    hp: 1000, attack: 48, defense: 25, speed: 40,
-    exp: 130, gold: 65, level: 9,
-    color: '#CC3300', bodyColor: '#991100',
-    behavior: 'aggressive', aggroRange: 160
-  },
-  // Bölge Boss: Ejder Yavrusu Anası
+  // Bölge Boss: Ejder Anası
   drake_mother: {
     id: 'drake_mother', name: 'Ejder Anası',
-    hp: 2800, attack: 85, defense: 42, speed: 32,
-    exp: 450, gold: 220, level: 12,
+    hp: 8000, attack: 180, defense: 90, speed: 32,
+    exp: 800, gold: 400, level: 32,
     color: '#AA0000', bodyColor: '#770000',
     behavior: 'boss', aggroRange: 220, isZoneBoss: true
   },
@@ -77,61 +94,75 @@ export const MONSTERS = {
   // ===== OVERWORLD BOSS =====
   ancient_dragon: {
     id: 'ancient_dragon', name: 'Kadim Ejder',
-    hp: 3000, attack: 80, defense: 45, speed: 30,
-    exp: 500, gold: 300, level: 12,
+    hp: 25000, attack: 350, defense: 200, speed: 35,
+    exp: 5000, gold: 2500, level: 40,
     color: '#4B0082', bodyColor: '#6A0DAD',
-    behavior: 'boss', aggroRange: 250, isBoss: true
+    behavior: 'boss', aggroRange: 300, isBoss: true
   },
 
   // ===== BÖLGE BOSSLARI (respawn: 60sn) =====
   slime_king: {
     id: 'slime_king', name: 'Balçık Kralı',
-    hp: 400, attack: 18, defense: 8, speed: 25,
-    exp: 80, gold: 40, level: 4,
+    hp: 500, attack: 20, defense: 10, speed: 25,
+    exp: 80, gold: 40, level: 5,
     color: '#00FF00', bodyColor: '#008800',
     behavior: 'boss', aggroRange: 180, isZoneBoss: true
   },
+  alpha_wolf: {
+    id: 'alpha_wolf', name: 'Alfa Kurt',
+    hp: 800, attack: 40, defense: 18, speed: 90,
+    exp: 150, gold: 65, level: 8,
+    color: '#505050', bodyColor: '#303030',
+    behavior: 'boss', aggroRange: 200, isZoneBoss: true
+  },
   goblin_chief: {
     id: 'goblin_chief', name: 'Goblin Şefi',
-    hp: 800, attack: 35, defense: 16, speed: 55,
-    exp: 150, gold: 70, level: 6,
+    hp: 1200, attack: 50, defense: 24, speed: 55,
+    exp: 200, gold: 90, level: 10,
     color: '#228B22', bodyColor: '#006400',
+    behavior: 'boss', aggroRange: 180, isZoneBoss: true
+  },
+  fungoid_king: {
+    id: 'fungoid_king', name: 'Mantar Kralı',
+    hp: 2000, attack: 70, defense: 35, speed: 28,
+    exp: 300, gold: 130, level: 13,
+    color: '#A0522D', bodyColor: '#8B4513',
     behavior: 'boss', aggroRange: 180, isZoneBoss: true
   },
   skeleton_lord: {
     id: 'skeleton_lord', name: 'İskelet Lordu',
-    hp: 1200, attack: 50, defense: 28, speed: 42,
-    exp: 250, gold: 120, level: 8,
+    hp: 3000, attack: 90, defense: 50, speed: 42,
+    exp: 400, gold: 180, level: 16,
     color: '#FFFFF0', bodyColor: '#B0B090',
     behavior: 'boss', aggroRange: 180, isZoneBoss: true
   },
   orc_warlord: {
     id: 'orc_warlord', name: 'Ork Savaş Lordu',
-    hp: 2000, attack: 70, defense: 40, speed: 38,
-    exp: 350, gold: 180, level: 10,
+    hp: 4000, attack: 110, defense: 60, speed: 38,
+    exp: 500, gold: 230, level: 18,
     color: '#4A6A0A', bodyColor: '#3A5A00',
-    behavior: 'boss', aggroRange: 200, isZoneBoss: true
-  },
-  alpha_wolf: {
-    id: 'alpha_wolf', name: 'Alfa Kurt',
-    hp: 500, attack: 40, defense: 12, speed: 90,
-    exp: 120, gold: 50, level: 5,
-    color: '#505050', bodyColor: '#303030',
     behavior: 'boss', aggroRange: 200, isZoneBoss: true
   },
   crystal_golem: {
     id: 'crystal_golem', name: 'Kristal Golem',
-    hp: 2500, attack: 55, defense: 55, speed: 18,
-    exp: 300, gold: 150, level: 9,
+    hp: 5500, attack: 130, defense: 90, speed: 18,
+    exp: 650, gold: 300, level: 22,
     color: '#00BFFF', bodyColor: '#0080AA',
     behavior: 'boss', aggroRange: 160, isZoneBoss: true
   },
   wraith_queen: {
     id: 'wraith_queen', name: 'Hayalet Kraliçe',
-    hp: 1500, attack: 75, defense: 15, speed: 60,
-    exp: 400, gold: 200, level: 11,
+    hp: 4500, attack: 150, defense: 40, speed: 60,
+    exp: 700, gold: 320, level: 24,
     color: '#BA55D3', bodyColor: '#8B008B',
     behavior: 'boss', aggroRange: 220, isZoneBoss: true
+  },
+  fire_lord: {
+    id: 'fire_lord', name: 'Ateş Lordu',
+    hp: 6000, attack: 160, defense: 55, speed: 48,
+    exp: 750, gold: 350, level: 26,
+    color: '#FF6600', bodyColor: '#CC4400',
+    behavior: 'boss', aggroRange: 200, isZoneBoss: true
   },
 
   // ===== LABİRENT CANAVARLARI (Lv.40-60) =====
