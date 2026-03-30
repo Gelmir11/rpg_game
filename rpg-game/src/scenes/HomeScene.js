@@ -205,8 +205,17 @@ export class HomeScene extends Phaser.Scene {
     const pTex = ps.gender === 'female' ? 'player_female' : 'player';
     this.player = this.physics.add.sprite(400, 340, pTex, 0);
     this.player.setSize(28, 28).setOffset(18, 60).setDepth(10).setCollideWorldBounds(true);
-    this.physics.world.setBounds(182, 130, 436, 370);
+    this.physics.world.setBounds(182, 130, 436, 390);
     this.playerDirection = 'down';
+
+    // Recreate walk animations with the correct gender texture
+    ['walk_down', 'walk_left', 'walk_right', 'walk_up'].forEach(key => {
+      if (this.anims.exists(key)) this.anims.remove(key);
+    });
+    this.anims.create({ key: 'walk_down', frames: [{ key: pTex, frame: 0 }, { key: pTex, frame: 1 }], frameRate: 6, repeat: -1 });
+    this.anims.create({ key: 'walk_left', frames: [{ key: pTex, frame: 2 }, { key: pTex, frame: 3 }], frameRate: 6, repeat: -1 });
+    this.anims.create({ key: 'walk_right', frames: [{ key: pTex, frame: 4 }, { key: pTex, frame: 5 }], frameRate: 6, repeat: -1 });
+    this.anims.create({ key: 'walk_up', frames: [{ key: pTex, frame: 6 }, { key: pTex, frame: 7 }], frameRate: 6, repeat: -1 });
 
     // Equipment overlay sprites
     const suffix = ps.gender === 'female' ? '_f' : '';
