@@ -145,6 +145,12 @@ export class PlayerState {
     this.addItem('health_potion');
     this.addItem('mana_potion');
     this.addItem('mana_potion');
+
+    // Başlangıç silahını otomatik kuşan
+    const ITEMS_REF = typeof window !== 'undefined' && window.__ITEMS_REF;
+    if (ITEMS_REF && ITEMS_REF[classDef.startWeapon]) {
+      this.equip(ITEMS_REF[classDef.startWeapon], 'weapon', classDef.startWeapon);
+    }
   }
 
   // EXP tablosu
